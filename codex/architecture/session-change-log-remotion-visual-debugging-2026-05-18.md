@@ -584,3 +584,87 @@ Files modified before this compaction artifact:
 Compaction artifact added at the end of the session:
 
 19. `codex/architecture/session-change-log-remotion-visual-debugging-2026-05-18.md`
+
+## Follow-Up: Scene, Props, And Visual Pack Sync Hardening
+
+This follow-up was added after the visual debugging compaction when the next issue was identified: scenario scenes, visual scene packs, Remotion props, selected candidates, AI packages, clip packages, and timeline sync could drift because `scene_id` alone was not a strong enough lineage contract.
+
+### Sync Design Change
+
+- Scenario scenes are now the identity source for downstream artifacts.
+- Director owns a new `scene-artifact-sync` gate and report contract.
+- Visual Producer must produce exactly one current scene pack per scenario scene.
+- Scene packs must preserve `scene_index`, scenario timing, scenario fingerprints, and downstream `prop_requirements`.
+- InVideo AI Generator and Remotion Clip Builder must consume the current scenario scene plus matching scene pack instead of old memory or generated defaults.
+- Remotion clip packages must record scenario/visual-pack lineage and `props_sync`.
+- Timeline sync must consume the scene artifact sync report and current props/packages before render work.
+- Render QA and Video Critic now treat stale props, stale scene packs, orphaned scene ids, duplicate scene packs, and route/template/media conflicts as delivery blockers unless waived.
+
+### New Files Added
+
+1. `codex/agents/director/skills/scene-artifact-sync/SKILL.md`
+2. `codex/agents/director/skills/scene-artifact-sync/scripts/build_scene_artifact_sync_report.py`
+3. `codex/contracts/scene-artifact-sync.schema.json`
+
+### Existing Files Updated For Sync
+
+1. `AGENTS.md`
+2. `codex/agents/channel-intelligence/scripts/analyze_reference_video.py`
+3. `codex/agents/channel-intelligence/scripts/parse_web_content.py`
+4. `codex/agents/channel-intelligence/skills/channel-format-synthesis/SKILL.md`
+5. `codex/agents/channel-intelligence/skills/channel-profile-management/SKILL.md`
+6. `codex/agents/channel-intelligence/skills/reference-video-breakdown/SKILL.md`
+7. `codex/agents/channel-intelligence/skills/source-corpus-ingestion/SKILL.md`
+8. `codex/agents/channel-intelligence/skills/style-system-extraction/SKILL.md`
+9. `codex/agents/director/AGENT.md`
+10. `codex/agents/director/skills/autonomous-production-run/SKILL.md`
+11. `codex/agents/director/skills/producer-criteria-prompt/SKILL.md`
+12. `codex/agents/director/skills/quality-gated-review-loop/SKILL.md`
+13. `codex/agents/invideo-ai-generator/AGENT.md`
+14. `codex/agents/invideo-ai-generator/skills/ai-video-prompt-builder/SKILL.md`
+15. `codex/agents/invideo-ai-generator/skills/generated-clip-qa/SKILL.md`
+16. `codex/agents/remotion-clip-builder/AGENT.md`
+17. `codex/agents/remotion-clip-builder/skills/remotion-ai-component-prompt/SKILL.md`
+18. `codex/agents/remotion-clip-builder/skills/remotion-scene-plan/SKILL.md`
+19. `codex/agents/remotion-clip-builder/skills/remotion-stack-selection/SKILL.md`
+20. `codex/agents/remotion-clip-builder/skills/remotion-template-library/SKILL.md`
+21. `codex/agents/remotion-clip-builder/skills/remotion-vfx-clip/SKILL.md`
+22. `codex/agents/remotion-video-producer/AGENT.md`
+23. `codex/agents/remotion-video-producer/scripts/build_timeline_sync_plan.py`
+24. `codex/agents/remotion-video-producer/skills/render-qa/SKILL.md`
+25. `codex/agents/remotion-video-producer/skills/render-release-candidate/SKILL.md`
+26. `codex/agents/remotion-video-producer/skills/timeline-sync-plan/SKILL.md`
+27. `codex/agents/video-critic/AGENT.md`
+28. `codex/agents/video-critic/scripts/prepare_video_review_assets.py`
+29. `codex/agents/video-critic/skills/artifact-consistency-audit/SKILL.md`
+30. `codex/agents/video-critic/skills/prepare-multimodal-review-package/SKILL.md`
+31. `codex/agents/visual-producer/AGENT.md`
+32. `codex/agents/visual-producer/skills/clip-candidate-ranking/SKILL.md`
+33. `codex/agents/visual-producer/skills/visual-pack-plan/SKILL.md`
+34. `codex/agents/visual-producer/skills/visual-validation/SKILL.md`
+35. `codex/architecture/agent-responsibility-map.md`
+36. `codex/architecture/research-synthesis.md`
+37. `codex/contracts/agent-handoff.schema.json`
+38. `codex/contracts/ai-video-generation-package.schema.json`
+39. `codex/contracts/clip-candidate.schema.json`
+40. `codex/contracts/critique-report.schema.json`
+41. `codex/contracts/producer-criteria.schema.json`
+42. `codex/contracts/production-run.schema.json`
+43. `codex/contracts/reference-analysis.schema.json`
+44. `codex/contracts/remotion-clip-package.schema.json`
+45. `codex/contracts/render-package.schema.json`
+46. `codex/contracts/scene-visual-pack.schema.json`
+47. `codex/contracts/timeline-sync-plan.schema.json`
+48. `codex/contracts/video-project.schema.json`
+49. `codex/specs/agent-system-integrated-spec.md`
+50. `codex/specs/orchestrator-agent-architecture-spec.md`
+51. `codex/specs/project-artifact-structure-spec.md`
+52. `codex/specs/remotion-production-spec.md`
+53. `codex/specs/video-critique-spec.md`
+54. `codex/architecture/session-change-log-remotion-visual-debugging-2026-05-18.md`
+
+### Sync Validation Notes
+
+- `codex/agents/director/skills/scene-artifact-sync/scripts/build_scene_artifact_sync_report.py` creates a JSON report from scenario, visual pack, candidate, AI package, Remotion clip package, and timeline sync artifacts.
+- `codex/agents/remotion-video-producer/scripts/build_timeline_sync_plan.py` now requires `--visual-pack` and `--scene-artifact-sync`, carries scene lineage into each timeline scene, and marks failing sync rows as blockers.
+- `codex/agents/video-critic/scripts/prepare_video_review_assets.py` now accepts `--scene-artifact-sync` so critic evidence packages can carry the sync report path.

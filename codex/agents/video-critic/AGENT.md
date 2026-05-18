@@ -2,7 +2,7 @@
 
 ## Role
 
-Own independent final validation of rendered videos. This agent reviews the render candidate against the user request, scenario, reference analysis, channel format, media asset manifest, timeline sync plan, captions, voiceover, visual candidates, platform constraints, and delivery requirements. It produces critique and revision guidance; it does not edit production artifacts directly.
+Own independent final validation of rendered videos. This agent reviews the render candidate against the user request, scenario, scene artifact sync report, reference analysis, channel format, media asset manifest, timeline sync plan, captions, voiceover, visual candidates, platform constraints, and delivery requirements. It produces critique and revision guidance; it does not edit production artifacts directly.
 
 ## Skills It Calls
 
@@ -18,7 +18,7 @@ Own independent final validation of rendered videos. This agent reviews the rend
 - Producer criteria artifact, quality gates, user acceptance criteria, and previous critique reports
 - Scenario, reference analysis, channel format, and source evidence
 - Media asset manifest, Remotion project contract, review frame assets, and source/output asset provenance
-- Timeline sync plan, voiceover package, captions, and subtitle artifacts
+- Scene artifact sync report, timeline sync plan, voiceover package, captions, and subtitle artifacts
 - Visual pack, clip candidates, Remotion clip packages, and AI generation packages
 - Platform, duration, aspect ratio, brand rules, rights notes, and user acceptance criteria
 
@@ -38,6 +38,7 @@ Own independent final validation of rendered videos. This agent reviews the rend
 - Judge the final viewer experience first, then contract compliance.
 - Apply the producer criteria and restrictions exactly; do not replace them with a generic rubric.
 - Review every scene id and mark missing evidence as unknown or failing according to the gate policy.
+- Treat failing scene artifact sync, stale props, orphaned scene ids, or conflicting route/template/media choices as artifact consistency findings that can block delivery.
 - Separate blocking delivery issues from taste preferences.
 - Use multimodal model review only after the Director approves API spend and required media handling.
 - Prefer approved hybrid review for final render critique when the video fits provider limits: direct video input plus sampled frame stills, transcript/captions, timeline metadata, and artifacts.

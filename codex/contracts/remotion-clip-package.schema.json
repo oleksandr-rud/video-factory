@@ -2,10 +2,19 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "RemotionClipPackage",
   "type": "object",
-  "required": ["clip_id", "scene_id", "composition_id", "status", "duration_seconds", "fps", "width", "height", "component_paths", "render_commands", "qa"],
+  "required": ["clip_id", "scene_id", "scene_index", "source_scenario_path", "source_scene_visual_pack_path", "scene_pack_id", "scenario_scene_fingerprint", "props_sync", "composition_id", "status", "duration_seconds", "fps", "width", "height", "component_paths", "render_commands", "qa"],
   "properties": {
     "clip_id": { "type": "string" },
     "scene_id": { "type": "string" },
+    "scene_index": { "type": "integer", "minimum": 0 },
+    "source_scenario_path": { "type": "string" },
+    "source_scenario_hash": { "type": "string" },
+    "source_scene_visual_pack_path": { "type": "string" },
+    "scene_visual_pack_id": { "type": "string" },
+    "scene_pack_id": { "type": "string" },
+    "scene_pack_fingerprint": { "type": "string" },
+    "scenario_scene_fingerprint": { "type": "string" },
+    "sync_report_path": { "type": "string" },
     "project_id": { "type": "string" },
     "project_path": { "type": "string" },
     "channel_profile_id": { "type": "string" },
@@ -55,6 +64,33 @@
     },
     "props_schema_path": { "type": "string" },
     "props_path": { "type": "string" },
+    "props_sync": {
+      "type": "object",
+      "required": ["status", "scenario_id", "scene_id", "scene_visual_pack_id", "scene_pack_id", "scenario_scene_fingerprint"],
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": ["synced", "stale", "partial", "blocked", "unknown"]
+        },
+        "scenario_id": { "type": "string" },
+        "scenario_path": { "type": "string" },
+        "scenario_hash": { "type": "string" },
+        "scene_id": { "type": "string" },
+        "scene_index": { "type": "integer" },
+        "scene_visual_pack_id": { "type": "string" },
+        "scene_visual_pack_path": { "type": "string" },
+        "scene_pack_id": { "type": "string" },
+        "scenario_scene_fingerprint": { "type": "string" },
+        "scene_pack_fingerprint": { "type": "string" },
+        "props_path": { "type": "string" },
+        "props_hash": { "type": "string" },
+        "prop_requirement_keys": { "type": "array", "items": { "type": "string" } },
+        "missing_prop_keys": { "type": "array", "items": { "type": "string" } },
+        "stale_prop_keys": { "type": "array", "items": { "type": "string" } },
+        "validated_at": { "type": "string" },
+        "notes": { "type": "string" }
+      }
+    },
     "template_instance": {
       "type": "object",
       "properties": {

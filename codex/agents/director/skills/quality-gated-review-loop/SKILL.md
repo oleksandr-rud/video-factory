@@ -26,7 +26,7 @@ Every critic handoff must include:
 
 - user request and acceptance criteria
 - producer criteria artifact matching `codex/contracts/producer-criteria.schema.json`: rules, instructions, restrictions, quality bars, scene criteria, revision policy, and provider constraints that production agents were supposed to apply
-- scenario, channel format, reference analysis, visual pack, voiceover package, timeline sync plan, render package, captions, and final video path
+- scenario, scene artifact sync report, channel format, reference analysis, visual pack, voiceover package, timeline sync plan, render package, captions, and final video path
 - previous critique reports and attempted fixes when iteration > 1
 - explicit pass/fail gates and score thresholds
 
@@ -60,7 +60,8 @@ Also add an `invalidation_graph.events[]` entry when any of these are true:
 - Voiceover, pronunciation, caption, or timestamp findings: rerun Creative Producer voice/TTS artifacts when needed, then timeline sync, Remotion Video Producer render, and Critic work.
 - Visual route, candidate, rights, or continuity findings: rerun Visual Producer for affected scenes, then the required InVideo AI Generator or Remotion Clip Builder handoffs, then Remotion Video Producer, render, and Critic work.
 - AI generation prompt/output findings: rerun InVideo AI Generator for affected scenes, then Remotion Video Producer, render, and Critic work.
-- Remotion component, overlay, or short-clip findings: rerun Remotion Clip Builder for affected scenes, then Remotion Video Producer, render, and Critic work.
+- Scene artifact sync, stale props, orphaned scene id, duplicate scene pack, or route/template/media conflict findings: run `scene-artifact-sync`, rerun the owning upstream agent for failed rows, then rerun downstream dependents.
+- Remotion component, overlay, short-clip, or props findings: rerun Remotion Clip Builder for affected scenes, then scene artifact sync, Remotion Video Producer, render, and Critic work.
 - Timeline, subtitles, audio mix, transition, layout alignment, dense-region overlap, motion readability, export, or technical render findings: rerun Remotion Video Producer visual debugging/render work, then Critic work only unless the defect belongs inside a Remotion Clip Builder-owned clip/template.
 - Critic evidence gaps: rerun `prepare-multimodal-review-package` or request missing inputs before changing production artifacts.
 
@@ -75,6 +76,7 @@ Use stricter gates when the user supplies them. Otherwise:
 - overall score >= 8
 - story_clarity, visual_relevance, subtitle_sync, platform_fit, and factual_alignment >= 7
 - every required scene has a scene review
+- scene artifact sync has no unwaived stale props, orphaned scene ids, duplicate scene packs, or route/template/media conflicts
 - every required production criterion is `pass`, `not_applicable`, or explicitly waived by Director/user
 
 ## Stop Conditions

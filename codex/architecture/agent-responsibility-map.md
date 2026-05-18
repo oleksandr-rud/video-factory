@@ -5,8 +5,8 @@ This is the per-agent inventory and analysis for the current Video Factory archi
 Local scan summary:
 
 - Agents: 8
-- Local agent skills: 48
-- Contract schemas: 19
+- Local agent skills: 50
+- Contract schemas: 20
 - Specs: 7
 - Agent reference docs: 4
 - Shared Remotion template contracts: 4
@@ -82,8 +82,9 @@ Shared Remotion runtime artifacts:
 | `codex/contracts/reference-analysis.schema.json` | Channel Intelligence | Source/reference analysis and downstream guidance. |
 | `codex/contracts/channel-format.schema.json` | Channel Intelligence | Production-ready reusable channel format package. |
 | `codex/contracts/scenario.schema.json` | Creative Producer | Timed script, scene ids, scene purpose, narration, on-screen text, visual intent, and source notes. |
+| `codex/contracts/scene-artifact-sync.schema.json` | Director | Cross-artifact scene lineage report for scenario scenes, scene visual packs, props, candidates, AI packages, Remotion clip packages, and timeline sync. |
 | `codex/contracts/voiceover-package.schema.json` | Creative Producer | Voice direction, provider selection, generation policy, audio/caption paths, and QA. |
-| `codex/contracts/scene-visual-pack.schema.json` | Visual Producer | Per-scene visual routes, search/generation/Remotion briefs, constraints, and handoff recommendations. |
+| `codex/contracts/scene-visual-pack.schema.json` | Visual Producer | Per-scene visual routes, prop requirements, search/generation/Remotion briefs, constraints, and handoff recommendations. |
 | `codex/contracts/clip-candidate.schema.json` | Visual Producer / InVideo / Remotion Clip Builder | Comparable visual candidate record across stock, user media, AI generation, and Remotion routes. |
 | `codex/contracts/ai-video-generation-package.schema.json` | InVideo AI Generator | Model route, prompts, negative constraints, prompt guides, approval, outputs, variants, and QA. |
 | `codex/contracts/remotion-clip-package.schema.json` | Remotion Clip Builder | Deterministic short clip/VFX/component package. |
@@ -100,10 +101,12 @@ user request
   -> reference analysis
   -> channel format
   -> scenario
+  -> scene artifact sync
   -> voiceover package
   -> scene visual pack
   -> clip candidates
   -> AI generation packages and/or Remotion clip packages
+  -> scene artifact sync
   -> timeline sync plan
   -> render package
   -> critique report
@@ -816,7 +819,7 @@ Every artifact that affects delivery should preserve at least one trace:
 
 ## Current Gaps And Recommended Hardening
 
-1. Manual inventory counts are now supported by `codex/scripts/audit_agent_system.py`; current scan is 48 local skills, 43 non-Director skills, 43 Director handoff refs, 38 strong matrix skills, and 19 contracts.
+1. Manual inventory counts are now supported by `codex/scripts/audit_agent_system.py`; current scan is 50 local skills, 44 non-Director skills, 44 Director handoff refs, 31 strong skills, and 20 contracts.
 2. The first four critical judgment/QA skills are now hardened: `clip-candidate-ranking`, `generated-clip-qa`, `render-qa`, and `artifact-consistency-audit`.
 3. No matrix skills remain classified as Thin. Next hardening should focus on Medium skills: `elevenlabs-voice-selection`, Director criteria/review-loop skills, Remotion post-production, Remotion AI/VFX outputs, and Video Critic review package/revision skills.
 4. Deterministic handoff validation should stay optional until real runs show repeated drift; the current audit script covers static handoff map drift and script-reference drift.

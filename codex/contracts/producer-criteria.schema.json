@@ -86,12 +86,13 @@
           "enum": ["not_required", "required_missing", "draft", "complete", "needs_approval", "blocked"]
         },
         "scene_visual_pack_path": { "type": "string" },
+        "scene_artifact_sync_report_path": { "type": "string" },
         "visual_research_artifact_paths": { "type": "array", "items": { "type": "string" } },
         "required_before": {
           "type": "array",
           "items": {
             "type": "string",
-            "enum": ["channel_format_final", "producer_criteria_active", "ai_generation", "remotion_clip", "timeline_sync", "render", "critique"]
+            "enum": ["channel_format_final", "producer_criteria_active", "scene_artifact_sync", "ai_generation", "remotion_clip", "timeline_sync", "render", "critique"]
           }
         },
         "requirements": { "type": "array", "items": { "type": "string" } },

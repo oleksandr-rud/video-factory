@@ -21,7 +21,7 @@ Use this after `decompose-video-request` and before production handoffs. The art
    - template constraints: allowed reusable template ids, required template contract paths, project/channel override rules, safe-area restrictions, and whether shared templates may be used directly
    - VFX constraints: channel-format VFX rule extensions, required hardening triggers, alpha/export rules, benchmark requirements, fallback expectations, and scene-level VFX restrictions
    - media constraints: allowed source assets, required local media, Remotion `staticFile()` requirements, remote-asset restrictions, and evidence refs
-   - visual research constraints: required scene visual pack path, visual research query coverage, primary/fallback route coverage, target-content substitution rules, reference beat/decomposition refs, required source-card/Remotion/AI/stock route evidence, provider search/download approval gates, and deferred fallback policy
+   - visual research constraints: required scene visual pack path, scene artifact sync path when available, visual research query coverage, primary/fallback route coverage, target-content substitution rules, reference beat/decomposition refs, required source-card/Remotion/AI/stock route evidence, provider search/download approval gates, and deferred fallback policy
    - scene criteria: per-scene checks keyed by `scene_id`
 4. Set default review thresholds unless the user provides stricter gates:
    - `overall_min`: 8
@@ -39,6 +39,7 @@ Use this after `decompose-video-request` and before production handoffs. The art
 - Keep criteria testable. Avoid vague gates such as "make it better"; rewrite them as observable checks.
 - Preserve scene ids. If the scenario is not ready yet, create global criteria first and update `scene_criteria[]` after the scenario exists.
 - Preserve visual research as a binding input. For deliverable videos, criteria are draft until the scene visual pack and visual research query groups exist or are explicitly blocked/deferred with approval notes.
+- Include a hard scene-sync gate: stale props, stale scene packs, duplicate scene packs, orphaned scene ids, or route/template/media conflicts block render/release unless explicitly waived.
 - Include rights, budget, and approval gates even when no paid work is currently planned.
 - Include channel brand, voice, color, format, and governance gates when a channel profile exists.
 - Include Remotion template governance when reusable templates are in scope: project/channel contracts override shared contracts, shared templates are base primitives, and breaking changes to reusable template props require a new version or scene-specific instance.

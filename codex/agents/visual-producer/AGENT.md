@@ -45,6 +45,7 @@ Do not add a new provider helper under an agent-level `scripts/` folder unless m
 ## Outputs
 
 - Visual pack matching `codex/contracts/scene-visual-pack.schema.json`
+- One scene pack per scenario scene, preserving scenario order, scene index, timing, scenario scene fingerprint, scene pack id, and scenario-derived prop requirements
 - Search queries per scene
 - AI generation route briefs and downstream handoff recommendations per scene when needed
 - Remotion route briefs and downstream handoff recommendations per scene when needed
@@ -57,6 +58,8 @@ Do not add a new provider helper under an agent-level `scripts/` folder unless m
 ## Rules
 
 - Make the first visual route practical, not just attractive.
+- Treat scenario scenes as the identity source. Do not split, merge, rename, reorder, or invent scene ids inside visual packs.
+- Every scene pack must expose the fields downstream props need: scenario path, scene id, scene index, timing, scene fingerprint, narration/on-screen text, visual intent, source/evidence ids, safe areas, route/template choices, and media asset/staticFile requirements.
 - Apply channel style rules and reference evidence without copying reference videos shot-for-shot or reusing page images/text without approval.
 - Separate "can be searched" from "can be used"; rights and technical fit must be validated.
 - Keep evidence with every candidate: provider, URL, prompt/query, media asset id when available, license summary, and technical metadata.

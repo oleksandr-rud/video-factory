@@ -124,6 +124,7 @@ Do not hardcode one-off scene copy, claims, or media inside reusable templates. 
 A clip package must identify:
 
 - `clip_id`, `scene_id`, project/channel ids, `composition_id`, duration, fps, dimensions, and aspect ratio
+- source scenario path/hash, scene index, scene visual pack path/id, scene pack id, scenario scene fingerprint, and props sync status
 - `template_id`, `template_contract_path`, instance props, or `template_instances[]` when the clip is template-backed
 - `bespoke_vfx_notes` when templates were considered but skipped for a complex custom effect
 - Component/source paths and asset paths
@@ -154,7 +155,9 @@ A render package must identify:
 A timeline sync plan must identify:
 
 - scene ids, narration text, start/end seconds, and start/end frames
+- source scenario path, scene visual pack path, scene artifact sync report path, scene index, scene pack id, and scenario scene fingerprint
 - selected visual candidate, source media asset, `staticFile()` path, or Remotion clip package per scene
+- Remotion props path/hash and `props_sync.status` for Remotion-generated scenes
 - template id and template contract path, or template layer list, for template-backed scene visuals
 - voiceover package scene entries, audio paths, and generated duration when available
 - caption JSON/SRT paths and timing ranges
@@ -182,6 +185,8 @@ Full-video visual debugging passes only when every scene has 2-3 fps sampled-fra
 
 Remotion setup QA passes only when dependencies install, `npm run lint` passes or has a documented blocker, at least one still or preview render is attempted for changed compositions, and required media assets resolve through the manifest.
 
+Scene sync QA passes only when `codex/contracts/scene-artifact-sync.schema.json` reports that every render-required scenario scene has exactly one current visual scene pack, current selected candidates, current AI/Remotion packages when those routes are used, current Remotion props, no orphaned downstream scene ids, and no conflicting route/template/media choices. A stale props file is a blocker for timeline sync and render, not a minor visual issue.
+
 ## Director Run Implementation
 
 When the Director prompt runs, reusable templates enter the pipeline this way:
@@ -189,12 +194,14 @@ When the Director prompt runs, reusable templates enter the pipeline this way:
 1. Director decomposes the request, resolves `remotion/remotion-project.json`, and notes `remotion/src/templateRegistry.tsx` plus any project template contract paths.
 2. Channel Intelligence may put reusable template ids or desired reusable assets into the channel format.
 3. Visual Producer expresses scene-level `template_hint`, `template_id`, `template_ids`, or reusable template requirements in the scene visual pack only when templates fit the scene. Complex VFX requests can explicitly allow bespoke VFX.
-4. Director converts those hints into a Remotion Clip Builder handoff that includes `remotion-template-library`, the Remotion project contract, the template registry path, producer criteria, channel format, and the requested output contracts.
-5. Remotion Clip Builder either selects one or more existing templates, implements a new reusable template, combines template layers with bespoke VFX, or writes a fully bespoke Remotion clip. Reusable templates are registered under `remotion/src/templateRegistry.tsx`; every scene-specific result still gets a `remotion-clip-package`.
-6. Director validates the returned template and clip packages, updates the project index and production run ledger, then passes only the clip package paths and template contract paths downstream.
-7. Remotion Video Producer consumes the clip packages and timeline sync plan; if a needed template is missing or invalid, it recommends a new Clip Builder handoff instead of editing template internals.
-8. Remotion Video Producer runs visual debugging before render QA whenever the timeline changed, frames are dense, multiple overlay systems share the screen, or prior feedback names alignment, overlap, readability, or animation defects.
-9. Render QA and Video Critic evaluate the final render with template provenance visible through clip packages and render package source references.
+4. Director runs scene artifact sync after Visual Producer output. Specialist handoffs receive the scenario path, visual pack path, scene id, scene index, scene pack id, scenario scene fingerprint, and prop requirements.
+5. Director converts those hints into a Remotion Clip Builder handoff that includes `remotion-template-library`, the Remotion project contract, the template registry path, producer criteria, channel format, scene sync report, and the requested output contracts.
+6. Remotion Clip Builder either selects one or more existing templates, implements a new reusable template, combines template layers with bespoke VFX, or writes a fully bespoke Remotion clip. Reusable templates are registered under `remotion/src/templateRegistry.tsx`; every scene-specific result still gets a `remotion-clip-package` with props sync metadata.
+7. Director reruns scene artifact sync after AI/Remotion specialist outputs. Stale props, orphaned scene ids, duplicate scene packs, or route/template/media conflicts block timeline sync.
+8. Director validates the returned template and clip packages, updates the project index and production run ledger, then passes only current clip package paths and template contract paths downstream.
+9. Remotion Video Producer consumes the scene artifact sync report, clip packages, and timeline sync plan; if a needed template is missing or invalid, it recommends a new Clip Builder handoff instead of editing template internals.
+10. Remotion Video Producer runs visual debugging before render QA whenever the timeline changed, frames are dense, multiple overlay systems share the screen, or prior feedback names alignment, overlap, readability, or animation defects.
+11. Render QA and Video Critic evaluate the final render with template provenance visible through clip packages and render package source references.
 
 ## Uncovered Skill Gaps
 
@@ -203,13 +210,14 @@ The scan found four gaps in the previous agent skills:
 - The Remotion skills had animation guidance, but no explicit baseline tying clip generation to frame primitives such as current frame, video config, interpolation, springs, and full-frame layers.
 - The VFX and generated-component skills produced useful implementation notes, but did not require a formal clip package artifact.
 - The full-video render package did not track source Remotion clip packages, which made final timeline provenance weak.
+- There was no explicit scene artifact sync gate tying scenario scenes, visual scene packs, Remotion props, AI generation packages, selected candidates, and timeline sync together.
 - There was no explicit timeline sync contract tying scenario text, generated voiceover alignment, captions, and selected visuals together.
 - There was no explicit Remotion app/setup contract, so commands, dependencies, public asset rules, and composition registry were implicit.
 - There was no project media manifest, so loaded reference videos, source clips, generated clips, rendered clips, and review evidence could not be traced consistently.
 - One agent owned both low-level component/VFX generation and full timeline render QA, which encouraged oversized prompts and mixed definitions of done.
 - There was no explicit visual debugging gate for alignment, dense-region overlaps, browser/Studio preview evidence, and broken animation replacement before render QA.
 
-Those gaps are now covered by `remotion-project.schema.json`, `media-asset-manifest.schema.json`, `remotion-clip-package.schema.json`, `voiceover-package.schema.json`, `timeline-sync-plan.schema.json`, the `source_clip_packages` and source asset fields in the render package, the split between Remotion Clip Builder and Remotion Video Producer, and `codex/agents/remotion-video-producer/skills/remotion-visual-debugging/SKILL.md`.
+Those gaps are now covered by `remotion-project.schema.json`, `media-asset-manifest.schema.json`, `scene-artifact-sync.schema.json`, `remotion-clip-package.schema.json`, `voiceover-package.schema.json`, `timeline-sync-plan.schema.json`, the `source_clip_packages` and source asset fields in the render package, the split between Remotion Clip Builder and Remotion Video Producer, and `codex/agents/remotion-video-producer/skills/remotion-visual-debugging/SKILL.md`.
 
 ## Evidence From Current Research
 

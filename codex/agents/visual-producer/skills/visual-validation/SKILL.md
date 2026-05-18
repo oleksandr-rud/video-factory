@@ -9,15 +9,15 @@ Visual validation is a safety gate, not a taste pass. Unknown rights, missing me
 
 ## Inputs
 
-- Scene visual pack and candidate requirements
+- Scene visual pack with scene pack ids, scenario scene fingerprints, prop requirements, and candidate requirements
 - Clip candidates from stock, user media, Remotion, AI generation, approved web images, screenshots, or source-card recreation
-- Scenario scene list and neighboring scene context
+- Scenario scene list, scene indexes, fingerprints, and neighboring scene context
 - Channel format, brand rules, platform specs, rights policy, and budget policy
 - Local file paths, source URLs, provider metadata, media asset manifest entries, or generation package paths
 
 ## Workflow
 
-1. Verify candidate identity: `candidate_id`, `scene_id`, route, provider/source, local path or URL, media asset id when available, and provenance.
+1. Verify candidate identity: `candidate_id`, `scene_id`, `scene_index`, `scene_pack_id`, `scene_visual_pack_id`, `scenario_scene_fingerprint`, route, provider/source, local path or URL, media asset id when available, and provenance.
 2. Check semantic fit against the scene purpose, narration, visual intent, and channel format.
 3. Check technical fit: resolution, aspect ratio, crop risk, duration, fps, audio presence, start/end usability, Remotion `staticFile()` readiness when needed, and overlay safe areas.
 4. Check rights fit: license summary, attribution, paid approval, web image/screenshot approval, copied text risk, likeness/logo concerns, watermark risk, and provider restrictions.
@@ -32,6 +32,7 @@ Visual validation is a safety gate, not a taste pass. Unknown rights, missing me
 Update each affected `codex/contracts/clip-candidate.schema.json` item:
 
 - `technical`
+- scene lineage fields: `scene_index`, `source_scenario_path`, `source_scene_visual_pack_path`, `scene_visual_pack_id`, `scene_pack_id`, and `scenario_scene_fingerprint`
 - `license_summary`
 - `media_asset_id`
 - `remotion_static_file_path`
@@ -53,6 +54,9 @@ Return this validation summary:
   "scene_results": [
     {
       "scene_id": "string",
+      "scene_index": 0,
+      "scene_pack_id": "string",
+      "scenario_scene_fingerprint": "string",
       "candidate_results": [
         {
           "candidate_id": "string",
@@ -84,7 +88,7 @@ Return this validation summary:
 
 ## Definition Of Done
 
-- Every candidate has validation evidence, scores, status, and any rejection or approval reason.
+- Every candidate has scene lineage, validation evidence, scores, status, and any rejection or approval reason.
 - No candidate with unknown rights is silently promoted.
 - Technical metadata is present or the candidate is marked unknown/blocked.
 - Selected and fallback candidates are usable by Remotion Video Producer without redoing validation.

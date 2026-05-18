@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
 from typing import Any
@@ -17,6 +18,16 @@ def load_json(path: str | None) -> Any:
         return None
     with open(path, "r", encoding="utf-8-sig") as handle:
         return json.load(handle)
+
+
+def file_sha256(path: str | None) -> str | None:
+    if not path:
+        return None
+    digest = hashlib.sha256()
+    with open(path, "rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return f"sha256:{digest.hexdigest()}"
 
 
 def drop_none(value: Any) -> Any:
@@ -168,10 +179,17 @@ def voice_by_scene(voiceover: dict[str, Any] | None) -> dict[str, dict[str, Any]
     return {item.get("scene_id"): item for item in voiceover.get("scenes", []) if item.get("scene_id")}
 
 
+def sync_by_scene(sync_report: dict[str, Any] | None) -> dict[str, dict[str, Any]]:
+    if not sync_report:
+        return {}
+    return {item.get("scene_id"): item for item in sync_report.get("scene_index", []) if item.get("scene_id")}
+
+
 def make_visual_source(
     scene_id: str,
     candidate: dict[str, Any] | None,
     pack: dict[str, Any] | None,
+    lineage: dict[str, Any],
     selection_status: str,
     selection_authority: str,
     helper_selected: bool,
@@ -180,17 +198,25 @@ def make_visual_source(
     if candidate:
         return drop_none({
             "candidate_id": candidate.get("candidate_id"),
+            "scene_visual_pack_id": lineage.get("scene_visual_pack_id") or "",
+            "scene_pack_id": lineage.get("scene_pack_id") or "",
+            "scenario_scene_fingerprint": lineage.get("scenario_scene_fingerprint") or "",
+            "props_sync_status": candidate.get("props_sync_status") or ((candidate.get("props_sync") or {}).get("status")) or "unknown",
             "route": candidate.get("route") or "unassigned",
             "local_path": candidate.get("local_path"),
             "media_asset_id": candidate.get("media_asset_id"),
             "source_asset_ids": candidate.get("source_asset_ids"),
             "remotion_static_file_path": candidate.get("remotion_static_file_path"),
             "remotion_clip_package_path": candidate.get("remotion_clip_package_path"),
+            "remotion_clip_package_hash": candidate.get("remotion_clip_package_hash"),
+            "props_path": candidate.get("props_path") or ((candidate.get("props_sync") or {}).get("props_path")),
+            "props_hash": candidate.get("props_hash") or ((candidate.get("props_sync") or {}).get("props_hash")),
             "template_id": candidate.get("template_id"),
             "template_ids": candidate.get("template_ids"),
             "template_contract_path": candidate.get("template_contract_path"),
             "template_contract_paths": candidate.get("template_contract_paths"),
             "ai_video_generation_package_path": candidate.get("ai_video_generation_package_path"),
+            "ai_video_generation_package_hash": candidate.get("ai_video_generation_package_hash"),
             "selection_authority": candidate.get("selection_authority") or selection_authority,
             "selection_decision_id": candidate.get("selection_decision_id"),
             "selection_status": candidate.get("selection_status") or selection_status,
@@ -200,6 +226,10 @@ def make_visual_source(
         })
     routes = (pack or {}).get("routes") or []
     return {
+        "scene_visual_pack_id": lineage.get("scene_visual_pack_id") or "",
+        "scene_pack_id": lineage.get("scene_pack_id") or "",
+        "scenario_scene_fingerprint": lineage.get("scenario_scene_fingerprint") or "",
+        "props_sync_status": "unknown",
         "route": "unassigned",
         "selection_authority": "unknown",
         "selection_status": "missing_selection",
@@ -233,7 +263,8 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--scenario", required=True)
     parser.add_argument("--voiceover-package")
-    parser.add_argument("--visual-pack")
+    parser.add_argument("--visual-pack", required=True)
+    parser.add_argument("--scene-artifact-sync", required=True)
     parser.add_argument("--clip-candidates")
     parser.add_argument("--output", required=True)
     parser.add_argument("--fps", type=float, default=30)
@@ -249,15 +280,25 @@ def main() -> int:
     scenario = load_json(args.scenario)
     voiceover = load_json(args.voiceover_package)
     visual_pack = load_json(args.visual_pack)
+    sync_report = load_json(args.scene_artifact_sync)
     candidate_payload = load_json(args.clip_candidates)
     candidates = apply_selection_decisions(normalize_candidates(candidate_payload), candidate_payload)
     packs = pack_by_scene(visual_pack)
+    sync_scenes = sync_by_scene(sync_report)
     voice = voice_by_scene(voiceover)
     findings: list[dict[str, Any]] = []
     manifest_actions: list[dict[str, Any]] = []
     scenes = []
 
-    for scene in scenario.get("scenes", []):
+    if sync_report and sync_report.get("status") == "fail":
+        findings.append({
+            "severity": "blocker",
+            "category": "scene_lineage",
+            "description": "Scene artifact sync report is failing; timeline construction is not render-ready.",
+            "fix_status": "rerun_scene_artifact_sync_repairs",
+        })
+
+    for scene_index, scene in enumerate(scenario.get("scenes", [])):
         scene_id = scene["scene_id"]
         original_start = float(scene.get("start_seconds", 0))
         original_end = float(scene.get("end_seconds", original_start))
@@ -278,6 +319,44 @@ def main() -> int:
                 })
 
         pack = packs.get(scene_id)
+        sync_scene = sync_scenes.get(scene_id, {})
+        sync_status = sync_scene.get("sync_status")
+        scene_pack_id = (pack or {}).get("scene_pack_id") or sync_scene.get("scene_pack_id")
+        scenario_scene_fingerprint = (
+            (pack or {}).get("scenario_scene_fingerprint")
+            or sync_scene.get("scene_fingerprint")
+        )
+        scene_pack_fingerprint = (
+            (pack or {}).get("scene_pack_fingerprint")
+            or sync_scene.get("scene_pack_fingerprint")
+        )
+        if not pack:
+            findings.append({
+                "severity": "blocker",
+                "scene_id": scene_id,
+                "timestamp_seconds": start_seconds,
+                "category": "scene_lineage",
+                "description": "No matching scene pack exists in the scene visual pack.",
+                "fix_status": "rerun_visual_pack_plan",
+            })
+        elif pack.get("scene_index") is not None and int(pack.get("scene_index")) != scene_index:
+            findings.append({
+                "severity": "blocker",
+                "scene_id": scene_id,
+                "timestamp_seconds": start_seconds,
+                "category": "scene_lineage",
+                "description": f"Scene pack index {pack.get('scene_index')} does not match scenario index {scene_index}.",
+                "fix_status": "rerun_scene_artifact_sync",
+            })
+        if sync_status in {"missing_downstream", "stale_downstream", "orphaned_downstream", "conflicting_routes"}:
+            findings.append({
+                "severity": "blocker",
+                "scene_id": scene_id,
+                "timestamp_seconds": start_seconds,
+                "category": "scene_lineage",
+                "description": f"Scene artifact sync reports {sync_status} for this scene.",
+                "fix_status": sync_scene.get("repair_action") or "rerun_owning_agent",
+            })
         candidate, role = selected_candidate(scene_id, candidates)
         selection_status = "approved_primary" if role == "primary" else "approved_fallback" if role == "fallback" else "missing_selection"
         selection_authority = "visual-producer" if role else "unknown"
@@ -303,6 +382,11 @@ def main() -> int:
             scene_id,
             candidate,
             pack,
+            {
+                "scene_visual_pack_id": (visual_pack or {}).get("scene_visual_pack_id") or "",
+                "scene_pack_id": scene_pack_id or "",
+                "scenario_scene_fingerprint": scenario_scene_fingerprint or "",
+            },
             selection_status,
             selection_authority,
             helper_selected,
@@ -385,6 +469,10 @@ def main() -> int:
 
         scenes.append({
             "scene_id": scene_id,
+            "scene_index": scene_index,
+            "scene_pack_id": scene_pack_id or "",
+            "scenario_scene_fingerprint": scenario_scene_fingerprint or "",
+            "scene_pack_fingerprint": scene_pack_fingerprint,
             "start_seconds": start_seconds,
             "end_seconds": end_seconds,
             "start_frame": int(round(start_seconds * args.fps)),
@@ -411,8 +499,14 @@ def main() -> int:
     output = drop_none({
         "timeline_sync_id": f"{scenario.get('scenario_id', 'scenario')}-timeline-sync",
         "scenario_id": scenario.get("scenario_id"),
+        "source_scenario_path": args.scenario,
+        "source_scenario_hash": file_sha256(args.scenario),
         "voiceover_id": (voiceover or {}).get("voiceover_id"),
-        "scene_visual_pack_id": (visual_pack or {}).get("scene_visual_pack_id"),
+        "scene_visual_pack_id": (visual_pack or {}).get("scene_visual_pack_id") or "",
+        "source_scene_visual_pack_path": args.visual_pack,
+        "scene_visual_pack_hash": file_sha256(args.visual_pack),
+        "scene_artifact_sync_report_path": args.scene_artifact_sync,
+        "scene_artifact_sync_status": (sync_report or {}).get("status") or "not_run",
         "fps": args.fps,
         "width": args.width,
         "height": args.height,

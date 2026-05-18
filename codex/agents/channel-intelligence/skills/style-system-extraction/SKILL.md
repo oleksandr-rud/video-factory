@@ -82,7 +82,7 @@ Return this structure or embed it in the channel format/channel profile update:
   "invalidation_impact": [
     {
       "change_or_gap": "string",
-      "affected_artifacts": ["channel_format | scenario | visual_pack | remotion_clip | render_package | critique_report"],
+      "affected_artifacts": ["channel_format | scenario | scene_artifact_sync | visual_pack | remotion_clip | render_package | critique_report"],
       "recommended_action": "string"
     }
   ],

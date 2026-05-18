@@ -13,7 +13,7 @@ Run `../remotion-visual-debugging/SKILL.md` first when timeline code changed, th
 
 - Render package matching `codex/contracts/render-package.schema.json`
 - Rendered video, preview video, subtitle files, caption JSON, audio outputs, thumbnails, metadata, and QA reports
-- Scenario, voiceover package, timeline sync plan, selected visual candidates, Remotion clip packages, and Remotion template contracts
+- Scenario, scene artifact sync report, voiceover package, timeline sync plan, selected visual candidates, Remotion clip packages, and Remotion template contracts
 - Remotion project contract, channel format, producer criteria, platform/export requirements, rights notes, and approval records
 - Media asset manifest with source, parsed web, approved web image/screenshot, generated, Remotion public projection, render, subtitle, thumbnail, and review assets
 - Render logs, ffprobe/metadata output, screenshot/frame evidence, or Remotion preview evidence when available
@@ -22,16 +22,17 @@ Run `../remotion-visual-debugging/SKILL.md` first when timeline code changed, th
 
 1. Confirm render identity: `render_id`, `scenario_id`, `composition_id`, render status, output paths, render commands, and version/RC notes.
 2. Verify render health: output file exists, command completed or failure is recorded, file is playable/probeable, no missing assets or broken paths.
-3. Check duration and scene timing against scenario and timeline sync plan.
-4. Check selected visual candidate usage by scene. Flag any unapproved helper-selected or untraceable visual source.
-5. Check audio sync, voiceover presence, silence, clipping, loudness notes, pronunciation blockers, and audio mix paths.
-6. Check caption sync, caption artifact presence, safe area, burned-in/separate subtitle requirements, and text legibility.
-7. Check visual debugging coverage: per-scene 2-3 fps sampled frames, browser DOM/CSS analysis where available, representative stills/screenshots, short renders, agent preview analysis, layout alignment, dense-region collisions, text fit, safe areas, crop risk, motion quality, deterministic animation, asset/font loading, and render performance risks. A preview artifact without agent analysis is `partial` at best. Missing per-scene sampling is `fail` unless there is an approved Director waiver or a blocker.
-8. Check VFX, transitions, alpha/export behavior, template contracts, template props, safe areas, deterministic motion, and VFX hardening evidence.
-9. Check export settings: platform, aspect ratio, width, height, fps, codec, alpha codec when relevant, delivery variants, and metadata.
-10. Check rights and approvals for stock media, approved web images/screenshots, source-card recreated page material, generated clips, music, voices, logos, likeness, paid templates, and external provider use.
-11. Check media manifest coverage for every source, web snapshot/source report/web image/screenshot, local Remotion projection, render output, subtitle/caption output, thumbnail, metadata file, preview still/screenshot, debug report, and review-prep artifact.
-12. Update render package `qa` and `known_blockers`; do not set release approval.
+3. Check scene artifact sync status. Flag stale scene packs, stale props, orphaned scene ids, conflicting route/template/media choices, or missing sync reports as blockers unless the Director recorded a waiver.
+4. Check duration and scene timing against scenario and timeline sync plan.
+5. Check selected visual candidate usage by scene. Flag any unapproved helper-selected or untraceable visual source.
+6. Check audio sync, voiceover presence, silence, clipping, loudness notes, pronunciation blockers, and audio mix paths.
+7. Check caption sync, caption artifact presence, safe area, burned-in/separate subtitle requirements, and text legibility.
+8. Check visual debugging coverage: per-scene 2-3 fps sampled frames, browser DOM/CSS analysis where available, representative stills/screenshots, short renders, agent preview analysis, layout alignment, dense-region collisions, text fit, safe areas, crop risk, motion quality, deterministic animation, asset/font loading, and render performance risks. A preview artifact without agent analysis is `partial` at best. Missing per-scene sampling is `fail` unless there is an approved Director waiver or a blocker.
+9. Check VFX, transitions, alpha/export behavior, template contracts, template props, safe areas, deterministic motion, and VFX hardening evidence.
+10. Check export settings: platform, aspect ratio, width, height, fps, codec, alpha codec when relevant, delivery variants, and metadata.
+11. Check rights and approvals for stock media, approved web images/screenshots, source-card recreated page material, generated clips, music, voices, logos, likeness, paid templates, and external provider use.
+12. Check media manifest coverage for every source, web snapshot/source report/web image/screenshot, local Remotion projection, render output, subtitle/caption output, thumbnail, metadata file, preview still/screenshot, debug report, and review-prep artifact.
+13. Update render package `qa` and `known_blockers`; do not set release approval.
 
 ## Required Output
 
@@ -63,6 +64,8 @@ Return this QA summary:
     "render_health": { "status": "pass | fail | partial | unknown", "evidence": "string" },
     "duration_match": { "status": "pass | fail | partial | unknown", "evidence": "string" },
     "scene_timing": { "status": "pass | fail | partial | unknown", "evidence": "string" },
+    "scene_artifact_sync": { "status": "pass | fail | partial | unknown", "evidence": "string" },
+    "props_sync": { "status": "pass | fail | partial | unknown", "evidence": "string" },
     "asset_availability": { "status": "pass | fail | partial | unknown", "evidence": "string" },
     "audio_sync": { "status": "pass | fail | partial | unknown", "evidence": "string" },
     "caption_sync": { "status": "pass | fail | partial | unknown", "evidence": "string" },
@@ -121,6 +124,7 @@ Each QA result must cite at least one of:
 - visual debugging report, preview still, browser screenshot, or bounding-box inspection output
 - preview analysis report written after the agent inspected stills, screenshots, sampled frames, or short preview video
 - browser DOM/CSS analysis report, including bounding boxes and computed styles for inspectable layers
+- scene artifact sync report path and status
 - timeline sync scene/frame range
 - caption JSON/SRT path
 - voiceover/audio path
@@ -160,6 +164,7 @@ Stop and return `blocked` when:
 - render output is missing or unreadable
 - required subtitle/caption/audio artifacts are missing for the requested delivery
 - selected visuals cannot be traced to approved candidates or clip packages
+- scene artifact sync is missing, failing, or reports stale props, stale scene packs, orphaned scene ids, or conflicting route/template/media choices
 - manifest gaps prevent provenance or rights validation
 - render inputs are stale relative to scenario, timeline sync, or voiceover
 
@@ -168,7 +173,7 @@ Stop and return `blocked` when:
 - Render package QA is updated with category-backed findings.
 - Every blocking technical issue has owner/fix guidance.
 - Manifest coverage is checked for render, subtitles, captions, thumbnails, metadata, and Remotion public assets.
-- Candidate/template provenance is traceable by scene.
+- Candidate/template/props provenance is traceable by scene.
 - The result is ready for Video Critic input or clearly blocked.
 - No final release approval is claimed.
 
@@ -189,7 +194,7 @@ Return:
       "reason": "string"
     }
   ],
-  "validation_performed": ["render health", "duration match", "scene timing", "asset availability", "audio sync", "caption sync", "caption safe area", "visual candidate usage", "export settings", "metadata validation", "rights and approvals", "manifest coverage"],
+  "validation_performed": ["render health", "duration match", "scene artifact sync", "props sync", "scene timing", "asset availability", "audio sync", "caption sync", "caption safe area", "visual candidate usage", "export settings", "metadata validation", "rights and approvals", "manifest coverage"],
   "assumptions": ["string"],
   "blockers": ["string"],
   "risks": ["string"],

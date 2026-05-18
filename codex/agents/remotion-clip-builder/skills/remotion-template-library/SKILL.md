@@ -30,7 +30,7 @@ Use this before creating bespoke Remotion code when a reusable pattern might fit
 5. Implement the reusable component in the shared `remotion/` app unless the Director provided an approved project-specific app.
 6. Register template preview compositions in `remotion/src/templateRegistry.tsx` and the Remotion project contract `composition_registry` as `composition_type: "template"`.
 7. Write or update a template contract matching `codex/contracts/remotion-template.schema.json`.
-8. For a scene-specific use, write a Remotion clip package that references the template via `template_id`, `template_contract_path`, props, render commands, previews, and QA. For layered uses, populate `template_instances[]`.
+8. For a scene-specific use, write a Remotion clip package that references the template via `template_id`, `template_contract_path`, scene lineage, `props_sync`, props, render commands, previews, and QA. For layered uses, populate `template_instances[]`.
 9. Promote a finished clip into a template only when it is parameterized, reusable beyond one scene, validated, and does not encode one-off project copy as fixed code.
 
 ## Reusable Template Categories
@@ -92,7 +92,7 @@ Return either a selected-template decision or a new/updated template contract:
 
 - `remotion-template.schema.json`: template id, version, status, category, owner, component paths, composition id, props contract, usage rules, dependencies, source, previews, render commands, known instances, and QA
 - `remotion-project.schema.json`: `template_registry_paths`, `template_contract_paths`, and `composition_registry[]` entries for template preview compositions
-- `remotion-clip-package.schema.json`: `template_id`, `template_contract_path`, `template_instances[]`, instance props, component paths, render commands, preview frames, output asset ids, and QA for scene-specific use
+- `remotion-clip-package.schema.json`: scene lineage, `props_sync`, `template_id`, `template_contract_path`, `template_instances[]`, instance props, component paths, render commands, preview frames, output asset ids, and QA for scene-specific use
 - `media-asset-manifest.schema.json`: template media dependencies, preview stills, rendered template instances, thumbnails, transparent overlays, and deferred asset needs
 - `video-project.schema.json` and `production-run.schema.json`: template contract paths and changed artifact references when available
 
@@ -163,7 +163,7 @@ Return:
       "reason": "string"
     }
   ],
-  "validation_performed": ["template fit", "props contract", "registry alignment", "project contract alignment", "clip package reference", "manifest coverage"],
+  "validation_performed": ["template fit", "scene lineage", "props sync", "props contract", "registry alignment", "project contract alignment", "clip package reference", "manifest coverage"],
   "assumptions": ["string"],
   "blockers": ["string"],
   "risks": ["string"],

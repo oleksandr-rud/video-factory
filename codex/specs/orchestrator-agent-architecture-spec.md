@@ -323,6 +323,7 @@ Primary contract: `critique-report`.
 | `codex/contracts/reference-analysis.schema.json` | Channel Intelligence | `channels/<channel-slug>/projects/<project-slug>/source-media/reference-analysis/reference-analysis.json` |
 | `codex/contracts/channel-format.schema.json` | Channel Intelligence | `channels/<channel-slug>/formats/<format-id>.json` or project-specific `channels/<channel-slug>/projects/<project-slug>/channel-format.json` |
 | `codex/contracts/scenario.schema.json` | Creative Producer | `channels/<channel-slug>/projects/<project-slug>/scenario/scenario.json` |
+| `codex/contracts/scene-artifact-sync.schema.json` | Director | `channels/<channel-slug>/projects/<project-slug>/runs/<run-id>/scene-artifact-sync.json` |
 | `codex/contracts/voiceover-package.schema.json` | Creative Producer | `channels/<channel-slug>/projects/<project-slug>/voiceover/voiceover-package.json` |
 | `codex/contracts/scene-visual-pack.schema.json` | Visual Producer | `channels/<channel-slug>/projects/<project-slug>/visuals/scene-visual-pack.json` |
 | `codex/contracts/clip-candidate.schema.json` | Visual Producer / InVideo / Remotion Clip Builder | `channels/<channel-slug>/projects/<project-slug>/visuals/candidates/<scene-id>/<candidate-id>.json` |

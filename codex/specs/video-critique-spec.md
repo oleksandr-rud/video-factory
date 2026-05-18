@@ -15,9 +15,9 @@ Use approved hybrid input as the preferred model route when the chosen provider 
 - final video path
 - ffprobe metadata
 - representative frame samples
-- scenario and timeline sync plan
+- scenario, scene artifact sync report, and timeline sync plan
 - captions/subtitles and voiceover package
-- render package and QA notes
+- render package and QA notes, including scene/props sync status
 - media asset manifest with source/output asset provenance and review-frame ids
 - reference analysis and channel format when available
 
@@ -42,7 +42,7 @@ The critic returns `codex/contracts/critique-report.schema.json` with:
 Use an evaluator-optimizer loop:
 
 1. Producer agents create or revise the render candidate.
-2. Video Critic evaluates the actual render against the producer criteria artifact, scenario, channel format, artifacts, and sampled video frames.
+2. Video Critic evaluates the actual render against the producer criteria artifact, scenario, scene artifact sync report, channel format, artifacts, and sampled video frames.
 3. Director reads the critique report and gate decision.
 4. If gates fail, Director dispatches targeted handoffs to the owning agents with exact findings, scene ids, timestamps, criteria, and expected artifacts.
 5. Downstream agents regenerate only affected artifacts, Remotion Video Producer renders a new candidate, and Video Critic reviews again.
@@ -57,6 +57,7 @@ The critic must produce `scene_reviews[]` for every scenario scene. Each scene r
 - scene purpose and narration
 - producer rules and restrictions
 - selected visual route and expected visual intent
+- scene artifact sync status, including scene pack/props/candidate/package freshness
 - source/factual alignment
 - voiceover, captions, and sync
 - channel style and anti-redundancy
@@ -73,6 +74,7 @@ Use user-supplied gates first. Otherwise a render can become release candidate o
 - overall score is at least 8
 - story clarity, visual relevance, subtitle sync, platform fit, and factual alignment are at least 7
 - every required scene has a scene review
+- scene artifact sync has no unwaived stale props, orphaned scene ids, duplicate scene packs, or route/template/media conflicts
 - every required production criterion passes, is not applicable, or is explicitly waived
 
 ## QA Standard

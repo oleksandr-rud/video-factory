@@ -127,7 +127,7 @@ Use this shape for flattened beat and invalidation details:
     {
       "impact_id": "string",
       "change_or_gap": "reference_added | reference_removed | transcript_changed | beat_changed | rights_changed | model_observation_changed",
-      "affected_artifacts": ["channel_format | scenario | visual_pack | ai_generation | remotion_template | remotion_clip | timeline_sync | render | critique"],
+      "affected_artifacts": ["channel_format | scenario | scene_artifact_sync | visual_pack | ai_generation | remotion_template | remotion_clip | timeline_sync | render | critique"],
       "reason": "string",
       "owner_agent": "channel-intelligence | creative-producer | visual-producer | invideo-ai-generator | remotion-clip-builder | remotion-video-producer | video-critic",
       "severity": "blocker | major | minor | note",

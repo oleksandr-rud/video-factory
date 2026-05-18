@@ -16,8 +16,9 @@ Use this after `decompose-video-request` when the user wants a full run, `/goal`
 4. Create or resolve the Remotion app contract matching `codex/contracts/remotion-project.schema.json`; default to the shared `remotion/` app and store the repo-relative contract path in `remotion_project_contract_path`. When reusable Remotion components are in scope, also resolve the app template registry path and any project template contract paths matching `codex/contracts/remotion-template.schema.json`.
 5. Create or update a run ledger matching `codex/contracts/production-run.schema.json` inside the project folder. Initialize `context_state` so the run can resume from files after context compaction.
 6. Create or update the producer criteria artifact matching `codex/contracts/producer-criteria.schema.json`; store its path in `producer_criteria_path`.
-7. Load `AGENTS.md`, the target agent `AGENT.md`, and only the skill files named in each handoff. On resume, first read the production run ledger and the files listed in `context_state.artifacts_to_reload_next`.
-8. Build each handoff using `codex/contracts/agent-handoff.schema.json`.
+7. Run `scene-artifact-sync` after every scenario, visual pack, selected candidate, Remotion props/clip package, AI package, voice/caption, or timeline-sync change that can affect scene identity. Treat scenario scenes as the identity source and block downstream work when scene ids, scene counts, timings, route decisions, props, or selected visuals are stale or out of one-to-one alignment.
+8. Load `AGENTS.md`, the target agent `AGENT.md`, and only the skill files named in each handoff. On resume, first read the production run ledger and the files listed in `context_state.artifacts_to_reload_next`.
+9. Build each handoff using `codex/contracts/agent-handoff.schema.json`.
    - Every handoff must include canonical fields: `handoff_id`, `run_id`, `project_path`, `skills_to_read`, `output_contract`, `definition_of_done`, `stop_conditions`, and `budget_policy`.
    - A production agent's `handoff_recommendations[]` are not executable work by themselves. Convert them into Director-owned handoffs before downstream agents run.
    - Only name skills that belong to the target agent's folder or explicitly approved built-in skills.
@@ -26,28 +27,33 @@ Use this after `decompose-video-request` when the user wants a full run, `/goal`
    - Include the channel profile path in downstream handoff inputs once it exists.
    - Include the channel format path in downstream handoff inputs once it exists, especially when `visual_system.vfx_rules` extends shared VFX rules.
    - Include the producer criteria path in downstream handoff inputs once it exists.
-9. Execute phases in dependency order:
+10. Execute phases in dependency order:
    - Channel profile management before channel format synthesis when a durable channel exists.
    - Media asset manifest creation before reference-video analysis, web content synthesis, visual candidate selection, Remotion clip building, render packaging, or final critique when media files are in scope.
    - Channel Intelligence before scenario and visual planning when references, channel data, web sources, or redundancy concerns exist.
    - Treat initial channel format and producer criteria as draft when reference videos, source visuals, durable channel style, VFX rules, reusable templates, visual-format-only references, or provider/media choices are in scope.
    - Creative Producer before Visual Producer; if voiceover is in scope, produce the voiceover package before final timeline assembly.
+   - Scene artifact sync after Creative Producer and before Visual Producer when a scenario exists; Visual Producer must receive the current scenario path and scene ids.
    - Visual Producer visual research is a required gate for deliverable videos and channel-format work. It must produce or update the scene visual pack, route/query research, candidate requirements, fallback coverage, visual evidence refs, and handoff recommendations before the Director creates InVideo AI Generator, Remotion Clip Builder, or Remotion Video Producer handoffs.
+   - Scene artifact sync after Visual Producer visual pack generation; do not create InVideo AI Generator, Remotion Clip Builder, or Remotion Video Producer handoffs if the visual pack does not have exactly one current scene pack per scenario scene.
    - After Visual Producer completes visual research, route a finalization/update pass to Channel Intelligence and `producer-criteria-prompt` when visual research changes or clarifies channel format requirements, VFX requirements, reusable templates/assets, source-card behavior, target-content substitutions, provider constraints, rights/approval needs, or scene-specific visual gates.
    - Do not mark channel format, producer criteria, or visual requirements final for a deliverable video until the visual research gate is `complete`, `needs_approval`, or explicitly `blocked` with a Director-visible reason. If provider API search or downloads are not approved, the visual research gate still must preserve query plans, deferred manifest actions, and fallback routes.
    - Visual Producer before InVideo AI Generator and Remotion Clip Builder.
+   - Scene artifact sync before InVideo AI Generator and Remotion Clip Builder handoffs so specialist prompts/props use the current scenario scene and matching scene visual pack entry.
    - Existing Remotion template selection before bespoke Remotion clip implementation only when `template_hint`, reusable channel assets, overlays, lower thirds, caption styles, source cards, or repeated motion patterns are in scope and the template fits the producer criteria. Complex VFX may combine multiple templates or use bespoke Remotion code.
    - InVideo AI Generator and Remotion Clip Builder before Remotion Video Producer.
+   - Scene artifact sync after InVideo AI Generator and Remotion Clip Builder outputs; rerun affected specialist work if packages reference stale scene ids, old visual goals, old props, or mismatched route/template/media choices.
    - Timeline sync plan before full Remotion assembly and render QA when narration, captions, and visuals must align.
+   - Scene artifact sync before timeline sync and again after timeline sync; timeline sync must consume only current selected candidates, current Remotion props/clip packages, and current scene ids.
    - Remotion visual debugging before render QA when timeline code changed, frames are dense, source cards/lower thirds/captions share screen space, motion/VFX changed, or a user/critic report names alignment, overlap, readability, or animation defects. Require per-scene sampled-frame analysis at 2 fps by default, 3 fps for dense/high-motion/problem scenes, plus browser DOM/CSS/SVG inspection for inspectable Remotion layers when available.
    - Render QA before Video Critic.
    - Video Critic after a render candidate exists and before final delivery when the run targets a deliverable video.
    - Quality gated review loop after the first critique if findings do not pass release-candidate gates.
-10. Parallelize only independent work. Do not run a downstream agent before its required input artifact exists.
-11. After each handoff, validate that the returned artifact matches its output contract, update the media asset manifest, project index, and run ledger, and send one targeted repair handoff if required fields or QA evidence are missing.
-12. Run `context-compaction` after each phase boundary, long handoff, review-loop iteration, user change, or large research/tool-output step. Keep the active working set limited to the current phase, next handoff, approvals, blockers, and `context_state.artifacts_to_reload_next`.
-13. When rerun dependencies become hard to audit from `review_loops[]`, add or update `production-run.invalidation_graph` with artifact nodes, dependency edges, and invalidation events before dispatching repairs.
-14. Continue until complete, blocked, waiting for approval, or release-candidate gates pass.
+11. Parallelize only independent work. Do not run a downstream agent before its required input artifact exists.
+12. After each handoff, validate that the returned artifact matches its output contract, update the media asset manifest, project index, and run ledger, run scene artifact sync when scene-linked artifacts changed, and send one targeted repair handoff if required fields or QA evidence are missing.
+13. Run `context-compaction` after each phase boundary, long handoff, review-loop iteration, user change, or large research/tool-output step. Keep the active working set limited to the current phase, next handoff, approvals, blockers, and `context_state.artifacts_to_reload_next`.
+14. When rerun dependencies become hard to audit from `review_loops[]`, add or update `production-run.invalidation_graph` with artifact nodes, dependency edges, and invalidation events before dispatching repairs.
+15. Continue until complete, blocked, waiting for approval, or release-candidate gates pass.
 
 ## Context Growth Policy
 
@@ -128,7 +134,7 @@ When the user changes or updates the request after a full run:
    - Voiceover, caption, or timestamp changes invalidate timeline sync, render, and critique.
    - Visual route or candidate changes invalidate affected specialist clips, timeline, render, and critique.
    - AI generation output changes invalidate affected clip candidates, timeline, render, and critique.
-   - Remotion clip/component changes invalidate timeline, render, and critique.
+   - Remotion clip/component/props changes invalidate scene artifact sync, timeline, render, and critique.
    - Remotion template changes invalidate every clip package that references that template, then timeline, render, and critique.
    - Source media or Remotion public projection changes invalidate affected visual candidates, clips, timeline sync, render, and critique.
    - Timeline, subtitle, audio mix, transition, layout, animation, or export changes invalidate visual debugging, render, and critique.

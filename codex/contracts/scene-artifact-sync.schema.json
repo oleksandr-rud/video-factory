@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SceneArtifactSync",
+  "type": "object",
+  "required": ["sync_report_id", "status", "scenario_id", "scenario_path", "checked_artifacts", "scene_index"],
+  "properties": {
+    "sync_report_id": { "type": "string" },
+    "status": { "type": "string", "enum": ["pass", "fail", "partial", "not_run"] },
+    "scenario_id": { "type": "string" },
+    "scenario_path": { "type": "string" },
+    "scenario_hash": { "type": "string" },
+    "scene_visual_pack_id": { "type": "string" },
+    "scene_visual_pack_path": { "type": "string" },
+    "scene_visual_pack_hash": { "type": "string" },
+    "checked_artifacts": { "type": "array", "items": { "type": "string" } },
+    "scene_index": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["scene_id", "scene_index", "scene_fingerprint", "sync_status"],
+        "properties": {
+          "scene_id": { "type": "string" },
+          "scene_index": { "type": "integer", "minimum": 0 },
+          "start_seconds": { "type": "number" },
+          "end_seconds": { "type": "number" },
+          "duration_seconds": { "type": "number" },
+          "scene_fingerprint": { "type": "string" },
+          "scene_pack_id": { "type": "string" },
+          "scene_pack_fingerprint": { "type": "string" },
+          "sync_status": {
+            "type": "string",
+            "enum": ["synced", "missing_downstream", "stale_downstream", "orphaned_downstream", "conflicting_routes", "needs_director_decision"]
+          },
+          "visual_pack_status": { "type": "string", "enum": ["pass", "fail", "partial", "unknown"] },
+          "props_status": { "type": "string", "enum": ["pass", "fail", "partial", "unknown"] },
+          "candidate_status": { "type": "string", "enum": ["pass", "fail", "partial", "unknown"] },
+          "clip_package_status": { "type": "string", "enum": ["pass", "fail", "partial", "unknown"] },
+          "ai_package_status": { "type": "string", "enum": ["pass", "fail", "partial", "unknown"] },
+          "voice_caption_status": { "type": "string", "enum": ["pass", "fail", "partial", "unknown"] },
+          "timeline_status": { "type": "string", "enum": ["pass", "fail", "partial", "unknown"] },
+          "findings": { "type": "array", "items": { "type": "string" } },
+          "invalidated_artifacts": { "type": "array", "items": { "type": "string" } },
+          "preserved_artifacts": { "type": "array", "items": { "type": "string" } },
+          "repair_owner": {
+            "type": "string",
+            "enum": ["director", "creative-producer", "visual-producer", "invideo-ai-generator", "remotion-clip-builder", "remotion-video-producer", "none"]
+          },
+          "repair_action": { "type": "string" }
+        }
+      }
+    },
+    "orphaned_artifacts": { "type": "array", "items": { "type": "string" } },
+    "invalidated_artifacts": { "type": "array", "items": { "type": "string" } },
+    "preserved_artifacts": { "type": "array", "items": { "type": "string" } },
+    "handoff_recommendations": { "type": "array", "items": { "type": "object" } },
+    "waivers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["waiver_id", "scene_id", "reason", "approved_by"],
+        "properties": {
+          "waiver_id": { "type": "string" },
+          "scene_id": { "type": "string" },
+          "reason": { "type": "string" },
+          "approved_by": { "type": "string" },
+          "expires_at_phase": { "type": "string" }
+        }
+      }
+    },
+    "next_recommended_step": { "type": "string" }
+  }
+}

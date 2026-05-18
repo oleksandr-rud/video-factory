@@ -19,6 +19,8 @@ Own self-contained Remotion clips, component templates, motion graphics, and VFX
 
 - Scene visual pack entries
 - Scenario scene ids, durations, and visual goals
+- Director scene artifact sync report when available
+- Scene index, scene visual pack id/path, scene pack id, scenario scene fingerprint, and scene-specific prop requirements
 - Brand, aspect ratio, platform, and source assets
 - Project path, media asset manifest path, and Remotion project contract path
 - Candidate requirements and fallback route notes
@@ -43,6 +45,7 @@ Own self-contained Remotion clips, component templates, motion graphics, and VFX
 - Consider the template library before creating bespoke clip code when the brief names a reusable pattern or `template_hint`; do not force templates when bespoke Remotion code better satisfies the scene.
 - For `source_card_recreation`, preserve claim/source evidence in props and clip package metadata; do not hardcode copied article text or unapproved web images into components.
 - Keep each clip deterministic: fixed fps, fixed duration, typed props, stable seeds, and local assets via `staticFile()` or repo paths.
+- Derive props only from the current scenario scene and matching scene visual pack entry. If scene id, scene index, scene pack id, scenario fingerprint, or prop requirements are missing or stale, return a Director-visible repair need instead of coding against guessed props.
 - Work inside the shared `remotion/` app unless the Director explicitly provides a project-specific Remotion app contract.
 - Use Remotion-native templates and packages before generic React/web component libraries.
 - A clip may use zero, one, or many reusable templates; complex VFX can combine template layers with bespoke components when the clip package records the layer provenance.

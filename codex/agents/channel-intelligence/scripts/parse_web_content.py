@@ -906,7 +906,7 @@ def main() -> int:
                     "invalidation_impact": [{
                         "impact_id": f"impact-{source_slug}-robots-blocked",
                         "change_or_gap": "robots_disallow",
-                        "affected_artifacts": ["scenario", "visual_pack", "render", "critique"],
+                        "affected_artifacts": ["scenario", "scene_artifact_sync", "visual_pack", "render", "critique"],
                         "reason": "Source capture was blocked by robots rules.",
                         "owner_agent": "channel-intelligence",
                         "severity": "blocker",
@@ -1062,7 +1062,7 @@ def main() -> int:
         invalidation_impact.append({
             "impact_id": f"impact-{source_slug}-claims",
             "change_or_gap": "web_claim_candidates_added",
-            "affected_artifacts": ["scenario", "producer_criteria", "visual_pack", "critique"],
+            "affected_artifacts": ["scenario", "producer_criteria", "scene_artifact_sync", "visual_pack", "critique"],
             "reason": "New parsed claim candidates can affect script wording, source cards, visual evidence choices, and factual review gates.",
             "owner_agent": "channel-intelligence",
             "severity": "minor",
@@ -1072,7 +1072,7 @@ def main() -> int:
         invalidation_impact.append({
             "impact_id": f"impact-{source_slug}-image-approval",
             "change_or_gap": "web_image_candidates_unapproved",
-            "affected_artifacts": ["visual_pack", "timeline_sync", "render", "critique"],
+            "affected_artifacts": ["scene_artifact_sync", "visual_pack", "timeline_sync", "render", "critique"],
             "reason": "Page image URLs were cataloged but not approved as local render media.",
             "owner_agent": "visual-producer",
             "severity": "minor",

@@ -51,6 +51,7 @@ channels/<channel-slug>/projects/<project-slug>/
     evidence/
   runs/
     <run-id>/
+      scene-artifact-sync.json
       context/
   delivery/
 ```
@@ -147,7 +148,8 @@ For 10-20 supplied links, process each URL as an independent one-page source wit
 - `remotion-project.schema.json`: Remotion app root, package manager, composition registry, commands, dependency policy, and public asset policy. Minimal fixture: `codex/examples/remotion-project.template.json`.
 - `remotion-template.schema.json`: reusable Remotion template contract, props, previews, usage, registry alignment, and QA. Minimal fixture: `codex/examples/remotion-template.template.json`.
 - `reference-analysis.schema.json`: source ledger and timecoded evidence distilled for production.
-- `clip-candidate.schema.json`, `ai-video-generation-package.schema.json`, `remotion-clip-package.schema.json`, `timeline-sync-plan.schema.json`, and `render-package.schema.json`: media-producing contracts that must point back to project, channel, media manifest, and source/output asset ids when available.
+- `scene-artifact-sync.schema.json`: Director-owned cross-artifact scene lineage report for scenario scenes, visual scene packs, props, candidates, AI packages, Remotion clip packages, and timeline sync.
+- `clip-candidate.schema.json`, `ai-video-generation-package.schema.json`, `remotion-clip-package.schema.json`, `timeline-sync-plan.schema.json`, and `render-package.schema.json`: media-producing contracts that must point back to project, channel, media manifest, current scenario scene lineage, and source/output asset ids when available.
 
 ## Evidence Rules
 

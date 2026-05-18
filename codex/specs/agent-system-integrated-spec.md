@@ -21,9 +21,9 @@ The architecture should stay close to these external patterns:
 The system now has:
 
 - 8 agents
-- 48 local skills
+- 50 local skills
 - 31 skills matching the full local hardening section template
-- 19 contracts
+- 20 contracts
 - 7 local specs
 - persistent channel/project state
 - first-class producer criteria
@@ -79,7 +79,8 @@ Canonical media should live under the project. Remotion `public/` should be trea
 | `channel-format.schema.json` | Channel Intelligence | Reusable format rules derived from profile/references, including per-channel VFX rule extensions | Good. Channel format synthesis now requires version, freshness/staleness policy, must-reuse/must-vary rules, evidence, and downstream invalidation. |
 | `scenario.schema.json` | Creative Producer | Timed scenario and scene list | Good after scene-breakdown hardening. |
 | `voiceover-package.schema.json` | Creative Producer | Voice direction, provider payload, audio paths, captions, QA | Good after TTS hardening. |
-| `scene-visual-pack.schema.json` | Visual Producer | Per-scene visual goals, routes, constraints, downstream handoff recommendations | Good. Needs selected primary/fallback fields or a separate selection artifact if rankings get richer. |
+| `scene-artifact-sync.schema.json` | Director | Cross-artifact scene lineage report for scenario scenes, visual scene packs, props, candidates, AI packages, Remotion clip packages, and timeline sync | Strong. Use as the blocking gate whenever scene-linked artifacts may have drifted. |
+| `scene-visual-pack.schema.json` | Visual Producer | Per-scene visual goals, routes, constraints, downstream prop requirements, and handoff recommendations | Strong. Must preserve one scene pack per scenario scene with scene index, timing, fingerprints, and prop requirements. |
 | `clip-candidate.schema.json` | Visual Producer / InVideo / Remotion Clip Builder | Comparable candidate record across source routes | Good. Could add `validation_report_path` if evidence grows. |
 | `ai-video-generation-package.schema.json` | InVideo AI Generator | Model route, prompts, approval, outputs, QA | Good. Needs provider-specific examples. |
 | `remotion-clip-package.schema.json` | Remotion Clip Builder | Short clip/component package, dependencies, outputs, QA | Good. Needs stack decision path if dependency choices become formal artifacts. |
@@ -99,6 +100,7 @@ Relations:
 
 - Calls Channel Intelligence when channel, references, source material, or anti-redundancy matter.
 - Calls Creative Producer after source/channel context is sufficient.
+- Runs scene artifact sync after scenario creation, after visual pack generation, after specialist outputs, and before timeline sync.
 - Calls Visual Producer after scenario exists.
 - Converts Visual Producer handoff recommendations into InVideo or Remotion Clip Builder handoffs.
 - Calls Remotion Video Producer after approved candidates/clip packages and voice/caption inputs exist.
@@ -154,7 +156,7 @@ Owns scene visual pack, visual research, provider search specs, candidate valida
 Relations:
 
 - Consumes scenario, reference analysis, channel format, media manifest, and producer criteria.
-- Produces candidate records and handoff recommendations for InVideo or Remotion Clip Builder.
+- Produces one current scene pack per scenario scene, candidate records, and handoff recommendations for InVideo or Remotion Clip Builder.
 - Does not perform InVideo model selection or Remotion component planning.
 - Feeds Remotion Video Producer with approved primary/fallback candidates.
 - Feeds Video Critic with visual expectations, provenance, and selection rationale.
@@ -173,6 +175,7 @@ Owns provider/model AI generation package, prompts, negative constraints, approv
 Relations:
 
 - Runs only after Visual Producer selects or recommends `ai_video_generation` and Director creates a handoff.
+- Consumes the current scenario scene, matching visual scene pack entry, scene artifact sync report, and prop/prompt requirements.
 - Returns AI generation package and clip candidates.
 - Updates media asset manifest for downloaded/generated outputs.
 - Feeds Remotion Video Producer through approved clip candidates.
@@ -193,7 +196,7 @@ Owns deterministic 5-20 second clips, VFX overlays, motion graphics, component t
 Relations:
 
 - Runs after Visual Producer recommends `remotion_generated` and Director creates a handoff.
-- Consumes scenario scene ids, visual briefs, media manifest, Remotion project contract, and producer criteria.
+- Consumes scenario scene ids, scene artifact sync report, visual briefs, prop requirements, media manifest, Remotion project contract, and producer criteria.
 - Produces Remotion clip packages and sometimes clip candidates.
 - Feeds Remotion Video Producer with component paths, composition ids, props, outputs, and render commands.
 
@@ -213,7 +216,7 @@ Owns full-video assembly, timeline sync, captions/subtitles, audio mix, post-pro
 
 Relations:
 
-- Consumes scenario, voiceover, visual candidates, Remotion clip packages, media manifest, Remotion project contract, and producer criteria.
+- Consumes scenario, scene artifact sync report, voiceover, visual candidates, Remotion clip packages, media manifest, Remotion project contract, and producer criteria.
 - Produces timeline sync plan, render package, subtitles, audio mix notes, preview/final outputs, and technical QA.
 - Requests Director handoff to Clip Builder if new reusable clips/VFX are needed.
 - Does not approve viewer-facing release gates.
@@ -327,6 +330,7 @@ Every handoff must include:
 - `channel_format_path` when available
 - `producer_criteria_path` when available
 - `media_asset_manifest_path` when media exists
+- `scene_artifact_sync_report_path` when scene-linked downstream artifacts exist
 - `remotion_project_contract_path` when Remotion is in scope
 - Remotion template registry/contract paths when reusable templates are in scope
 - allowed paths
@@ -372,10 +376,12 @@ channel-profile
   -> channel-format
   -> producer-criteria
   -> scenario
+  -> scene-artifact-sync
   -> voiceover-package
   -> scene-visual-pack
   -> clip-candidate
   -> ai-video-generation-package / remotion-template / remotion-clip-package
+  -> scene-artifact-sync
   -> timeline-sync-plan
   -> render-package
   -> critique-report
@@ -402,11 +408,11 @@ Media-producing skills must either update the manifest or explicitly defer it wi
 | Channel format rules, including VFX extensions | Producer criteria, visual pack constraints, Remotion clip packages that depend on the format, timeline/render QA, critique | Channel Intelligence, Visual Producer, affected Remotion agents, Critic |
 | Source/reference evidence | Reference analysis, claims, visual evidence, factual gates | Channel Intelligence, Creative Producer, affected downstream agents |
 | Producer criteria | All subsequent review assumptions | Director criteria update, affected production agents if rules changed, Critic |
-| Scenario scene ids/timing/script | Voiceover, visual pack, AI prompts, Remotion clips, timeline, render, critique | Creative Producer, Visual Producer, affected generators, Remotion Video Producer, Critic |
+| Scenario scene ids/timing/script | Scene artifact sync, voiceover, visual pack, AI prompts, Remotion clips, timeline, render, critique | Creative Producer, Director sync gate, Visual Producer, affected generators, Remotion Video Producer, Critic |
 | Voiceover audio/timestamps | Timeline sync, captions, render, critique | Creative Producer, Remotion Video Producer, Critic |
-| Visual route/candidate | InVideo/Remotion clip packages, timeline, render, critique | Visual Producer, affected generator, Remotion Video Producer, Critic |
+| Visual route/candidate | Scene artifact sync, InVideo/Remotion clip packages, timeline, render, critique | Visual Producer, Director sync gate, affected generator, Remotion Video Producer, Critic |
 | AI generated clip | Clip candidate, media manifest, timeline, render, critique | InVideo AI Generator, Remotion Video Producer, Critic |
-| Remotion clip/component | Clip package, timeline, render, critique | Remotion Clip Builder, Remotion Video Producer, Critic |
+| Remotion clip/component/props | Scene artifact sync, clip package, timeline, render, critique | Remotion Clip Builder, Director sync gate, Remotion Video Producer, Critic |
 | Remotion template contract/component | Every clip package that references the template, timeline, render, critique | Remotion Clip Builder, Remotion Video Producer, Critic |
 | Timeline/captions/audio mix/export | Render package, critique | Remotion Video Producer, Critic |
 | Critique metadata only | Critique report, run ledger | Video Critic or Director only |
@@ -483,7 +489,8 @@ Validation-style skills should additionally return:
 3. Keep Director context compaction explicit: after phase boundaries, long handoffs, review-loop iterations, user changes, and resumes, update required `production-run.context_state` fields with the compact working set, open decisions, blockers, stale artifacts, and files to reload next.
 4. Require all media-producing skills to update or explicitly defer media asset manifest entries with asset id, canonical path, Remotion public/static path when relevant, rights state, technical metadata, and evidence refs.
 5. Maintain timeline helper authority: consume Visual Producer selections by default; any helper fallback must be explicit `repair_default` and require Director review.
-6. Keep Remotion template contracts, template registry, Remotion project contract, and clip package references aligned whenever reusable templates are selected, created, revised, or promoted.
+6. Require scene artifact sync after scenario, visual pack, selected candidate, AI package, Remotion props/clip package, and timeline-sync changes.
+7. Keep Remotion template contracts, template registry, Remotion project contract, and clip package references aligned whenever reusable templates are selected, created, revised, or promoted.
 
 ### P1: Required Before Multi-Project Channel Operation
 

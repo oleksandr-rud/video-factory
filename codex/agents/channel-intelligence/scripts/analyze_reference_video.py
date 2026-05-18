@@ -744,7 +744,7 @@ def main() -> int:
         invalidation_impact.append({
             "impact_id": f"impact-{source_slug}-evidence-gaps",
             "change_or_gap": "reference_video_evidence_partial",
-            "affected_artifacts": ["channel_format", "scenario", "visual_pack", "timeline_sync", "critique"],
+            "affected_artifacts": ["channel_format", "scenario", "scene_artifact_sync", "visual_pack", "timeline_sync", "critique"],
             "reason": "Missing transcript, OCR, model observation, or frame evidence can weaken downstream style, script, visual, and critique decisions.",
             "owner_agent": "channel-intelligence",
             "severity": "minor" if status != "blocked" else "blocker",

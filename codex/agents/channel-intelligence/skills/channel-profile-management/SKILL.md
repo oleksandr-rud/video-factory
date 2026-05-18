@@ -125,7 +125,7 @@ Return:
   "downstream_invalidation": [
     {
       "change": "string",
-      "affected_artifacts": ["channel_format | producer_criteria | scenario | voiceover_package | scene_visual_pack | ai_video_generation_package | remotion_clip_package | timeline_sync_plan | render_package | critique_report"],
+      "affected_artifacts": ["channel_format | producer_criteria | scenario | scene_artifact_sync | voiceover_package | scene_visual_pack | ai_video_generation_package | remotion_clip_package | timeline_sync_plan | render_package | critique_report"],
       "owner_agent": "string",
       "required_action": "string"
     }

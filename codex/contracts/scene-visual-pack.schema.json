@@ -2,10 +2,18 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "SceneVisualPack",
   "type": "object",
-  "required": ["scene_visual_pack_id", "scenario_id", "scene_packs"],
+  "required": ["scene_visual_pack_id", "scenario_id", "source_scenario_path", "scene_packs"],
   "properties": {
     "scenario_id": { "type": "string" },
     "scene_visual_pack_id": { "type": "string" },
+    "source_scenario_path": { "type": "string" },
+    "source_scenario_hash": { "type": "string" },
+    "source_scenario_version": { "type": "string" },
+    "sync_status": {
+      "type": "string",
+      "enum": ["synced", "partial", "stale", "blocked", "unknown"]
+    },
+    "sync_report_path": { "type": "string" },
     "project_id": { "type": "string" },
     "project_path": { "type": "string" },
     "channel_profile_id": { "type": "string" },
@@ -67,9 +75,30 @@
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["scene_id", "visual_goal", "routes", "candidate_requirements"],
+        "required": ["scene_pack_id", "scene_id", "scene_index", "scenario_scene_fingerprint", "visual_goal", "routes", "candidate_requirements", "prop_requirements"],
         "properties": {
+          "scene_pack_id": { "type": "string" },
           "scene_id": { "type": "string" },
+          "scene_index": { "type": "integer", "minimum": 0 },
+          "start_seconds": { "type": "number" },
+          "end_seconds": { "type": "number" },
+          "duration_seconds": { "type": "number" },
+          "scenario_scene_fingerprint": { "type": "string" },
+          "script_fingerprint": { "type": "string" },
+          "onscreen_text_fingerprint": { "type": "string" },
+          "visual_intent_fingerprint": { "type": "string" },
+          "scenario_scene_lineage": {
+            "type": "object",
+            "properties": {
+              "scenario_id": { "type": "string" },
+              "scenario_path": { "type": "string" },
+              "scenario_hash": { "type": "string" },
+              "scene_id": { "type": "string" },
+              "scene_index": { "type": "integer" },
+              "scene_fingerprint": { "type": "string" },
+              "validated_at": { "type": "string" }
+            }
+          },
           "visual_goal": { "type": "string" },
           "source_ids": { "type": "array", "items": { "type": "string" } },
           "source_asset_ids": { "type": "array", "items": { "type": "string" } },
@@ -152,6 +181,38 @@
               "needs_product_or_ui": { "type": "boolean" },
               "brand_safety_notes": { "type": "string" }
             }
+          },
+          "prop_requirements": {
+            "type": "object",
+            "properties": {
+              "scenario_id": { "type": "string" },
+              "scenario_path": { "type": "string" },
+              "scene_visual_pack_id": { "type": "string" },
+              "scene_pack_id": { "type": "string" },
+              "scene_id": { "type": "string" },
+              "scene_index": { "type": "integer" },
+              "scenario_scene_fingerprint": { "type": "string" },
+              "start_seconds": { "type": "number" },
+              "end_seconds": { "type": "number" },
+              "duration_seconds": { "type": "number" },
+              "narration_text": { "type": "string" },
+              "onscreen_text": { "type": "string" },
+              "visual_intent": { "type": "string" },
+              "source_ids": { "type": "array", "items": { "type": "string" } },
+              "claim_ids": { "type": "array", "items": { "type": "string" } },
+              "evidence_refs": { "type": "array", "items": { "type": "object" } },
+              "media_asset_ids": { "type": "array", "items": { "type": "string" } },
+              "static_file_paths": { "type": "array", "items": { "type": "string" } },
+              "safe_area_rules": { "type": "array", "items": { "type": "string" } },
+              "template_ids": { "type": "array", "items": { "type": "string" } },
+              "route": { "type": "string" },
+              "style_refs": { "type": "array", "items": { "type": "string" } },
+              "route_specific_props": { "type": "object" }
+            }
+          },
+          "sync_status": {
+            "type": "string",
+            "enum": ["synced", "missing_downstream", "stale_downstream", "orphaned_downstream", "conflicting_routes", "needs_director_decision", "unknown"]
           },
           "search_queries": { "type": "array", "items": { "type": "string" } },
           "ai_generation_prompts": { "type": "array", "items": { "type": "string" } },

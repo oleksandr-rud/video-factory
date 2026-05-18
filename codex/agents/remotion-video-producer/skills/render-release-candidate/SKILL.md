@@ -11,7 +11,7 @@ Use this after the Remotion composition is assembled and before Video Critic rev
 
 - Scenario, producer criteria, channel format, and platform/export requirements
 - Remotion project contract, app root, composition id, composition type, fps, dimensions, duration, and render settings
-- Timeline source path and timeline sync plan path
+- Timeline source path, timeline sync plan path, and scene artifact sync report path
 - Input props path and props hash when props are externalized
 - Voiceover package, caption JSON/SRT, music/SFX, source clip packages, source template contracts, and media asset manifest
 - Source/output asset ids, web source report paths, approved web image/screenshot ids, rights approvals, budget approvals, and known waivers
@@ -26,6 +26,7 @@ Use this after the Remotion composition is assembled and before Video Critic rev
    - Remotion app root and project contract path/hash
    - composition id and render settings
    - input props path/hash
+   - scene artifact sync report path/hash
    - timeline source path/hash and timeline sync plan path/hash
    - media asset manifest path/hash
    - source clip package paths/hashes
@@ -63,12 +64,14 @@ Write a render package with:
   "status": "planned | previewed | rendered | blocked | approved | rejected",
   "timeline_path": "string",
   "timeline_sync_plan_path": "string",
+  "scene_artifact_sync_report_path": "string",
   "media_asset_manifest_path": "string",
   "remotion_project_contract_path": "string",
   "render_provenance": {
     "git_commit_or_worktree_state": "string",
     "input_props_path": "string",
     "input_props_hash": "sha256:string",
+    "scene_artifact_sync_report_hash": "sha256:string",
     "timeline_sync_plan_hash": "sha256:string",
     "media_asset_manifest_hash": "sha256:string",
     "source_clip_package_hashes": [],
@@ -110,7 +113,7 @@ Write a render package with:
 
 ## Contract Fields Populated
 
-- `render-package.schema.json`: `render_id`, `scenario_id`, project/channel paths, `media_asset_manifest_path`, `remotion_project_contract_path`, `remotion_app_root_path`, `composition_id`, `timeline_path`, `timeline_sync_plan_path`, `voiceover_package_path`, `source_clip_packages`, `source_template_contracts`, `source_asset_ids`, `output_asset_ids`, export specs, `status`, `outputs`, `render_commands`, `subtitles`, `audio_mix`, `performance_summary`, `delivery_variants`, `rights_notes`, `evidence_refs`, `known_blockers`, and `qa`
+- `render-package.schema.json`: `render_id`, `scenario_id`, project/channel paths, `media_asset_manifest_path`, `remotion_project_contract_path`, `remotion_app_root_path`, `composition_id`, `timeline_path`, `timeline_sync_plan_path`, `scene_artifact_sync_report_path`, `voiceover_package_path`, `source_clip_packages`, `source_template_contracts`, `source_asset_ids`, `output_asset_ids`, export specs, `status`, `outputs`, `render_commands`, `subtitles`, `audio_mix`, `performance_summary`, `delivery_variants`, `rights_notes`, `evidence_refs`, `known_blockers`, and `qa`
 - Additional render package properties: `rc_version`, `render_attempt_id`, `render_provenance`, hashes, log paths, and immutable version notes
 - `media-asset-manifest.schema.json`: entries for render outputs, preview outputs, subtitles, captions, thumbnails, metadata probes, QA reports, critique sidecars, and delivery variants
 - `production-run.schema.json` or project index when the Director records the RC path and review-loop state
@@ -131,6 +134,7 @@ Every RC must preserve:
 - exact render command and working directory
 - render log path or explicit reason no log exists
 - source input paths and hashes for timeline, props, manifest, clip packages, and template contracts
+- scene artifact sync report path/hash
 - Remotion project contract path and dependency versions
 - output paths, media asset ids, metadata probe paths, and hashes
 - subtitle/caption paths and hashes when present
@@ -166,6 +170,7 @@ Stop and return `blocked` before full render when:
 
 - paid rendering, cloud rendering, licensed media, provider download, or external generation lacks Director approval
 - required local source assets, source reports, `staticFile()` projections, or audio/caption files are missing
+- scene artifact sync is missing, failing, or reports stale props, stale scene packs, orphaned scene ids, or conflicting route/template/media choices
 - timeline sync has failed QA or includes `helper_selected: true` without Director review
 - timeline sync uses `approved_web_image` without manifest-backed rights approval, or `source_card_recreation` without claim/source evidence refs
 - rights notes block delivery

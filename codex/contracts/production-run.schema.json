@@ -23,6 +23,7 @@
     "channel_format_path": { "type": "string" },
     "producer_criteria_path": { "type": "string" },
     "media_asset_manifest_path": { "type": "string" },
+    "scene_artifact_sync_report_path": { "type": "string" },
     "remotion_project_contract_path": { "type": "string" },
     "remotion_app_root_path": { "type": "string" },
     "context_state": {
@@ -142,7 +143,7 @@
           "status": { "type": "string", "enum": ["planned", "in_progress", "complete", "blocked", "rejected"] },
           "impact": {
             "type": "string",
-            "enum": ["channel_profile", "channel_format", "channel", "source_media", "scenario", "voiceover", "visual", "ai_generation", "remotion_template", "remotion_clip", "remotion_setup", "timeline", "timeline_sync", "critique", "delivery_metadata", "unknown"]
+            "enum": ["channel_profile", "channel_format", "channel", "source_media", "scenario", "scene_artifact_sync", "voiceover", "visual", "ai_generation", "remotion_template", "remotion_clip", "remotion_setup", "timeline", "timeline_sync", "critique", "delivery_metadata", "unknown"]
           },
           "affected_artifacts": { "type": "array", "items": { "type": "string" } },
           "actions": { "type": "array", "items": { "type": "string" } },
@@ -173,7 +174,7 @@
             "type": "array",
             "items": {
               "type": "string",
-              "enum": ["channel_profile", "channel_format", "channel", "source_media", "scenario", "voiceover", "visual", "ai_generation", "remotion_template", "remotion_clip", "remotion_setup", "timeline", "timeline_sync", "render", "critique", "delivery_metadata"]
+              "enum": ["channel_profile", "channel_format", "channel", "source_media", "scenario", "scene_artifact_sync", "voiceover", "visual", "ai_generation", "remotion_template", "remotion_clip", "remotion_setup", "timeline", "timeline_sync", "render", "critique", "delivery_metadata"]
             }
           },
           "routed_actions": {
@@ -225,6 +226,7 @@
                   "reference_analysis",
                   "producer_criteria",
                   "scenario",
+                  "scene_artifact_sync",
                   "voiceover_package",
                   "scene_visual_pack",
                   "clip_candidate",

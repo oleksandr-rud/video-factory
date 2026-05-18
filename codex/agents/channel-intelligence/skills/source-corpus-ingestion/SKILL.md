@@ -134,7 +134,7 @@ Return or update a source ledger compatible with `codex/contracts/reference-anal
     {
       "impact_id": "string",
       "change_or_gap": "source_added | source_removed | rights_changed | evidence_added | claim_changed | reusable_scope_changed",
-      "affected_artifacts": ["channel_profile | channel_format | producer_criteria | scenario | voiceover | visual_pack | clip_candidates | ai_generation | remotion_template | remotion_clip | timeline_sync | render | critique | delivery_metadata"],
+      "affected_artifacts": ["channel_profile | channel_format | producer_criteria | scenario | scene_artifact_sync | voiceover | visual_pack | clip_candidates | ai_generation | remotion_template | remotion_clip | timeline_sync | render | critique | delivery_metadata"],
       "reason": "string",
       "owner_agent": "channel-intelligence | creative-producer | visual-producer | invideo-ai-generator | remotion-clip-builder | remotion-video-producer | video-critic",
       "severity": "blocker | major | minor | note",

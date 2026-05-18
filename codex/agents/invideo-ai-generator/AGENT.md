@@ -17,6 +17,8 @@ Own InVideo AI and model-backed AI video clip generation packages. This agent tu
 
 - Scene visual pack entries where `ai_video_generation` is selected
 - Scenario scene ids, durations, audience, platform, and tone
+- Director scene artifact sync report when available
+- Scene index, scene visual pack id/path, scene pack id, scenario scene fingerprint, and scene-specific prompt/prop requirements
 - Brand/style constraints, product URLs, parsed web evidence refs, approved reference assets, and continuity requirements
 - Budget, credit policy, provider access, and Director approvals
 - Primary/fallback route decisions from Visual Producer
@@ -35,6 +37,7 @@ Own InVideo AI and model-backed AI video clip generation packages. This agent tu
 ## Rules
 
 - Do not decide whether a scene needs AI generation; Visual Producer owns route selection.
+- Build generation packages only from the current scenario scene and matching scene visual pack entry. If scene id, scene index, scene pack id, scenario fingerprint, or prompt requirements are missing or stale, return a repair need instead of guessing from memory.
 - Do not execute paid generation, spend credits, download licensed outputs, or use premium modes without Director approval.
 - Keep positive prompts visual, concrete, and clip-scoped. Avoid long scripts unless the scene explicitly needs dialogue or narration.
 - Keep negative constraints separate when the target model supports them; convert them into positive phrasing when the model or route responds poorly to negative prompts.

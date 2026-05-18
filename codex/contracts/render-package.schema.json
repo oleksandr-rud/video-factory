@@ -23,6 +23,7 @@
     },
     "timeline_path": { "type": "string" },
     "timeline_sync_plan_path": { "type": "string" },
+    "scene_artifact_sync_report_path": { "type": "string" },
     "voiceover_package_path": { "type": "string" },
     "critique_report_path": { "type": "string" },
     "source_clip_packages": {
@@ -151,6 +152,20 @@
       }
     },
     "rights_notes": { "type": "array", "items": { "type": "string" } },
+    "render_provenance": {
+      "type": "object",
+      "properties": {
+        "input_props_path": { "type": "string" },
+        "input_props_hash": { "type": "string" },
+        "scene_artifact_sync_report_hash": { "type": "string" },
+        "timeline_sync_plan_hash": { "type": "string" },
+        "media_asset_manifest_hash": { "type": "string" },
+        "source_clip_package_hashes": { "type": "array", "items": { "type": "object" } },
+        "template_contract_hashes": { "type": "array", "items": { "type": "object" } },
+        "render_environment": { "type": "object" },
+        "dependency_versions": { "type": "object" }
+      }
+    },
     "evidence_refs": {
       "type": "array",
       "items": {

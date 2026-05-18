@@ -11,14 +11,14 @@ Treat generated clips as candidates until QA proves they are usable. Do not prom
 
 - AI video generation package matching `codex/contracts/ai-video-generation-package.schema.json`
 - Generated outputs, previews, thumbnails, provider asset ids, request ids, and download paths when available
-- Original scene visual brief, scenario scene, producer criteria, channel format, and reference asset rules
+- Original scene visual brief, scenario scene, scene artifact sync report, producer criteria, channel format, and reference asset rules
 - Approval record for generation, download, paid provider use, likeness/logo use, or licensed source material
 - Media asset manifest path and Remotion public/static path policy when local editing is expected
 - Existing clip candidate to update, when the package already has `candidate_id`
 
 ## Workflow
 
-1. Verify package identity: `generation_id`, `scene_id`, provider/model, approval status, settings, prompts, outputs, and variant lineage.
+1. Verify package identity: `generation_id`, `scene_id`, `scene_index`, `scene_pack_id`, `scene_visual_pack_id`, `scenario_scene_fingerprint`, provider/model, approval status, settings, prompts, outputs, and variant lineage.
 2. Confirm the output is the approved/generated variant, not a stale preview or unrelated provider asset.
 3. Review prompt adherence against the scene brief:
    - subject/action/location/mood
@@ -52,6 +52,12 @@ Create or update `codex/contracts/clip-candidate.schema.json`:
 
 - `candidate_id`
 - `scene_id`
+- `scene_index`
+- `source_scenario_path`
+- `source_scene_visual_pack_path`
+- `scene_visual_pack_id`
+- `scene_pack_id`
+- `scenario_scene_fingerprint`
 - `route: ai_video_generation`
 - `provider`
 - `local_path`
@@ -72,6 +78,10 @@ Return this QA summary:
   "status": "complete | needs_approval | blocked | needs_revision",
   "generation_id": "string",
   "scene_id": "string",
+  "scene_index": 0,
+  "scene_pack_id": "string",
+  "scene_visual_pack_id": "string",
+  "scenario_scene_fingerprint": "string",
   "candidate_id": "string",
   "output_reviews": [
     {
@@ -101,7 +111,7 @@ Return this QA summary:
 ## Contract Fields Populated
 
 - `ai-video-generation-package.schema.json`: `status`, `outputs`, `iteration`, `qa`
-- `clip-candidate.schema.json`: generated candidate identity, paths, technical metadata, scores, status, rejection reason
+- `clip-candidate.schema.json`: generated candidate identity, scene lineage, paths, technical metadata, scores, status, rejection reason
 - `media-asset-manifest.schema.json`: asset entries for downloaded/generated videos, thumbnails, metadata, QA reports, or Remotion public projections
 
 ## Status Policy
@@ -119,6 +129,7 @@ Each output review must cite at least one of:
 - generated output path or provider URL
 - provider asset id/request id
 - prompt or generation package field
+- scene artifact sync row or scene lineage field
 - visual inspection timestamp
 - thumbnail/preview path
 - media asset id
@@ -158,7 +169,7 @@ Stop and return `blocked` when:
 
 - Every generated output has a QA decision and evidence.
 - The generation package `qa` object is updated.
-- The clip candidate is created or updated with route, paths, scores, status, and rejection reason when needed.
+- The clip candidate is created or updated with route, scene lineage, paths, scores, status, and rejection reason when needed.
 - Manifest actions are reported for every local/generated/review artifact.
 - Reroll or fallback guidance is explicit and bounded.
 
@@ -182,7 +193,7 @@ Return:
       "reason": "string"
     }
   ],
-  "validation_performed": ["prompt adherence", "technical fit", "rights fit", "continuity fit", "brand fit", "editability", "artifact risk"],
+  "validation_performed": ["scene lineage", "prompt adherence", "technical fit", "rights fit", "continuity fit", "brand fit", "editability", "artifact risk"],
   "assumptions": ["string"],
   "blockers": ["string"],
   "risks": ["string"],

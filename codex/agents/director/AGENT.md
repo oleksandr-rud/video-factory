@@ -8,6 +8,7 @@ Own the user conversation, production plan, budget gates, final integration, and
 
 - `skills/decompose-video-request/SKILL.md`
 - `skills/producer-criteria-prompt/SKILL.md`
+- `skills/scene-artifact-sync/SKILL.md`
 - `skills/autonomous-production-run/SKILL.md`
 - `skills/context-compaction/SKILL.md`
 - `skills/quality-gated-review-loop/SKILL.md`
@@ -52,6 +53,7 @@ Use these paths when composing `agent-handoff.skills_to_read` for the target age
 - `../remotion-video-producer/skills/subtitle-caption-pipeline/SKILL.md`
 - `../remotion-video-producer/skills/timeline-sync-plan/SKILL.md`
 - `../remotion-video-producer/skills/remotion-post-production/SKILL.md`
+- `../remotion-video-producer/skills/remotion-visual-debugging/SKILL.md`
 - `../remotion-video-producer/skills/render-release-candidate/SKILL.md`
 - `../remotion-video-producer/skills/render-qa/SKILL.md`
 - `../video-critic/skills/prepare-multimodal-review-package/SKILL.md`
@@ -76,6 +78,7 @@ Use these paths when composing `agent-handoff.skills_to_read` for the target age
 - Remotion project contract using `codex/contracts/remotion-project.schema.json` when Remotion code or renders are in scope
 - Remotion template contracts using `codex/contracts/remotion-template.schema.json` when reusable Remotion components are selected, created, or promoted
 - Producer criteria artifact using `codex/contracts/producer-criteria.schema.json`
+- Scene artifact sync report using `codex/contracts/scene-artifact-sync.schema.json`
 - Agent handoffs using `codex/contracts/agent-handoff.schema.json`
 - Critique report using `codex/contracts/critique-report.schema.json` when a render candidate is available
 - Review loop state and release-candidate gate decision
@@ -85,6 +88,7 @@ Use these paths when composing `agent-handoff.skills_to_read` for the target age
 
 - Keep budget, API spend, licensed downloads, and paid generation under explicit approval.
 - Keep scene ids stable once downstream work begins.
+- Treat scenario scenes as the identity source. Run `scene-artifact-sync` whenever scenario scenes, visual packs, props, clip packages, selected candidates, AI packages, voice/caption timing, or timeline sync may have drifted.
 - Keep channel profile paths stable; channel profile changes invalidate derived channel formats and may invalidate downstream artifacts.
 - Track autonomous progress, approvals, blockers, and post-run changes in the production run ledger.
 - Use `context-compaction` after phase boundaries, long handoffs, review-loop iterations, and post-run changes so autonomous runs can resume from durable artifact paths instead of conversation memory.

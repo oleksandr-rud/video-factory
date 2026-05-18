@@ -110,7 +110,7 @@ Return a stack decision before implementation:
 }
 ```
 
-When implementation proceeds, copy the selected dependency and template data into `remotion-clip-package.dependencies`, `remotion-clip-package.template_source`, `remotion-clip-package.template_id`, `remotion-clip-package.template_contract_path`, or `remotion-clip-package.template_instances[]` for multi-template clips. If a reusable template is created or changed, write `codex/contracts/remotion-template.schema.json` too.
+When implementation proceeds, copy the selected dependency and template data into the current scene's clip package without dropping scene lineage or `props_sync`: `remotion-clip-package.dependencies`, `remotion-clip-package.template_source`, `remotion-clip-package.template_id`, `remotion-clip-package.template_contract_path`, or `remotion-clip-package.template_instances[]` for multi-template clips. If a reusable template is created or changed, write `codex/contracts/remotion-template.schema.json` too.
 
 ## Definition Of Done
 

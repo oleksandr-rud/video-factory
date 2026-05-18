@@ -9,8 +9,8 @@ Rank candidates as a production decision, not a taste note. Do not select a prim
 
 ## Inputs
 
-- Scenario scene ids, narration, visual intent, neighboring scene context, and platform specs
-- Scene visual pack with route requirements, fallback needs, constraints, and handoff recommendations
+- Scenario scene ids, scene indexes, narration, visual intent, neighboring scene context, and platform specs
+- Scene visual pack with scene pack ids, scenario scene fingerprints, prop requirements, route requirements, fallback needs, constraints, and handoff recommendations
 - Validated clip candidates matching `codex/contracts/clip-candidate.schema.json`
 - Visual validation output when available
 - Channel format, reference analysis, producer criteria, rights policy, and budget policy
@@ -19,7 +19,7 @@ Rank candidates as a production decision, not a taste note. Do not select a prim
 ## Workflow
 
 1. Group candidates by `scene_id`; report a blocker for any scene with no candidate set.
-2. Confirm each candidate has `candidate_id`, `scene_id`, `route`, `status`, `scores`, provenance, rights notes, and technical metadata or explicit unknowns.
+2. Confirm each candidate has `candidate_id`, `scene_id`, scene lineage (`scene_index`, `scene_pack_id`, `scene_visual_pack_id`, `scenario_scene_fingerprint`), `route`, `status`, `scores`, provenance, rights notes, and technical metadata or explicit unknowns.
 3. Score each candidate from 0 to 10 for:
    - `semantic_fit`
    - `continuity_fit`
@@ -46,6 +46,7 @@ Rank candidates as a production decision, not a taste note. Do not select a prim
 
 Update each affected `codex/contracts/clip-candidate.schema.json` item:
 
+- scene lineage fields: `scene_index`, `source_scenario_path`, `source_scene_visual_pack_path`, `scene_visual_pack_id`, `scene_pack_id`, and `scenario_scene_fingerprint`
 - `scores.semantic_fit`
 - `scores.continuity_fit`
 - `scores.technical_fit`
@@ -65,6 +66,9 @@ Return this ranking summary:
   "scene_rankings": [
     {
       "scene_id": "string",
+      "scene_index": 0,
+      "scene_pack_id": "string",
+      "scenario_scene_fingerprint": "string",
       "primary_candidate_id": "string",
       "fallback_candidate_ids": ["string"],
       "no_primary_selected": false,
@@ -106,7 +110,7 @@ Return this ranking summary:
 
 ## Contract Fields Populated
 
-- `clip-candidate.schema.json`: `scores`, `status`, `rejection_reason`, `evidence_refs`
+- `clip-candidate.schema.json`: scene lineage, `scores`, `status`, `rejection_reason`, `evidence_refs`
 - `scene-visual-pack.schema.json`: selected primary/fallback fields or scene notes when the current visual pack supports them
 - `agent-handoff.schema.json`: only as a Director-facing handoff recommendation, never as an executable handoff
 
@@ -128,6 +132,7 @@ Each decision must cite at least one of:
 - local path or Remotion `staticFile()` path
 - validation finding
 - scenario scene field
+- scenario scene fingerprint or visual scene pack lineage
 - reference/channel-format evidence ref
 - producer criteria rule
 
@@ -157,7 +162,7 @@ Stop and return `blocked` when:
 ## Definition Of Done
 
 - Every scene has primary/fallback/rejected decisions or an explicit blocker.
-- Every candidate decision includes score breakdown, score evidence, rights blocker state, and technical blocker state.
+- Every candidate decision includes scene lineage, score breakdown, score evidence, rights blocker state, and technical blocker state.
 - Tie-breakers are explained when scores are close or route choice is non-obvious.
 - No primary is selected with unknown rights or missing technical viability unless Director approval is recorded.
 - The next owner can proceed without re-ranking from prose.
@@ -179,7 +184,7 @@ Return:
       "reason": "string"
     }
   ],
-  "validation_performed": ["candidate grouping", "weighted scoring", "rights blocker check", "technical blocker check", "fallback coverage check"],
+  "validation_performed": ["scene lineage", "candidate grouping", "weighted scoring", "rights blocker check", "technical blocker check", "fallback coverage check"],
   "assumptions": ["string"],
   "blockers": ["string"],
   "risks": ["string"],

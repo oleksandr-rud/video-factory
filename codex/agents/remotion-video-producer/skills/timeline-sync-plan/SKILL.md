@@ -13,6 +13,7 @@ Load `subtitle-caption-pipeline` and the built-in `remotion:remotion-best-practi
 - Voiceover package with audio paths, duration, timestamp alignment, caption paths, and TTS status
 - Caption JSON/SRT artifacts and safe-area requirements
 - Scene visual pack and clip candidates selected by Visual Producer
+- Director scene artifact sync report proving scenario, visual scene packs, selected candidates, Remotion props, AI packages, and clip packages are current
 - Clip candidate ranking summary when available, including primary/fallback decisions
 - Remotion clip packages, template contracts, and VFX hardening evidence for selected deterministic clips
 - Media asset manifest path and asset ids for local source, generated, Remotion public, caption, and audio files
@@ -20,23 +21,26 @@ Load `subtitle-caption-pipeline` and the built-in `remotion:remotion-best-practi
 
 ## Workflow
 
-1. Read the scenario, voiceover package, caption artifacts, visual pack, Visual Producer-selected clip candidates, Remotion clip packages, referenced Remotion template contracts, media asset manifest, Remotion project contract, channel format, producer criteria, and export settings.
-2. Build one authoritative scene timeline:
+1. Read the scenario, voiceover package, caption artifacts, visual pack, scene artifact sync report, Visual Producer-selected clip candidates, Remotion clip packages, referenced Remotion template contracts, media asset manifest, Remotion project contract, channel format, producer criteria, and export settings.
+2. Fail before timeline construction if scene artifact sync is `fail` or if any render-required scene is `missing_downstream`, `stale_downstream`, `orphaned_downstream`, or `conflicting_routes` without a Director waiver.
+3. Build one authoritative scene timeline:
    - scene id
+   - scene index, scene pack id, scenario scene fingerprint, and scene pack fingerprint
    - narration text
    - audio path and duration
    - caption JSON/SRT path and caption time range
    - selected visual candidate, media asset id, `staticFile()` path, or Remotion clip package
    - `selection_authority`, `selection_decision_id`, `selection_status`, `helper_selected`, and `director_review_required`
    - template id/contract path or template layer list when the selected clip package is template-backed
+   - props path/hash and `props_sync.status` for Remotion-generated scenes
    - VFX rule refs, complexity, performance notes, and fallback expectations from any Remotion clip package `vfx_profile`
    - frame start/end at the target fps
    - overlay, lower-third, CTA, and transition notes
-3. Use `../../scripts/build_timeline_sync_plan.py` to create the first JSON plan when the inputs are already structured. Run it in default strict mode unless the Director explicitly requests repair-mode fallback selection with `--allow-repair-default`.
-4. Adjust scene timing only when audio duration, captions, or selected clip lengths require it. Preserve scene ids and record any drift from the original scenario timing.
-5. Treat Visual Producer selection as authoritative. Do not rank candidate visuals inside timeline sync except in repair mode, and mark any helper-selected visual as `repair_default`.
-6. Hand the plan to `remotion-post-production` as the source of truth for `<Sequence>`, `<Series>`, audio placement, captions, and visual layers.
-7. QA the plan for missing assets, stale manifest references, scene order, timing drift, caption coverage, selected visual coverage, safe-area conflicts, helper-selected visuals, and duration mismatch.
+4. Use `../../scripts/build_timeline_sync_plan.py` to create the first JSON plan when the inputs are already structured. Supply `--scenario`, `--visual-pack`, `--scene-artifact-sync`, and `--output`; add voiceover/candidate inputs when available. Run it in default strict mode unless the Director explicitly requests repair-mode fallback selection with `--allow-repair-default`.
+5. Adjust scene timing only when audio duration, captions, or selected clip lengths require it. Preserve scene ids and record any drift from the original scenario timing.
+6. Treat Visual Producer selection as authoritative. Do not rank candidate visuals inside timeline sync except in repair mode, and mark any helper-selected visual as `repair_default`.
+7. Hand the plan to `remotion-post-production` as the source of truth for `<Sequence>`, `<Series>`, audio placement, captions, and visual layers.
+8. QA the plan for missing assets, stale manifest references, scene lineage, props sync, scene order, timing drift, caption coverage, selected visual coverage, safe-area conflicts, helper-selected visuals, and duration mismatch.
 
 ## Required Output
 
@@ -46,8 +50,12 @@ Return a timeline sync plan with:
 {
   "timeline_sync_id": "string",
   "scenario_id": "string",
+  "source_scenario_path": "string",
   "voiceover_id": "string",
   "scene_visual_pack_id": "string",
+  "source_scene_visual_pack_path": "string",
+  "scene_artifact_sync_report_path": "string",
+  "scene_artifact_sync_status": "pass | fail | partial | not_run",
   "media_asset_manifest_path": "string",
   "remotion_project_contract_path": "string",
   "fps": 30,
@@ -57,6 +65,9 @@ Return a timeline sync plan with:
   "scenes": [
     {
       "scene_id": "string",
+      "scene_index": 0,
+      "scene_pack_id": "string",
+      "scenario_scene_fingerprint": "string",
       "start_seconds": 0,
       "end_seconds": 0,
       "start_frame": 0,
@@ -64,10 +75,15 @@ Return a timeline sync plan with:
       "narration_text": "string",
       "visual_source": {
         "candidate_id": "string",
+        "scene_visual_pack_id": "string",
+        "scene_pack_id": "string",
+        "scenario_scene_fingerprint": "string",
         "route": "remotion_generated | ai_video_generation | stock_clip | user_supplied_media | approved_web_image | source_card_recreation | unassigned",
         "media_asset_id": "string",
         "remotion_static_file_path": "string",
         "remotion_clip_package_path": "string",
+        "props_path": "string",
+        "props_sync_status": "synced | stale | partial | blocked | unknown",
         "ai_video_generation_package_path": "string",
         "selection_authority": "visual-producer | timeline_helper_repair | unknown",
         "selection_decision_id": "string",
@@ -104,7 +120,7 @@ Return a timeline sync plan with:
 
 ## Contract Fields Populated
 
-- `timeline-sync-plan.schema.json`: `timeline_sync_id`, `scenario_id`, project/channel paths when available, `media_asset_manifest_path`, `remotion_project_contract_path`, `voiceover_id`, `scene_visual_pack_id`, `fps`, `width`, `height`, `duration_seconds`, `scenes[]`, and `qa`
+- `timeline-sync-plan.schema.json`: `timeline_sync_id`, `scenario_id`, `source_scenario_path`, project/channel paths when available, `media_asset_manifest_path`, `remotion_project_contract_path`, `voiceover_id`, `scene_visual_pack_id`, `source_scene_visual_pack_path`, `scene_artifact_sync_report_path`, `fps`, `width`, `height`, `duration_seconds`, `scenes[]`, and `qa`
 - `timeline-sync-plan.schema.json` scene objects: `visual_source`, `audio`, `captions`, transition fields, and sync notes
 - `media-asset-manifest.schema.json`: consumed or deferred entries for local visuals, Remotion public projections, voiceover audio, captions, subtitles, thumbnails, and metadata when touched
 - `agent-handoff.schema.json`: Director-facing repair recommendations only when another agent must fix missing visuals, audio, captions, or assets
@@ -123,6 +139,7 @@ Return a timeline sync plan with:
 - Mark a plan partial if any scene has no audio path after approved TTS generation or no caption timing source.
 - Mark a plan partial if a template-backed clip references a missing template contract or a template with failed QA.
 - Mark a plan partial if a complex VFX clip has failed or missing hardening evidence and the scene depends on that effect.
+- Mark a plan failed if scene artifact sync reports stale scene packs, stale props, orphaned scene ids, conflicting route/template/media choices, or duplicate scene coverage for any render-required scene.
 - Mark a plan partial if channel-format VFX rules require hardening, benchmark evidence, alpha/export behavior, or fallback coverage that is missing from the relevant clip package.
 - Do not use remote media paths for final render unless the Director explicitly accepts that risk.
 
@@ -131,12 +148,14 @@ Return a timeline sync plan with:
 For every scene, cite or preserve:
 
 - scenario scene id and narration source
+- scene artifact sync status, scene index, scene pack id, and scenario scene fingerprint
 - audio path, duration source, caption path, and timestamp source
 - selected `candidate_id` plus Visual Producer decision evidence
 - media asset id, local path, Remotion `staticFile()` path, or Remotion clip package path when media is used
 - for `approved_web_image`, the manifest entry must show rights approval and a local/render-visible path before final render
 - for `source_card_recreation`, preserve source ids, claim/evidence refs, and source-card/template contract paths
 - template contract paths and VFX hardening evidence for template-backed or VFX-heavy clips
+- props path/hash and `props_sync.status` for Remotion-generated clips
 - timing drift reason when scene duration changes from scenario estimates
 - safe-area notes for captions, lower thirds, UI details, logos, and CTAs
 
@@ -166,11 +185,13 @@ Use `consumed` for selected candidate media, voiceover audio, caption files, and
 Stop and return `fail` or `not_run` when:
 
 - the scenario has no stable scene ids
+- scene artifact sync is missing after specialist outputs or reports stale/orphaned/conflicting artifacts for a render-required scene
 - strict mode has no Visual Producer-selected candidate for any required scene
 - a selected candidate has unresolved rights or technical blockers
 - required local media is missing from the manifest and no Director waiver exists
 - audio or caption timing cannot be aligned to the scene
 - a template-backed clip lacks a required template contract
+- a Remotion clip package has stale or missing props lineage for its scene
 
 Only use repair mode when the Director explicitly accepts `--allow-repair-default`. Repair-mode output must require Director review before rendering.
 
@@ -179,6 +200,7 @@ Only use repair mode when the Director explicitly accepts `--allow-repair-defaul
 - Every scene has frame-accurate start/end values and synchronized audio/caption ranges.
 - Every visual source identifies its candidate, route, authority, decision id when available, status, and review requirement.
 - Timeline sync did not silently rank visuals; any helper choice is marked `repair_default`.
+- Timeline sync consumed only current scene visual packs, current selected candidates, current Remotion props, and current clip packages.
 - Every local media artifact touched is covered by `manifest_actions[]`.
 - QA findings are structured enough for Director rerouting.
 - `remotion-post-production` can build the full composition from the plan without rereading candidate-ranking prose.
@@ -200,7 +222,7 @@ Return:
       "reason": "string"
     }
   ],
-  "validation_performed": ["scene order", "frame ranges", "voice timing", "caption timing", "visual authority", "asset coverage", "safe areas"],
+  "validation_performed": ["scene artifact sync", "scene lineage", "props sync", "scene order", "frame ranges", "voice timing", "caption timing", "visual authority", "asset coverage", "safe areas"],
   "assumptions": ["string"],
   "blockers": ["string"],
   "risks": ["string"],

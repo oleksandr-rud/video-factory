@@ -403,7 +403,7 @@
             "type": "array",
             "items": {
               "type": "string",
-              "enum": ["channel_profile", "channel_format", "producer_criteria", "scenario", "voiceover", "visual_pack", "clip_candidates", "ai_generation", "remotion_template", "remotion_clip", "timeline_sync", "render", "critique", "delivery_metadata"]
+              "enum": ["channel_profile", "channel_format", "producer_criteria", "scenario", "scene_artifact_sync", "voiceover", "visual_pack", "clip_candidates", "ai_generation", "remotion_template", "remotion_clip", "timeline_sync", "render", "critique", "delivery_metadata"]
             }
           },
           "reason": { "type": "string" },

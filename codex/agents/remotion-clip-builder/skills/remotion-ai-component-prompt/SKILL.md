@@ -79,10 +79,11 @@ Ask for a Remotion component package, not a website component:
 
 ```text
 Generate a Remotion-only TypeScript component for scene <scene_id>.
+Use only the current scenario scene, matching scene visual pack entry, scene pack id, scenario scene fingerprint, and prop requirements for scene-specific values. Do not infer props from memory or another scene.
 Goal: <visual goal>.
 Duration: <seconds> seconds at <fps> fps, <width>x<height>.
 Allowed packages: <core remotion and approved @remotion/* packages>.
 Assets: <media asset ids and local public/staticFile paths>.
 Rules: named export <ComponentName>; deterministic frame math; no generic web component libraries; no Math.random; no remote runtime fetches; code only.
-Return structured fields: component_name, template_id, composition_id, dependencies, code, props_schema, preview_frames, remotion_template_contract, notes.
+Return structured fields: component_name, template_id, composition_id, dependencies, code, props_schema, scene_lineage, props_sync_expectation, preview_frames, remotion_template_contract, notes.
 ```

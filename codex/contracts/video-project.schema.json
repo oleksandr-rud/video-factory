@@ -71,6 +71,7 @@
         "web_content_source_report_paths": { "type": "array", "items": { "type": "string" } },
         "channel_format_path": { "type": "string" },
         "scenario_paths": { "type": "array", "items": { "type": "string" } },
+        "scene_artifact_sync_report_paths": { "type": "array", "items": { "type": "string" } },
         "voiceover_package_paths": { "type": "array", "items": { "type": "string" } },
         "visual_pack_paths": { "type": "array", "items": { "type": "string" } },
         "clip_candidate_paths": { "type": "array", "items": { "type": "string" } },

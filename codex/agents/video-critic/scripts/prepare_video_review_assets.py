@@ -166,6 +166,7 @@ def main() -> int:
     parser.add_argument("--output-dir", required=True)
     parser.add_argument("--render-package")
     parser.add_argument("--scenario")
+    parser.add_argument("--scene-artifact-sync")
     parser.add_argument("--timeline-sync-plan")
     parser.add_argument("--voiceover-package")
     parser.add_argument("--caption-path")
@@ -195,6 +196,7 @@ def main() -> int:
         "artifacts": {
             "render_package_path": args.render_package,
             "scenario_path": args.scenario,
+            "scene_artifact_sync_report_path": args.scene_artifact_sync,
             "timeline_sync_plan_path": args.timeline_sync_plan,
             "voiceover_package_path": args.voiceover_package,
             "caption_path": args.caption_path,

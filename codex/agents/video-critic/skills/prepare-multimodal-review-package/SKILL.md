@@ -10,7 +10,7 @@ Use this before `multimodal-video-critique`. The goal is to convert a video file
 ## Workflow
 
 1. Read the render package and locate the primary video output.
-2. Collect linked artifacts: scenario, timeline sync plan, voiceover package, captions, channel format, reference analysis, media asset manifest, Remotion project contract, and rights notes.
+2. Collect linked artifacts: scenario, scene artifact sync report, timeline sync plan, voiceover package, captions, channel format, reference analysis, media asset manifest, Remotion project contract, and rights notes.
 3. Include the producer criteria artifact and previous critique report when this is a review-loop iteration.
 4. Run `../../scripts/prepare_video_review_assets.py` with the video path and available artifact paths.
 5. Prefer scene-aware frame samples from the timeline sync plan. If scene timing is unavailable, sample evenly across the video.

@@ -65,6 +65,7 @@
         "media_asset_manifest_path": { "type": "string" },
         "remotion_project_contract_path": { "type": "string" },
         "scenario_path": { "type": "string" },
+        "scene_artifact_sync_report_path": { "type": "string" },
         "timeline_sync_plan_path": { "type": "string" },
         "voiceover_package_path": { "type": "string" },
         "caption_path": { "type": "string" },

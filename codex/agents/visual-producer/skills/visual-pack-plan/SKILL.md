@@ -22,25 +22,28 @@ This skill is a required visual research gate for deliverable videos, reference-
 ## Workflow
 
 1. Read every scene in the scenario, plus reference analysis, channel format, producer criteria, and the media asset manifest.
-2. Build a scene-reference matrix before route selection. For each scenario scene, collect relevant `reference_beats[]`, `scene_decomposition[]`, `reference_video_plan`, `reference_videos[].beats[]`, `web_pages[].visual_evidence_candidates`, `claim_ledger[]`, `evidence_refs[]`, and manifest assets. Preserve both the scene-specific evidence and the top-level `overall_summary`/findings so downstream agents can compare scene detail against the full reference read.
-3. For each scene, define visual goal, mood, subject, camera/motion, continuity needs, source grounding, viewer job, and the reference-material subset that shaped the route.
+2. Build a strict scenario scene index before route selection. Preserve scenario order and create exactly one scene pack per scenario scene. Each scene pack must carry `scene_index`, scenario timing, scenario-derived script/on-screen/visual-intent fingerprints, and the scenario fields that downstream props must use. Do not split, merge, rename, reorder, or invent scene ids inside the visual pack.
+3. Build a scene-reference matrix before route selection. For each scenario scene, collect relevant `reference_beats[]`, `scene_decomposition[]`, `reference_video_plan`, `reference_videos[].beats[]`, `web_pages[].visual_evidence_candidates`, `claim_ledger[]`, `evidence_refs[]`, and manifest assets. Preserve both the scene-specific evidence and the top-level `overall_summary`/findings so downstream agents can compare scene detail against the full reference read.
+4. For each scene, define visual goal, mood, subject, camera/motion, continuity needs, source grounding, viewer job, and the reference-material subset that shaped the route.
    - If the reference content mismatches the target channel/project, keep the reference as visual-format guidance and create a target-content substitution plan. Use the reference for composition, pacing, transition, caption/graphics, motion, and source-card behavior; use scenario/source evidence for the actual subject, claims, product, audience, and on-screen text.
-4. Pull source-backed options from `reference-analysis.web_pages[].visual_evidence_candidates`, `reference_videos[]`, `reference_beats[]`, `scene_decomposition[]`, `claim_ledger[]`, and approved manifest assets before proposing generic footage.
-5. Select one or more routes: `remotion_generated`, `ai_video_generation`, `stock_clip`, `user_supplied_media`, `approved_web_image`, or `source_card_recreation`.
-6. Add technical requirements: aspect ratio, minimum resolution, duration, fps if material, people/product needs, safe areas, source asset ids, Remotion `staticFile()` needs, and brand safety notes.
-7. Use web page images/screenshots only when manifest rights are approved. If not approved, plan source cards, redrawn diagrams, UI abstractions, or motion-graphic recreations.
-8. Apply channel rules without making every scene repetitive. Copy applicable `channel-format.visual_system.vfx_rules` into `vfx_requirements` and `vfx_rule_refs`.
-9. Map reusable templates when suitable using `template_hint`, `template_id`, `template_ids`, `template_contract_path`, `template_contract_paths`, and `reusable_template_requirements`.
-10. Prefer a project/channel template contract over a shared template contract when safe areas, aspect ratio, visual style, or props differ.
-11. Add provider search queries and AI route briefs where applicable. Link them to evidence refs, `reference_beat_ids`, scene decomposition notes, and rejected-query logic from `visual-research-queries`.
-12. Include at least one practical fallback route for every important scene.
-13. For downstream specialist execution, add `handoff_recommendations[]` instead of reading another agent's skills:
+5. Pull source-backed options from `reference-analysis.web_pages[].visual_evidence_candidates`, `reference_videos[]`, `reference_beats[]`, `scene_decomposition[]`, `claim_ledger[]`, and approved manifest assets before proposing generic footage.
+6. Select one or more routes: `remotion_generated`, `ai_video_generation`, `stock_clip`, `user_supplied_media`, `approved_web_image`, or `source_card_recreation`.
+7. Add technical requirements: aspect ratio, minimum resolution, duration, fps if material, people/product needs, safe areas, source asset ids, Remotion `staticFile()` needs, and brand safety notes.
+8. Add `prop_requirements` for downstream Remotion/AI packages. These must be derived from scenario fields and evidence, not rewritten from memory: narration/script summary, on-screen text, source ids, claim ids, evidence refs, media asset ids, safe-area rules, template ids, timing, colors/style refs, and any route-specific props.
+9. Use web page images/screenshots only when manifest rights are approved. If not approved, plan source cards, redrawn diagrams, UI abstractions, or motion-graphic recreations.
+10. Apply channel rules without making every scene repetitive. Copy applicable `channel-format.visual_system.vfx_rules` into `vfx_requirements` and `vfx_rule_refs`.
+11. Map reusable templates when suitable using `template_hint`, `template_id`, `template_ids`, `template_contract_path`, `template_contract_paths`, and `reusable_template_requirements`.
+12. Prefer a project/channel template contract over a shared template contract when safe areas, aspect ratio, visual style, or props differ.
+13. Add provider search queries and AI route briefs where applicable. Link them to evidence refs, `reference_beat_ids`, scene decomposition notes, and rejected-query logic from `visual-research-queries`.
+14. Include at least one practical fallback route for every important scene.
+15. For downstream specialist execution, add `handoff_recommendations[]` instead of reading another agent's skills:
     - `invideo-ai-generator` for AI video feasibility, model-ready prompts, generation approval, variants, generation, or generated clip QA
     - `remotion-clip-builder` for deterministic 5-20 second clips, reusable templates, component templates, motion graphics, source-card recreation, or VFX overlays
-14. Keep handoff recommendations implementation-neutral. State need, required inputs, constraints, output contract, approval notes, and definition of done. Let the Director create the actual `agent-handoff`.
-15. When recommending InVideo AI Generator or Remotion Clip Builder work, pass the scene-specific reference subset (`reference_beat_ids`, `reference_materials`, `reference_asset_paths`, evidence refs, source asset ids) plus the full `overall_reference_summary` path or object. This lets specialists analyze scene by scene without losing the full-reference context.
-16. Do not mark a scene visually blocked only because the reference topic differs from the target topic. Mark it blocked only when there is no viable target-content substitution, rights-safe recreation, or allowed route.
-17. Return `format_requirement_updates[]` for Channel Intelligence and Director. Include any channel-format/producer-criteria changes discovered during visual research: route viability, required reusable templates, VFX constraints, safe-area needs, source-card requirements, provider limitations, approval gates, deferred assets, and scene-specific hard visual gates.
+16. Keep handoff recommendations implementation-neutral. State need, required inputs, constraints, output contract, approval notes, and definition of done. Required inputs must name the exact scenario path, scene visual pack path, scene id, scene fingerprint, and prop requirements that the specialist must consume.
+17. When recommending InVideo AI Generator or Remotion Clip Builder work, pass the scene-specific reference subset (`reference_beat_ids`, `reference_materials`, `reference_asset_paths`, evidence refs, source asset ids) plus the full `overall_reference_summary` path or object. This lets specialists analyze scene by scene without losing the full-reference context.
+18. Do not mark a scene visually blocked only because the reference topic differs from the target topic. Mark it blocked only when there is no viable target-content substitution, rights-safe recreation, or allowed route.
+19. Return `format_requirement_updates[]` for Channel Intelligence and Director. Include any channel-format/producer-criteria changes discovered during visual research: route viability, required reusable templates, VFX constraints, safe-area needs, source-card requirements, provider limitations, approval gates, deferred assets, and scene-specific hard visual gates.
+20. Before returning, run a self-check equivalent to Director `scene-artifact-sync` for scenario-to-visual-pack coverage. Return `needs_revision` if scene count, scene ids, scene order, timing, or scenario-derived prop requirements do not match exactly.
 
 ## Required Output
 
@@ -50,9 +53,21 @@ Return a visual pack matching `codex/contracts/scene-visual-pack.schema.json` an
 {
   "status": "complete | needs_approval | blocked | needs_revision",
   "scene_visual_pack_path": "string",
+  "source_scenario_path": "string",
+  "source_scenario_hash": "string",
+  "sync_status": "synced | partial | stale | blocked | unknown",
   "scene_results": [
     {
+      "scene_pack_id": "string",
       "scene_id": "string",
+      "scene_index": 0,
+      "start_seconds": 0,
+      "end_seconds": 0,
+      "duration_seconds": 0,
+      "scenario_scene_fingerprint": "string",
+      "script_fingerprint": "string",
+      "onscreen_text_fingerprint": "string",
+      "visual_intent_fingerprint": "string",
       "routes": ["stock_clip"],
       "primary_route": "string",
       "fallback_routes": ["string"],
@@ -65,6 +80,7 @@ Return a visual pack matching `codex/contracts/scene-visual-pack.schema.json` an
       "target_content_substitution": "string",
       "evidence_refs": ["string"],
       "candidate_requirements": {},
+      "prop_requirements": {},
       "search_queries": ["string"],
       "ai_video_generation_brief": "string",
       "remotion_clip_brief": "string",
@@ -91,13 +107,13 @@ Return a visual pack matching `codex/contracts/scene-visual-pack.schema.json` an
 
 ## Contract Fields Populated
 
-- `scene-visual-pack.schema.json`: all project/channel fields, `scene_packs[]`, route decisions, candidate requirements, search queries, AI/Remotion briefs, template hints, reference beat ids, scene decomposition notes, reference materials, evidence refs, source asset ids, VFX requirements, `format_requirement_updates[]`, and handoff recommendations
+- `scene-visual-pack.schema.json`: all project/channel fields, source scenario path/hash, sync status, `scene_packs[]`, scene pack ids, scene indexes, scenario timing, scenario fingerprints, route decisions, candidate requirements, prop requirements, search queries, AI/Remotion briefs, template hints, reference beat ids, scene decomposition notes, reference materials, evidence refs, source asset ids, VFX requirements, `format_requirement_updates[]`, and handoff recommendations
 - `agent-handoff.schema.json`: not written here; `handoff_recommendations[]` provide Director routing input
 - `media-asset-manifest.schema.json`: updated or deferred only for media dependencies and future local/public projection needs
 
 ## Status Policy
 
-- Return `complete` when every scene has a route plan, candidate requirements, fallback, visual research/query coverage, format requirement updates or `not_applicable`, and explicit next step.
+- Return `complete` when every scenario scene has exactly one matching scene pack in scenario order, route plan, candidate requirements, prop requirements, fallback, visual research/query coverage, format requirement updates or `not_applicable`, and explicit next step.
 - Return `needs_approval` when the next useful action is provider API use, paid generation, licensed download, source image/screenshot use, or rights-sensitive final use.
 - Return `blocked` when a scene cannot be visually satisfied under allowed routes, rights, or budget.
 - Return `needs_revision` when scenario, channel format, source evidence, or producer criteria are too unstable to plan visuals.
@@ -107,6 +123,7 @@ Return a visual pack matching `codex/contracts/scene-visual-pack.schema.json` an
 Each important scene must preserve at least one of:
 
 - scenario scene field
+- scenario scene fingerprint
 - source id or claim id
 - reference-analysis evidence id
 - reference-analysis beat id or scene-decomposition id when reference material shaped the scene
@@ -134,6 +151,7 @@ Do not create specialist handoffs that imply generation or download approval. Us
 ## Definition Of Done
 
 - Every scene has a visual goal, route set, candidate requirements, and primary/fallback logic.
+- Every scenario scene has exactly one current visual scene pack with matching `scene_id`, `scene_index`, timing, and scenario-derived prop requirements.
 - Source/evidence refs and manifest states are carried forward.
 - Queries and AI/Remotion briefs are linked to the selected routes.
 - Specialist handoff recommendations are Director-routable and contract-shaped.
@@ -156,7 +174,7 @@ Return:
       "reason": "string"
     }
   ],
-  "validation_performed": ["scene route plan", "source evidence check", "fallback coverage", "handoff recommendation shape", "approval gate review"],
+  "validation_performed": ["scenario-scene coverage", "scene route plan", "source evidence check", "prop requirement sync", "fallback coverage", "handoff recommendation shape", "approval gate review"],
   "assumptions": ["string"],
   "blockers": ["string"],
   "risks": ["string"],

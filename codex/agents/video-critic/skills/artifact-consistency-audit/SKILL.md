@@ -11,35 +11,36 @@ Use this to catch contract and provenance failures before release review. This s
 
 - Render package and final/preview video path
 - Scenario, producer criteria, channel format, reference analysis, and source evidence
-- Timeline sync plan, voiceover package, caption JSON/SRT, subtitle policy, and audio mix notes
+- Scene artifact sync report, timeline sync plan, voiceover package, caption JSON/SRT, subtitle policy, and audio mix notes
 - Scene visual pack, clip candidates, AI video generation packages, Remotion clip packages, and Remotion template contracts
 - Media asset manifest with source, generated, rendered, subtitle, thumbnail, review, and delivery assets
 - Render QA result, review package, sampled frames, and platform/delivery requirements when available
 
 ## Workflow
 
-1. Verify identity consistency across render, scenario, timeline sync, voiceover, visual pack, media manifest, and critique inputs.
-2. Check scene order, scene ids, timing ranges, frame ranges, duration, platform, aspect ratio, fps, width, and height.
-3. Check timeline sync coverage: every scene has visual, audio, caption, transition/safe-area data or an explicit blocker.
-4. Check captions and voice:
+1. Verify identity consistency across render, scenario, scene artifact sync, timeline sync, voiceover, visual pack, media manifest, and critique inputs.
+2. Check scene artifact sync status: every render-required scenario scene must be current, one-to-one, and free of stale props, orphaned scene ids, duplicate scene packs, or route/template/media conflicts.
+3. Check scene order, scene ids, timing ranges, frame ranges, duration, platform, aspect ratio, fps, width, and height.
+4. Check timeline sync coverage: every scene has visual, audio, caption, transition/safe-area data or an explicit blocker.
+5. Check captions and voice:
    - caption JSON/SRT exists where required
    - voiceover package scene ids match scenario scene ids
    - caption timing maps to scene timing
    - pronunciation/timing blockers are recorded
-5. Check visual provenance:
+6. Check visual provenance:
    - selected clip candidates or Remotion clip packages are traceable
    - stock, AI-generated, user-supplied, approved web image, source-card recreation, and Remotion-generated routes are correctly labeled
    - helper-selected visuals are flagged unless Director-approved
    - source/output asset ids, local paths, and Remotion static paths exist where required
    - `approved_web_image` routes have manifest-backed rights approval and local/render-visible paths
    - `source_card_recreation` routes preserve source ids, claim ids, and evidence refs instead of copying article/page material without approval
-6. Check Remotion template and VFX provenance:
+7. Check Remotion template and VFX provenance:
    - template ids and contract paths exist
    - template-backed instances respect safe-area/props contracts
    - VFX rule refs and hardening evidence are traceable when required
-7. Check media asset manifest coverage for loaded media, web snapshots, source reports, web images, screenshots, generated clips, renders, subtitles, thumbnails, review frames, and metadata files.
-8. Check rights and approvals for paid generation, licensed media, voices, music, likeness, logos, screenshots, paid templates, and external critique.
-9. Return critique-report-shaped findings with owner mapping and blocks-delivery flags.
+8. Check media asset manifest coverage for loaded media, web snapshots, source reports, web images, screenshots, generated clips, renders, subtitles, thumbnails, review frames, and metadata files.
+9. Check rights and approvals for paid generation, licensed media, voices, music, likeness, logos, screenshots, paid templates, and external critique.
+10. Return critique-report-shaped findings with owner mapping and blocks-delivery flags.
 
 ## Required Output
 
@@ -63,7 +64,7 @@ Return this audit summary:
   "artifact_checks": [
     {
       "check_id": "string",
-      "category": "identity | timing | captions | voiceover | visuals | remotion | manifest | rights | platform | technical",
+      "category": "identity | scene_sync | timing | captions | voiceover | visuals | remotion | manifest | rights | platform | technical",
       "status": "pass | fail | partial | unknown | needs_approval",
       "evidence": "string",
       "blocking_reasons": ["string"]
@@ -110,6 +111,7 @@ Every finding must include concrete evidence from at least one of:
 - artifact path
 - schema field/value
 - scene id
+- scene artifact sync report row
 - timestamp or frame range
 - media asset id
 - source id/evidence ref
@@ -139,13 +141,14 @@ Stop and return `blocked` when:
 - render package or scenario is missing
 - final video path is missing when required for delivery audit
 - scene ids cannot be reconciled across core artifacts
+- scene artifact sync is missing or reports stale props, stale scene packs, orphaned scene ids, or route/template/media conflicts for a render-required scene
 - selected visuals cannot be traced to candidates or clip packages
 - rights/provenance gaps prevent safe release judgment
 - manifest absence makes media lineage unverifiable
 
 ## Definition Of Done
 
-- Core artifacts are checked for identity, timing, caption, voiceover, visual, Remotion, manifest, rights, and platform consistency.
+- Core artifacts are checked for identity, scene sync, timing, caption, voiceover, visual, Remotion, manifest, rights, and platform consistency.
 - Findings use the critique report finding shape and include owner mapping.
 - Every blocker has a recommended owner and action.
 - Limitations are explicit and do not hide release risk.
@@ -168,7 +171,7 @@ Return:
       "reason": "string"
     }
   ],
-  "validation_performed": ["identity consistency", "scene timing", "caption coverage", "voiceover linkage", "visual provenance", "Remotion template provenance", "manifest coverage", "rights approval audit", "platform delivery check"],
+  "validation_performed": ["identity consistency", "scene artifact sync", "scene timing", "caption coverage", "voiceover linkage", "visual provenance", "Remotion template provenance", "manifest coverage", "rights approval audit", "platform delivery check"],
   "assumptions": ["string"],
   "blockers": ["string"],
   "risks": ["string"],

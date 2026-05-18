@@ -23,13 +23,13 @@ Workflow:
 5. Resolve the Remotion app contract, template registry path, and media asset manifest. Use the shared `remotion/` app by default, and record source media asset ids plus `staticFile()` paths for any local media.
 6. Read `channel_format_path` when available and apply `visual_system.vfx_rules` to effect selection, intensity limits, transition behavior, alpha/export choices, hardening triggers, benchmarks, and fallback requirements.
 7. Define frame ranges, entry/exit timing, blend mode, z-index, safe areas, and alpha behavior.
-8. Make props typed and deterministic: `durationInFrames`, colors, seed, intensity, text, audio path, and transparent mode.
+8. Make props typed and deterministic: `durationInFrames`, colors, seed, intensity, text, audio path, transparent mode, and scene lineage fields from the current scenario scene plus matching scene pack.
 9. Add preview checks: still frames for entry/settled/peak-motion/exit states, 2-3 fps sampled-frame coverage across the clip, browser/Studio screenshots when available for fast alignment review, and one motion preview or full render for complex VFX. The agent must inspect those artifacts and record preview-analysis findings before accepting the clip.
    - Use browser automation to inspect DOM/CSS/SVG layers where available.
    - Use screenshot/sampled-frame pixel analysis for video, image, canvas, WebGL, and OffthreadVideo content.
 10. For overlays, define both opaque and transparent render commands when needed.
 11. Run quality/performance hardening when the clip is complex, bespoke, GPU-heavy, media-heavy, transparent, intended for repeated reuse, or required by channel-format VFX rules.
-12. Write or update a Remotion clip package matching `codex/contracts/remotion-clip-package.schema.json`, including template ids/contract paths or `template_instances[]` when relevant, project/channel fields, channel format path, Remotion app path, media manifest path, source asset ids, output asset ids, `vfx_rule_refs`, and `vfx_profile` when hardening was performed.
+12. Write or update a Remotion clip package matching `codex/contracts/remotion-clip-package.schema.json`, including scenario/visual-pack lineage, `props_sync`, template ids/contract paths or `template_instances[]` when relevant, project/channel fields, channel format path, Remotion app path, media manifest path, source asset ids, output asset ids, `vfx_rule_refs`, and `vfx_profile` when hardening was performed.
 13. If this VFX should be reusable, write or update a Remotion template contract matching `codex/contracts/remotion-template.schema.json`.
 
 Definition of done:
