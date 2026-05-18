@@ -69,7 +69,10 @@ python codex/agents/channel-intelligence/scripts/analyze_reference_video.py `
   --video "C:\path\reference.mp4" `
   --source-id "source-ref-001" `
   --work-dir "channels/demo/projects/sample/source-media/reference-analysis/source-ref-001" `
-  --output "channels/demo/projects/sample/source-media/reference-analysis/source-ref-001/reference-analysis.json"
+  --output "channels/demo/projects/sample/source-media/reference-analysis/source-ref-001/reference-analysis.json" `
+  --content-alignment mismatch `
+  --allowed-content-use visual_format_only `
+  --target-content-substitution "Use reference pacing and composition; replace subject matter with target project evidence."
 ```
 
 With manifest update:
@@ -111,6 +114,9 @@ python codex/agents/channel-intelligence/scripts/analyze_reference_video.py `
   --source-id "source-ref-001" `
   --work-dir "channels/demo/projects/sample/source-media/reference-analysis/source-ref-001" `
   --output "channels/demo/projects/sample/source-media/reference-analysis/source-ref-001/reference-analysis.json" `
+  --content-alignment mismatch `
+  --allowed-content-use visual_format_only `
+  --target-content-substitution "Use reference pacing and composition; replace subject matter with target project evidence." `
   --model-observation-path "channels/demo/projects/sample/source-media/reference-analysis/source-ref-001/openrouter-reference-observation.json"
 ```
 

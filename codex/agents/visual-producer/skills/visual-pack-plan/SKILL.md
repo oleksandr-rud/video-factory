@@ -20,8 +20,9 @@ Create the scene-level visual routing contract. This is a planning artifact, not
 ## Workflow
 
 1. Read every scene in the scenario, plus reference analysis, channel format, producer criteria, and the media asset manifest.
-2. Build a scene-reference matrix before route selection. For each scenario scene, collect relevant `reference_beats[]`, `scene_decomposition[]`, `reference_videos[].beats[]`, `web_pages[].visual_evidence_candidates`, `claim_ledger[]`, `evidence_refs[]`, and manifest assets. Preserve both the scene-specific evidence and the top-level `overall_summary`/findings so downstream agents can compare scene detail against the full reference read.
+2. Build a scene-reference matrix before route selection. For each scenario scene, collect relevant `reference_beats[]`, `scene_decomposition[]`, `reference_video_plan`, `reference_videos[].beats[]`, `web_pages[].visual_evidence_candidates`, `claim_ledger[]`, `evidence_refs[]`, and manifest assets. Preserve both the scene-specific evidence and the top-level `overall_summary`/findings so downstream agents can compare scene detail against the full reference read.
 3. For each scene, define visual goal, mood, subject, camera/motion, continuity needs, source grounding, viewer job, and the reference-material subset that shaped the route.
+   - If the reference content mismatches the target channel/project, keep the reference as visual-format guidance and create a target-content substitution plan. Use the reference for composition, pacing, transition, caption/graphics, motion, and source-card behavior; use scenario/source evidence for the actual subject, claims, product, audience, and on-screen text.
 4. Pull source-backed options from `reference-analysis.web_pages[].visual_evidence_candidates`, `reference_videos[]`, `reference_beats[]`, `scene_decomposition[]`, `claim_ledger[]`, and approved manifest assets before proposing generic footage.
 5. Select one or more routes: `remotion_generated`, `ai_video_generation`, `stock_clip`, `user_supplied_media`, `approved_web_image`, or `source_card_recreation`.
 6. Add technical requirements: aspect ratio, minimum resolution, duration, fps if material, people/product needs, safe areas, source asset ids, Remotion `staticFile()` needs, and brand safety notes.
@@ -36,6 +37,7 @@ Create the scene-level visual routing contract. This is a planning artifact, not
     - `remotion-clip-builder` for deterministic 5-20 second clips, reusable templates, component templates, motion graphics, source-card recreation, or VFX overlays
 14. Keep handoff recommendations implementation-neutral. State need, required inputs, constraints, output contract, approval notes, and definition of done. Let the Director create the actual `agent-handoff`.
 15. When recommending InVideo AI Generator or Remotion Clip Builder work, pass the scene-specific reference subset (`reference_beat_ids`, `reference_materials`, `reference_asset_paths`, evidence refs, source asset ids) plus the full `overall_reference_summary` path or object. This lets specialists analyze scene by scene without losing the full-reference context.
+16. Do not mark a scene visually blocked only because the reference topic differs from the target topic. Mark it blocked only when there is no viable target-content substitution, rights-safe recreation, or allowed route.
 
 ## Required Output
 
@@ -56,6 +58,8 @@ Return a visual pack matching `codex/contracts/scene-visual-pack.schema.json` an
       "reference_materials": [],
       "scene_decomposition": {},
       "overall_reference_summary": {},
+      "reference_use_policy": "content_and_visual | visual_format_only | content_only | do_not_use | not_applicable",
+      "target_content_substitution": "string",
       "evidence_refs": ["string"],
       "candidate_requirements": {},
       "search_queries": ["string"],
@@ -91,6 +95,7 @@ Each important scene must preserve at least one of:
 - source id or claim id
 - reference-analysis evidence id
 - reference-analysis beat id or scene-decomposition id when reference material shaped the scene
+- target-content substitution note when reference visuals and target content differ
 - media asset id
 - channel-format rule id
 - producer-criteria rule

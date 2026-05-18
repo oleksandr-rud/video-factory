@@ -37,7 +37,10 @@ Read `../../references/reference-analysis-dimensions.md` before analyzing videos
      --video <local-reference-video> `
      --source-id <source-id> `
      --work-dir <project-or-channel-reference-work-dir> `
-     --output <reference-analysis-json>
+     --output <reference-analysis-json> `
+     --content-alignment <match|partial|mismatch|unknown> `
+     --allowed-content-use <content_and_visual|visual_format_only|content_only|do_not_use|unknown> `
+     --target-content-substitution "<how target content replaces mismatched reference content>"
    ```
 4. If OpenRouter direct-video observation is approved for the reference, run the generic helper on the downloaded/local file after deterministic sidecars exist. Save the prompt, request preview, raw response, and a short parsed `model-observation.json` in the same reference-analysis work directory, then pass that path through `--model-observation-path` or merge it into the reference analysis:
    ```powershell
@@ -58,8 +61,10 @@ Read `../../references/reference-analysis-dimensions.md` before analyzing videos
 10. Direct-video model analysis belongs here for upstream reference breakdowns, not in Visual Producer. Use it only after Director approval for API spend and media handling; keep transcript/caption evidence separate from model visual observations.
 11. Return manifest actions for every local reference file, transcript, thumbnail, keyframe, OCR output, scene JSON, probe JSON, model-observation artifact, or sampled frame that was created, consumed, validated, or deferred.
 12. Build `overall_summary` and `scene_decomposition[]` before downstream handoff. `overall_summary` combines deterministic metadata, transcript/OCR status, model limitations, reusable patterns, do-not-copy risks, and evidence gaps. `scene_decomposition[]` maps each beat/shot to source id, timestamps, evidence refs, keyframes, transcript/caption/visual/audio notes, reusable patterns, and confidence.
-13. Build `reference_beats[]` as the flattened evidence graph for downstream agents, with transcript, shot, audio, caption/graphics, reusable-pattern, and do-not-copy evidence per beat.
-14. Return `invalidation_impact[]` when missing or changed reference evidence could invalidate channel format rules, scenario assumptions, visual route choices, Remotion styling, render criteria, or critique gates.
+13. When reference subject matter conflicts with the target channel/project description, treat the reference as visual-format evidence unless the Director explicitly says it should also supply claims. Still research, decompose, and analyze it scene by scene and as a whole video. Mark `content_alignment: mismatch`, set `allowed_content_use: visual_format_only`, and extract composition, shot grammar, pacing, caption/graphics, motion, transition, source-card, and VFX patterns for the target video's format plan.
+14. Build `reference_video_plan` as the bridge from mismatched or matched references to the target composition. It should state which visual structures transfer, which subjects/facts must be replaced with target content, which moments need new source evidence, and how the whole-video reference summary informs the target scene plan.
+15. Build `reference_beats[]` as the flattened evidence graph for downstream agents, with transcript, shot, audio, caption/graphics, reusable-pattern, and do-not-copy evidence per beat.
+16. Return `invalidation_impact[]` when missing or changed reference evidence could invalidate channel format rules, scenario assumptions, visual route choices, Remotion styling, render criteria, or critique gates.
 
 ## Required Output
 
@@ -71,6 +76,7 @@ Return or update `codex/contracts/reference-analysis.schema.json` with:
 - `reference_videos[]` entries with technical metadata, artifact paths, timecoded beats, keyframe paths, transcript path, OCR path, and evidence refs
 - `overall_summary` with combined deterministic/model evidence, reusable patterns, do-not-copy risks, limitations, and evidence coverage
 - `scene_decomposition[]` with one object per analyzed beat/scene and the reference materials needed for scene-by-scene downstream analysis
+- `reference_video_plan` with target-content mismatch handling, transferable visual-format patterns, required substitutions, and composition guidance for the target video
 - `claim_ledger[]` as an empty array when the video breakdown does not extract factual script claims
 - `reference_beats[]` as the flattened downstream evidence graph
 - `findings` with narrative patterns, visual patterns, audio patterns, visual evidence opportunities, source claims, rights/policy risks, evidence gaps, and confidence notes

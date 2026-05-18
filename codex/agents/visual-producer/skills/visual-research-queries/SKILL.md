@@ -21,6 +21,7 @@ Build search-query sets that preserve why each query exists, which evidence shap
 1. Extract concrete nouns, actions, locations, mood, camera angle, motion, time period, audience context, and domain terms for each scene.
 2. Read source-backed visual evidence before inventing new terms. Prefer source ids, reference beat ids, scene-decomposition notes, evidence refs, and approved media asset ids over unsupported imagery.
 3. When reference videos were divided into beats/scenes, map query groups to the relevant `reference_beats[]` or `scene_decomposition[]` entries. Keep the top-level `overall_summary` in the query rationale so a query does not overfit one isolated reference beat.
+   - If reference content mismatches the target channel/project, derive search intent from the reference's visual mechanics and replace subject/topic terms with target-content terms from the scenario, claim ledger, channel/project brief, and producer criteria.
 4. Build query groups by route:
    - `stock_clip`: concise provider-search terms, not full cinematic prompts
    - `ai_video_generation`: prompt-intent phrases and reference constraints, not provider-final prompts
@@ -49,6 +50,8 @@ Return this structure or embed it in `scene-visual-pack.schema.json` fields:
       "reference_beat_ids": ["string"],
       "scene_decomposition_refs": ["string"],
       "overall_reference_summary_ref": "string",
+      "reference_use_policy": "content_and_visual | visual_format_only | content_only | do_not_use | not_applicable",
+      "target_content_substitution": "string",
       "provider_priority": ["freepik", "pexels"],
       "queries": [
         {

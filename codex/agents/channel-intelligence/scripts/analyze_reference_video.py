@@ -525,6 +525,22 @@ def main() -> int:
     parser.add_argument("--title")
     parser.add_argument("--owner")
     parser.add_argument("--rights-notes")
+    parser.add_argument(
+        "--content-alignment",
+        choices=["match", "partial", "mismatch", "unknown"],
+        default="unknown",
+        help="How the reference video's subject/content aligns with the target project.",
+    )
+    parser.add_argument(
+        "--allowed-content-use",
+        choices=["content_and_visual", "visual_format_only", "content_only", "do_not_use", "unknown"],
+        default="visual_format_only",
+        help="How downstream agents may use the reference content.",
+    )
+    parser.add_argument(
+        "--target-content-substitution",
+        help="Short note describing how target content should replace mismatched reference subject matter.",
+    )
     parser.add_argument("--project-id")
     parser.add_argument("--project-path")
     parser.add_argument("--channel-profile-id")
@@ -694,6 +710,14 @@ def main() -> int:
             "audio_summary": beat.get("audio_notes"),
             "caption_or_graphics_summary": beat.get("caption_or_graphics_notes"),
             "transcript_summary": "Transcript not supplied." if not args.transcript_path else "Transcript artifact supplied for downstream review.",
+            "content_alignment": args.content_alignment,
+            "allowed_content_use": args.allowed_content_use,
+            "target_content_substitution": args.target_content_substitution
+            or (
+                "Use the reference for visual format only; replace subjects, facts, claims, and on-screen text with target project evidence."
+                if args.allowed_content_use == "visual_format_only"
+                else None
+            ),
             "keyframe_paths": beat.get("keyframe_paths", []),
             "reference_asset_ids": [
                 f"asset-{source_slug}-reference-video",
@@ -771,6 +795,10 @@ def main() -> int:
             "duration_seconds": technical.get("duration_seconds") if technical else None,
             "scene_count": len(scenes),
             "reference_beat_count": len(reference_beats),
+            "content_alignment": args.content_alignment,
+            "allowed_content_use": args.allowed_content_use,
+            "target_content_substitution_required": args.allowed_content_use == "visual_format_only"
+            or args.content_alignment == "mismatch",
             "deterministic_evidence": [
                 "ffprobe metadata" if technical else None,
                 "scene or fallback segment timing",
@@ -785,6 +813,26 @@ def main() -> int:
             ],
             "evidence_gaps": evidence_gaps,
             "limitations": limitations,
+            "confidence": "medium" if frame_samples else "low",
+        },
+        "reference_video_plan": {
+            "plan_id": f"reference-video-plan-{source_slug}",
+            "content_alignment": args.content_alignment,
+            "allowed_content_use": args.allowed_content_use,
+            "whole_video_summary": (
+                f"Use {source_id} as a decomposed reference for whole-video structure and scene-by-scene visual planning. "
+                "Do not transfer unsupported facts or protected footage."
+            ),
+            "transferable_visual_patterns": sorted({tag for beat in beats for tag in beat.get("pattern_tags", [])}),
+            "target_content_substitutions": [
+                args.target_content_substitution
+                or "Replace reference subject matter, facts, claims, logos, people, and on-screen text with target project evidence."
+            ] if args.allowed_content_use == "visual_format_only" or args.content_alignment == "mismatch" else [],
+            "scene_plan_refs": [item.get("decomposition_id") for item in scene_decomposition if item.get("decomposition_id")],
+            "do_not_transfer": [
+                "Do not copy footage, exact edit decisions, likenesses, proprietary marks, or unsupported factual claims from the reference."
+            ],
+            "evidence_refs": evidence_refs,
             "confidence": "medium" if frame_samples else "low",
         },
         "sources": [{

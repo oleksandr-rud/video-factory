@@ -19,13 +19,15 @@ Act as the pre-production gate between evidence, channel format, and downstream 
 ## Workflow
 
 1. Check each scene against channel promise, audience, content pillars, tone, pacing, episode structure, hook/payoff logic, and producer criteria.
-2. Map factual claims, implied claims, source mentions, on-screen text, and scene purpose to `claim_ledger[]`, source ids, evidence refs, or explicit user-provided facts.
-3. Classify evidence coverage as `supported`, `partial`, `needs_review`, `unsupported`, or `not_applicable`.
-4. Check visual producibility: every scene needs an approved visual route, a source-card path, a Remotion path, an AI-generation route, approved media, or a clear Visual Producer research need.
-5. Check style/format alignment without forcing copied reference execution. Flag any scene that risks imitating a reference too closely.
-6. Check novelty: the hook, angle, proof, examples, visual proof, and payoff must satisfy channel-format `must_vary` and anti-redundancy rules.
-7. Route each finding to the owner that can fix it: `creative-producer`, `visual-producer`, `channel-intelligence`, `invideo-ai-generator`, `remotion-clip-builder`, `remotion-video-producer`, `video-critic`, or `director`.
-8. Return `block` only for issues that should stop production spending or downstream rendering.
+2. Separate content alignment from visual-format alignment. If supplied references mismatch the target topic/channel/project content, mark their facts as `not_applicable` or `unsupported` for script claims, but keep their scene decomposition and whole-video summary available as visual-format evidence.
+3. Map factual claims, implied claims, source mentions, on-screen text, and scene purpose to `claim_ledger[]`, source ids, evidence refs, or explicit user-provided facts.
+4. Classify evidence coverage as `supported`, `partial`, `needs_review`, `unsupported`, or `not_applicable`.
+5. Check visual producibility: every scene needs an approved visual route, a source-card path, a Remotion path, an AI-generation route, approved media, a reference-video visual-format plan, or a clear Visual Producer research need.
+6. Check style/format alignment without forcing copied reference execution. Flag any scene that risks imitating a reference too closely.
+7. When the reference is visually solid but content-mismatched, route the finding to Visual Producer or Remotion Clip Builder as a target-content substitution task, not as a reason to discard the reference.
+8. Check novelty: the hook, angle, proof, examples, visual proof, and payoff must satisfy channel-format `must_vary` and anti-redundancy rules.
+9. Route each finding to the owner that can fix it: `creative-producer`, `visual-producer`, `channel-intelligence`, `invideo-ai-generator`, `remotion-clip-builder`, `remotion-video-producer`, `video-critic`, or `director`.
+10. Return `block` only for issues that should stop production spending or downstream rendering.
 
 ## Required Output
 
@@ -52,6 +54,7 @@ Return:
       "evidence_coverage": "supported | partial | needs_review | unsupported | not_applicable",
       "channel_fit": "pass | partial | fail | unknown",
       "visual_proof_state": "ready | needs_visual_plan | needs_source_card | needs_approval | blocked | not_applicable",
+      "reference_use_policy": "content_and_visual | visual_format_only | content_only | do_not_use | not_applicable",
       "description": "string",
       "recommendation": "string",
       "owner_agent": "creative-producer | visual-producer | channel-intelligence | invideo-ai-generator | remotion-clip-builder | remotion-video-producer | video-critic | director",
@@ -85,6 +88,7 @@ Return:
 - Return `needs_revision` when fixes are local to scenario wording, scene purpose, visual intent, hook/payoff, or source mapping.
 - Return `needs_approval` when a scene depends on unapproved media, licensed assets, direct source/page imagery, paid provider work, or user waiver.
 - Return `blocked` when unsupported claims, rights issues, imitation risk, or missing evidence should stop downstream production.
+- Do not return `blocked` solely because a visually useful reference has mismatched content. Block only if the mismatch causes unsupported target claims, rights risk, direct copying, or no viable substitution path.
 
 ## Evidence Required
 

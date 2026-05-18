@@ -23,6 +23,8 @@ Create the source ledger before downstream agents depend on web pages, files, re
    - Preserve the original watch URL as `path_or_url`/`source_url`, but do not treat it as local analysis evidence until it has a downloaded local video, transcript, thumbnail, screenshots, or approved direct-video observation.
 3. Assign a stable `source_id` and record `kind`, `path_or_url`, local path, title, owner, date, rights state, confidence, and why the source matters.
 4. Mark `reusable_scope` as `global_channel`, `project_only`, `scene_only`, `critique_only`, `do_not_use`, or `unknown`.
+   - If a reference video's topic, product, audience, or factual content differs from the target channel/project, do not downgrade it automatically. Mark its content/claims as non-authoritative for the target brief, but keep it as `style_reference`, `visual_format_reference`, `edit_rhythm_reference`, or `composition_reference` when the user supplied it for visuals, pacing, layout, or format.
+   - Record the mismatch explicitly in `why_it_matters`, `missing_assets`, `findings.evidence_gaps[]`, or `downstream_guidance` so Creative Producer avoids copying its facts while Channel Intelligence and Visual Producer still decompose its visuals.
 5. For each local media file or captured artifact, resolve or create a media asset id and decide the manifest action.
 6. For each reference video or local video, determine whether deeper reference analysis has enough local evidence: video file, transcript, screenshots, thumbnail, probe data, scene JSON, OCR, or approved direct-video observation.
 7. Identify missing assets needed for deeper analysis: transcript, screenshots, video file, thumbnail, channel analytics, brand tokens, product source material, technical metadata, or rights details.

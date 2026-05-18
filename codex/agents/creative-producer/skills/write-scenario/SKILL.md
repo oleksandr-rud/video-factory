@@ -19,6 +19,7 @@ Write a dual-layer scenario: story logic for the viewer and production logic for
 ## Workflow
 
 1. Build a production-safe premise from the Director brief, channel promise, audience, source evidence, and producer criteria.
+   - When supplied references are visually relevant but their topic/content mismatches the target project, use them only for format, pacing, scene logic, and visual rhythm. Do not import their facts, examples, audience promise, product claims, or subject matter unless those are independently supported by target sources or explicit Director instruction.
 2. Select a structure appropriate to the platform and channel format: hook, context, proof, payoff, CTA, or an approved variant.
 3. Define the novelty angle before drafting scenes. The angle must vary topic framing, proof, example, visual metaphor, source, payoff, or structure enough to satisfy anti-redundancy rules.
 4. Use `claim_ledger[]`, `web_pages[]`, source ids, or explicit user-provided facts as factual inputs. Do not invent page facts from memory.
@@ -29,7 +30,7 @@ Write a dual-layer scenario: story logic for the viewer and production logic for
    - `must_show`: visual proof or scene function needed for comprehension.
    - `flexible`: creative execution that downstream agents may vary.
 8. Keep narration compatible with target duration and platform pacing. Flag duration pressure instead of silently cutting required claims.
-9. Add visual intent without choosing footage. Refer to `web_pages[].visual_evidence_candidates` only as evidence or inspiration unless the manifest marks the image/screenshot approved.
+9. Add visual intent without choosing footage. Refer to `web_pages[].visual_evidence_candidates` only as evidence or inspiration unless the manifest marks the image/screenshot approved. For mismatched-content reference videos, write visual intent as a substitution: preserve the reference's visual job and composition, but replace its subject matter with target-channel/project content.
 10. Run a pre-handoff self-check for claim/source coverage, channel fit, novelty, duration budget, scene id stability, and downstream producibility.
 
 ## Required Output
@@ -59,6 +60,8 @@ Return JSON-compatible content matching `codex/contracts/scenario.schema.json` p
       "claim_ids": ["string"],
       "format_rules_applied": ["string"],
       "visual_intent": "string",
+      "reference_use_policy": "content_and_visual | visual_format_only | content_only | do_not_use | not_applicable",
+      "target_content_substitution": "string",
       "voice_notes": "string",
       "duration_pressure": "none | low | medium | high",
       "downstream_owner_hints": ["visual-producer | creative-producer | remotion-video-producer | video-critic"]

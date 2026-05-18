@@ -46,12 +46,36 @@
         "duration_seconds": { "type": "number" },
         "scene_count": { "type": "integer" },
         "reference_beat_count": { "type": "integer" },
+        "content_alignment": { "type": "string", "enum": ["match", "partial", "mismatch", "unknown"] },
+        "allowed_content_use": {
+          "type": "string",
+          "enum": ["content_and_visual", "visual_format_only", "content_only", "do_not_use", "unknown"]
+        },
+        "target_content_substitution_required": { "type": "boolean" },
         "deterministic_evidence": { "type": "array", "items": { "type": "string" } },
         "model_inferred_evidence": { "type": "array", "items": { "type": "string" } },
         "reusable_patterns": { "type": "array", "items": { "type": "string" } },
         "do_not_copy_risks": { "type": "array", "items": { "type": "string" } },
         "evidence_gaps": { "type": "array", "items": { "type": "string" } },
         "limitations": { "type": "array", "items": { "type": "string" } },
+        "confidence": { "type": "string", "enum": ["high", "medium", "low", "unknown"] }
+      }
+    },
+    "reference_video_plan": {
+      "type": "object",
+      "properties": {
+        "plan_id": { "type": "string" },
+        "content_alignment": { "type": "string", "enum": ["match", "partial", "mismatch", "unknown"] },
+        "allowed_content_use": {
+          "type": "string",
+          "enum": ["content_and_visual", "visual_format_only", "content_only", "do_not_use", "unknown"]
+        },
+        "whole_video_summary": { "type": "string" },
+        "transferable_visual_patterns": { "type": "array", "items": { "type": "string" } },
+        "target_content_substitutions": { "type": "array", "items": { "type": "string" } },
+        "scene_plan_refs": { "type": "array", "items": { "type": "string" } },
+        "do_not_transfer": { "type": "array", "items": { "type": "string" } },
+        "evidence_refs": { "type": "array", "items": { "type": "object" } },
         "confidence": { "type": "string", "enum": ["high", "medium", "low", "unknown"] }
       }
     },
@@ -213,6 +237,12 @@
           "audio_summary": { "type": "string" },
           "caption_or_graphics_summary": { "type": "string" },
           "transcript_summary": { "type": "string" },
+          "content_alignment": { "type": "string", "enum": ["match", "partial", "mismatch", "unknown"] },
+          "allowed_content_use": {
+            "type": "string",
+            "enum": ["content_and_visual", "visual_format_only", "content_only", "do_not_use", "unknown"]
+          },
+          "target_content_substitution": { "type": "string" },
           "keyframe_paths": { "type": "array", "items": { "type": "string" } },
           "reference_asset_ids": { "type": "array", "items": { "type": "string" } },
           "reusable_patterns": { "type": "array", "items": { "type": "string" } },

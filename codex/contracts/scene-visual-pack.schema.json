@@ -22,6 +22,11 @@
         "reference_analysis_id": { "type": "string" },
         "source_ids": { "type": "array", "items": { "type": "string" } },
         "reference_video_ids": { "type": "array", "items": { "type": "string" } },
+        "content_alignment": { "type": "string", "enum": ["match", "partial", "mismatch", "unknown"] },
+        "allowed_content_use": {
+          "type": "string",
+          "enum": ["content_and_visual", "visual_format_only", "content_only", "do_not_use", "unknown"]
+        },
         "reference_beat_count": { "type": "integer" },
         "scene_decomposition_count": { "type": "integer" },
         "reusable_patterns": { "type": "array", "items": { "type": "string" } },
@@ -41,6 +46,11 @@
           "source_ids": { "type": "array", "items": { "type": "string" } },
           "source_asset_ids": { "type": "array", "items": { "type": "string" } },
           "reference_beat_ids": { "type": "array", "items": { "type": "string" } },
+          "reference_use_policy": {
+            "type": "string",
+            "enum": ["content_and_visual", "visual_format_only", "content_only", "do_not_use", "not_applicable"]
+          },
+          "target_content_substitution": { "type": "string" },
           "reference_materials": {
             "type": "array",
             "items": {

@@ -19,6 +19,8 @@ Create a versioned, evidence-backed channel format. Preserve channel consistency
 ## Workflow
 
 1. Read the channel profile, reference analysis, style tokens, source ledger, and media manifest. Do not promote rules with missing evidence as durable defaults.
+   - If reference content conflicts with the target channel/project description but the reference is visually strong, preserve it as visual-format evidence. Extract structure, pacing, composition, caption/graphics, transition, motion, source-card, thumbnail, and VFX rules, but do not import its facts, audience promise, topic claims, product claims, or one-off subject choices.
+   - Mark the derived format as `project_variant` or `experimental` when the only evidence is a mismatched-content reference and channel evidence is weak.
 2. Define the channel promise, audience, content pillars, video themes, platform targets, and content mix.
 3. Define reusable narrative rules: hook families, episode structure, pacing bands, proof style, transitions between ideas, CTA behavior, and payoff expectations.
 4. Define reusable visual/audio systems from style tokens and channel defaults, including caption, layout, source-card, thumbnail, motion, audio, and VFX rules.
@@ -33,6 +35,7 @@ Create a versioned, evidence-backed channel format. Preserve channel consistency
 8. Add anti-redundancy thresholds and flex zones for unique angle, examples, visual moments, data, references, opening pattern, proof order, and CTA wording.
 9. Add a freshness policy. Define when the format becomes stale or needs review: old evidence, declining intro hold, declining watch time, repeated redundancy flags, topic decay, changed platform strategy, conflicting new references, or user/Director override.
 10. Attach evidence ids, source ids, asset ids, template ids, template contract paths, VFX rule refs, confidence, and evidence mode for important rules.
+11. Add a target-content substitution note when visual-format rules came from mismatched references. State which scene patterns transfer and which content elements must be replaced by target-channel/project evidence.
 
 ## Required Output
 
@@ -48,6 +51,7 @@ Return a package matching `codex/contracts/channel-format.schema.json` and inclu
     "status": "draft | active | needs_review | deprecated",
     "format_type": "channel_default | project_variant | experimental",
     "source_analysis_ids": ["string"],
+    "target_content_mismatch_policy": "none | visual_format_only | needs_target_substitution | blocked",
     "confidence": "high | medium | low | unknown"
   },
   "rule_groups": {
@@ -109,6 +113,7 @@ Return a package matching `codex/contracts/channel-format.schema.json` and inclu
 - Return `needs_approval` when format activation depends on licensed assets, user-owned brand materials, paid provider outputs, direct screenshot reuse, or a user waiver.
 - Return `blocked` when there is not enough evidence to create even an experimental format or when format rules would require protected copying.
 - Return `needs_revision` when source/reference/style inputs conflict, freshness evidence is too old, or required channel profile data is missing.
+- Content mismatch alone is not a blocker when the reference is used only for visual format. Block only when the mismatch would leak wrong facts into the target video, require copied material, or leave no way to substitute target content.
 
 ## Evidence Required
 

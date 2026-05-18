@@ -35,6 +35,11 @@
           "script": { "type": "string" },
           "onscreen_text": { "type": "string" },
           "visual_intent": { "type": "string" },
+          "reference_use_policy": {
+            "type": "string",
+            "enum": ["content_and_visual", "visual_format_only", "content_only", "do_not_use", "not_applicable"]
+          },
+          "target_content_substitution": { "type": "string" },
           "voice_notes": { "type": "string" },
           "source_ids": { "type": "array", "items": { "type": "string" } },
           "format_notes": { "type": "string" },

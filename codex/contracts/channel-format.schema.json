@@ -16,6 +16,10 @@
       "enum": ["draft", "active", "needs_review", "deprecated"]
     },
     "source_analysis_ids": { "type": "array", "items": { "type": "string" } },
+    "target_content_mismatch_policy": {
+      "type": "string",
+      "enum": ["none", "visual_format_only", "needs_target_substitution", "blocked", "unknown"]
+    },
     "audience": { "type": "string" },
     "platforms": { "type": "array", "items": { "type": "string" } },
     "channel_promise": { "type": "string" },
@@ -49,6 +53,7 @@
         "motion_rules": { "type": "array", "items": { "type": "string" } },
         "thumbnail_rules": { "type": "array", "items": { "type": "string" } },
         "source_card_rules": { "type": "array", "items": { "type": "string" } },
+        "target_content_substitution_rules": { "type": "array", "items": { "type": "string" } },
         "reusable_assets": { "type": "array", "items": { "type": "string" } },
         "reusable_template_ids": { "type": "array", "items": { "type": "string" } },
         "remotion_template_contract_paths": { "type": "array", "items": { "type": "string" } },
