@@ -5,7 +5,7 @@ This plan turns the current architecture gaps into concrete implementation work.
 Current repo inventory from local scan:
 
 - Agents: 8
-- Local `SKILL.md` files: 46
+- Local `SKILL.md` files: 47
 - Non-Director skills: 42
 - Director handoff map entries: 42
 - Contract schemas: 19
@@ -41,7 +41,7 @@ Standard handoff summary:
   "populated_contracts": ["string"],
   "manifest_actions": [
     {
-      "action": "created | updated | not_applicable | deferred",
+      "action": "created | updated | consumed | validated | mirrored_to_remotion_public | not_applicable | deferred",
       "asset_id": "string",
       "reason": "string"
     }
@@ -121,6 +121,23 @@ Required rule:
 
 Do not add a validation helper yet. Revisit a helper only if persisted handoffs repeatedly miss required fields.
 
+### 2a. Keep Director Context Compaction Explicit
+
+Current status: Director has a dedicated `context-compaction` skill and `production-run.context_state` contract fields.
+
+Required rule:
+
+- Run `context-compaction` after phase boundaries, long handoffs, review-loop iterations, post-run changes, context pressure, and resumes.
+- Persist the compact working set in `production-run.context_state`.
+- Keep raw large artifacts on disk and record only paths, evidence ids, decisions, blockers, and reload instructions in active context.
+- Resume by reading `AGENTS.md`, Director `AGENT.md`, the production run ledger, and only `context_state.artifacts_to_reload_next`.
+
+Acceptance criteria:
+
+- The run ledger can explain current phase, next actions, blockers, open decisions, stale artifacts, and files to reload without relying on conversation memory.
+- Snapshot files live under `channels/<channel-slug>/projects/<project-slug>/runs/<run-id>/context/` when detailed sidecars are needed.
+- Compaction never marks production work complete without the owning artifact contract and validation evidence.
+
 ### 3. Add Media Manifest Policy To Media-Producing Skills
 
 Required rule:
@@ -147,9 +164,7 @@ Acceptance criteria:
 
 ### 4. Clarify Timeline Helper Authority
 
-Current risk:
-
-- `build_timeline_sync_plan.py` still has candidate scoring behavior. That is useful as a fallback repair, but it must not silently override Visual Producer selection.
+Current status: hardened in the current implementation pass.
 
 Required rule:
 
@@ -161,7 +176,7 @@ Required rule:
 Acceptance criteria:
 
 - `timeline-sync-plan` says selected candidates are required inputs.
-- Helper fallback behavior is documented as repair-only.
+- Helper fallback behavior is documented and implemented as explicit repair-only behavior.
 - Render QA and artifact audit can flag unapproved helper-selected visuals.
 
 ### 5. Keep Remotion Template Governance Aligned
@@ -187,10 +202,10 @@ Acceptance criteria:
 
 | Skill | Current problem | Required hardening |
 |---|---|---|
-| `source-corpus-ingestion` | Source ledger shape is loose. | Add `source_id`, `source_type`, `path_or_url`, `owner`, `rights`, `reusable_scope`, `why_it_matters`, `evidence_refs`, `manifest_actions`, `missing_assets`, and `confidence`. |
+| `source-corpus-ingestion` | Strong after evidence-graph hardening. | Keep `source_ledger[]`, `claim_ledger[]`, rights, reusable scope, evidence refs, missing assets, confidence, invalidation impact, and manifest actions explicit. |
 | `channel-profile-management` | Output summary and invalidation policy are weak. | Add channel profile delta, project scaffold result, changed fields, downstream invalidation, manifest status, and QA summary. |
-| `reference-video-breakdown` | Timecoded evidence is not strict enough. | Require beat/shot objects with timestamps, transcript evidence, visual/audio/caption observations, reusable patterns, do-not-copy notes, media asset ids, model limitations, and confidence. |
-| `web-content-synthesis` | Claim extraction and unsupported claims are loose. | Add claim ledger, source ids, quote/summary boundaries, visual evidence candidates, rights notes, unsupported claims, contradictions, and story opportunities. |
+| `reference-video-breakdown` | Strong after evidence-graph hardening. | Keep `reference_beats[]`, transcript/shot/audio/caption evidence, reusable patterns, do-not-copy risks, media asset ids, model limitations, confidence, invalidation impact, and manifest actions explicit. |
+| `web-content-synthesis` | Strong after one-page web capture hardening. | Keep direct URL parsing bounded, preserve `web_pages[]`, `claim_ledger[]`, annotations, image candidates, rights/robots gates, and manifest actions. |
 | `style-system-extraction` | Style tokens are not shaped enough. | Add visual/audio/motion/thumbnail/template token objects, evidence refs, mandatory/preferred/flexible/avoid status, reusable template candidates, and inheritance impact. |
 | `channel-format-synthesis` | Version/freshness policy is weak. | Add version policy, source analysis ids, `must_vary` rules, anti-redundancy thresholds, template governance, evidence refs, and stale-input detection. |
 | `scenario-alignment-brief` | Returns notes rather than routable findings. | Return findings with `severity`, `scene_id`, `source_gap`, `format_gap`, `owner_agent`, `recommended_action`, and `blocks_downstream`. |
@@ -232,9 +247,9 @@ Acceptance criteria:
 | Skill | Current problem | Required hardening |
 |---|---|---|
 | `subtitle-caption-pipeline` | Caption outputs are not contract-shaped. | Add Caption JSON/SRT output summary, source alignment, safe-area QA, burned-in/separate subtitle decision, caption asset ids, and blockers. |
-| `timeline-sync-plan` | Output needs stricter coverage checks. | Add required per-scene frame ranges, selected visual layers, voice/caption ranges, transition handles, template contract references, helper authority policy, and QA failure policy. |
+| `timeline-sync-plan` | Strong after hardening. | Keep authority lock aligned: Visual Producer selections only by default; repair fallback requires explicit flag and Director review. |
 | `remotion-post-production` | Deliverables are loose. | Add expected timeline source files, composition ids, media normalization report, audio mix report, transition map, render-readiness checklist, and manifest actions. |
-| `render-release-candidate` | RC metadata needs to be deterministic. | Add RC versioning, exact render commands, output paths, subtitles, manifest updates, rights notes, known blockers, fallback export commands, and reproducibility checks. |
+| `render-release-candidate` | Strong after hardening. | Keep RC packages immutable and reproducible with version, attempt id, inputs, hashes, commands, logs, metadata, manifest actions, QA, and blockers. |
 
 ### Video Critic
 
@@ -297,6 +312,32 @@ After the batch:
 - Run duplicate skill-name scan.
 - Run contract JSON parse.
 - Update the integrated spec count and Freepik row if not already aligned.
+
+## Third Implementation Batch
+
+Started for timeline authority and render reproducibility:
+
+1. [x] Harden `timeline-sync-plan`.
+2. [x] Tighten `build_timeline_sync_plan.py` so strict mode consumes Visual Producer selections only.
+3. [x] Add explicit `--allow-repair-default` helper fallback that marks visuals as `repair_default` and requires Director review.
+4. [x] Harden `render-release-candidate` as an immutable RC attestation package.
+
+## Fourth Implementation Batch
+
+Started for first media manifest propagation:
+
+1. [x] Confirm `timeline-sync-plan` reports `manifest_actions[]`.
+2. [x] Confirm `render-release-candidate` reports `manifest_actions[]`.
+3. [x] Harden `source-corpus-ingestion` with source ledger fields, evidence requirements, rights/reuse policy, and manifest actions.
+4. [x] Harden `reference-video-breakdown` with timecoded evidence, sidecar artifact coverage, do-not-copy risks, and manifest actions.
+
+## Fifth Implementation Batch
+
+Started for Channel Intelligence evidence-graph hardening:
+
+1. [x] Add explicit `source_ledger[]`, `claim_ledger[]`, downstream guidance, and invalidation impact requirements to `source-corpus-ingestion`.
+2. [x] Add explicit `reference_beats[]`, beat-level evidence categories, do-not-copy risks, confidence, and invalidation impact requirements to `reference-video-breakdown`.
+3. [x] Keep both skills contract-compatible without adding schemas by using additive fields in `reference-analysis` artifacts.
 
 ## Validation Commands
 

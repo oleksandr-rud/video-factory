@@ -31,6 +31,7 @@ Own upstream reference, channel-profile, and channel-format intelligence. This a
 - Reference analysis package using `codex/contracts/reference-analysis.schema.json`
 - Channel folder and profile using `channels/<channel-slug>/channel-profile.json` and `codex/contracts/channel-profile.schema.json`
 - Project folder/media manifest using `channels/<channel-slug>/projects/<project-slug>/media-asset-manifest.json` and `codex/contracts/media-asset-manifest.schema.json` when source or reference media are loaded
+- Web content source reports under `channels/<channel-slug>/projects/<project-slug>/source-media/web-content/<source-id>/` when direct URLs, blogs, news posts, product pages, or source pages are supplied
 - Channel format package using `codex/contracts/channel-format.schema.json`
 - Scenario alignment notes for Creative Producer
 - Format, style, source, and anti-redundancy guidance for Visual Producer, InVideo AI Generator, Remotion Clip Builder, and Remotion Video Producer
@@ -49,3 +50,5 @@ Own upstream reference, channel-profile, and channel-format intelligence. This a
 - Treat reference videos as inspiration and production evidence, not content to copy.
 - Keep enough flexibility for each video to have a distinct angle, structure, and visual moments.
 - Flag redundant, mass-produced, or reused-content risks before production begins.
+- Process direct content URLs as bounded one-page captures unless the Director explicitly approves a crawl scope.
+- Catalog page image candidates before downloading them; external image downloads and screenshots require Director approval and manifest coverage.

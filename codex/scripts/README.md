@@ -61,3 +61,41 @@ Optional tools:
 - PySceneDetect improves scene boundary detection; without it the script uses fallback time segments.
 - `tesseract` is used only when `--enable-ocr` or `REFERENCE_ANALYSIS_ENABLE_OCR=true` is set.
 - WhisperX, CLIP embeddings, and direct-video model observations are not executed by this local MVP script. Run those externally or through an approved provider path, then pass `--transcript-path`, `--embedding-index-path`, or `--model-observation-path`.
+
+## Web Content Parsing
+
+`codex/agents/channel-intelligence/scripts/parse_web_content.py` prepares deterministic one-page evidence for supplied article/blog/news/product/source URLs. It writes a `reference-analysis.schema.json`-shaped fragment plus `raw.html`, `extracted.json`, `extracted.md`, `source-report.json`, `source-report.md`, `annotations.json`, and `images/image-manifest.json`. It does not crawl related pages by default.
+
+Dry local page capture:
+
+```powershell
+python codex/agents/channel-intelligence/scripts/parse_web_content.py `
+  --url "https://example.com/post" `
+  --source-id "source-web-001" `
+  --work-dir "channels/demo/projects/sample/source-media/web-content/source-web-001" `
+  --output "channels/demo/projects/sample/source-media/web-content/source-web-001/reference-analysis.json"
+```
+
+With manifest update:
+
+```powershell
+python codex/agents/channel-intelligence/scripts/parse_web_content.py `
+  --url "https://example.com/post" `
+  --source-id "source-web-001" `
+  --work-dir "channels/demo/projects/sample/source-media/web-content/source-web-001" `
+  --output "channels/demo/projects/sample/source-media/web-content/source-web-001/reference-analysis.json" `
+  --media-asset-manifest "channels/demo/projects/sample/media-asset-manifest.json" `
+  --update-media-asset-manifest
+```
+
+Approved image downloads:
+
+```powershell
+python codex/agents/channel-intelligence/scripts/parse_web_content.py `
+  --url "https://example.com/post" `
+  --source-id "source-web-001" `
+  --work-dir "channels/demo/projects/sample/source-media/web-content/source-web-001" `
+  --output "channels/demo/projects/sample/source-media/web-content/source-web-001/reference-analysis.json" `
+  --download-images `
+  --approved-downloads
+```

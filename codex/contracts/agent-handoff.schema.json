@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "AgentHandoff",
   "type": "object",
-  "required": ["request_id", "from_agent", "to_agent", "objective", "inputs", "allowed_paths", "output_contract", "definition_of_done"],
+  "required": ["handoff_id", "run_id", "project_path", "request_id", "from_agent", "to_agent", "objective", "inputs", "allowed_paths", "skills_to_read", "output_contract", "definition_of_done", "stop_conditions", "budget_policy"],
   "properties": {
     "handoff_id": { "type": "string" },
     "run_id": { "type": "string" },

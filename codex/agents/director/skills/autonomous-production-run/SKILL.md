@@ -13,9 +13,9 @@ Use this after `decompose-video-request` when the user wants a full run, `/goal`
 2. Create or update the video project under `channels/<channel-slug>/projects/<project-slug>/project.json` when a durable deliverable is in scope; store its path in `project_path`.
 3. Create or update the media asset manifest under the project folder when source videos, reference videos, generated clips, rendered clips, subtitles, review frames, or other media assets are in scope; store its path in `media_asset_manifest_path`.
 4. Create or resolve the Remotion app contract matching `codex/contracts/remotion-project.schema.json`; default to the shared `remotion/` app and store the repo-relative contract path in `remotion_project_contract_path`. When reusable Remotion components are in scope, also resolve the app template registry path and any project template contract paths matching `codex/contracts/remotion-template.schema.json`.
-5. Create or update a run ledger matching `codex/contracts/production-run.schema.json` inside the project folder.
+5. Create or update a run ledger matching `codex/contracts/production-run.schema.json` inside the project folder. Initialize `context_state` so the run can resume from files after context compaction.
 6. Create or update the producer criteria artifact matching `codex/contracts/producer-criteria.schema.json`; store its path in `producer_criteria_path`.
-7. Load `AGENTS.md`, the target agent `AGENT.md`, and only the skill files named in each handoff.
+7. Load `AGENTS.md`, the target agent `AGENT.md`, and only the skill files named in each handoff. On resume, first read the production run ledger and the files listed in `context_state.artifacts_to_reload_next`.
 8. Build each handoff using `codex/contracts/agent-handoff.schema.json`.
    - A production agent's `handoff_recommendations[]` are not executable work by themselves. Convert them into Director-owned handoffs before downstream agents run.
    - Only name skills that belong to the target agent's folder or explicitly approved built-in skills.
@@ -38,7 +38,18 @@ Use this after `decompose-video-request` when the user wants a full run, `/goal`
    - Quality gated review loop after the first critique if findings do not pass release-candidate gates.
 10. Parallelize only independent work. Do not run a downstream agent before its required input artifact exists.
 11. After each handoff, validate that the returned artifact matches its output contract, update the media asset manifest, project index, and run ledger, and send one targeted repair handoff if required fields or QA evidence are missing.
-12. Continue until complete, blocked, waiting for approval, or release-candidate gates pass.
+12. Run `context-compaction` after each phase boundary, long handoff, review-loop iteration, user change, or large research/tool-output step. Keep the active working set limited to the current phase, next handoff, approvals, blockers, and `context_state.artifacts_to_reload_next`.
+13. Continue until complete, blocked, waiting for approval, or release-candidate gates pass.
+
+## Context Growth Policy
+
+Use `context-compaction` as the durable memory boundary for autonomous work.
+
+- Persist important state in `production-run.context_state`, not in conversation memory.
+- Keep raw research, render logs, review frames, transcripts, provider responses, and full critique responses on disk; keep only paths and relevant ids in active context.
+- After compaction or resume, read `AGENTS.md`, Director `AGENT.md`, the production run ledger, and only the files listed in `context_state.artifacts_to_reload_next`.
+- Before delegating, refresh the reload list with the exact target `AGENT.md`, local skills, input contracts, producer criteria, budget policy, and stop conditions needed by that handoff.
+- Mark the run ledger `stale` or `blocked` if the compaction summary points to missing, superseded, or invalidated artifacts.
 
 ## Approval Stops
 

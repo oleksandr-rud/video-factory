@@ -15,7 +15,14 @@
     "media_asset_id": { "type": "string" },
     "route": {
       "type": "string",
-      "enum": ["remotion_generated", "ai_video_generation", "stock_clip", "user_supplied_media"]
+      "enum": [
+        "remotion_generated",
+        "ai_video_generation",
+        "stock_clip",
+        "user_supplied_media",
+        "approved_web_image",
+        "source_card_recreation"
+      ]
     },
     "provider": { "type": "string" },
     "source_url": { "type": "string" },

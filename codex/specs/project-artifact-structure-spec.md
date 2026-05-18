@@ -33,6 +33,7 @@ channels/<channel-slug>/projects/<project-slug>/
   source-media/
     reference-videos/
     reference-analysis/
+    web-content/
     loaded-videos/
     provider-clips/
     generated-clips/
@@ -50,8 +51,17 @@ channels/<channel-slug>/projects/<project-slug>/
     evidence/
   runs/
     <run-id>/
+      context/
   delivery/
 ```
+
+Store context compaction snapshots under:
+
+```text
+channels/<channel-slug>/projects/<project-slug>/runs/<run-id>/context/context-snapshot-<timestamp>.json
+```
+
+The production run ledger remains the entry point. Snapshot files are optional detailed sidecars; `production-run.context_state` must contain the compact working set and reload list needed to continue the next phase.
 
 ## Remotion Public Projection
 
@@ -105,10 +115,30 @@ channels/<channel-slug>/projects/<project-slug>/source-media/reference-analysis/
 
 The reference analysis JSON may live under the project, channel references folder, or run artifact folder, but persisted paths should remain repo-relative. Deterministic sidecars should be entered in `media-asset-manifest.json` or explicitly listed as deferred manifest entries.
 
+## Web Content Source Storage
+
+Store supplied direct web/article/blog/news links as one source folder per URL. Do not crawl the site unless the Director explicitly expands the scope.
+
+```text
+channels/<channel-slug>/projects/<project-slug>/source-media/web-content/<source-id>/raw.html
+channels/<channel-slug>/projects/<project-slug>/source-media/web-content/<source-id>/extracted.json
+channels/<channel-slug>/projects/<project-slug>/source-media/web-content/<source-id>/extracted.md
+channels/<channel-slug>/projects/<project-slug>/source-media/web-content/<source-id>/source-report.json
+channels/<channel-slug>/projects/<project-slug>/source-media/web-content/<source-id>/source-report.md
+channels/<channel-slug>/projects/<project-slug>/source-media/web-content/<source-id>/annotations.json
+channels/<channel-slug>/projects/<project-slug>/source-media/web-content/<source-id>/images/image-manifest.json
+channels/<channel-slug>/projects/<project-slug>/source-media/web-content/<source-id>/images/<source-id>-image-<nnn>-<checksum>.<ext>
+channels/<channel-slug>/projects/<project-slug>/source-media/web-content/<source-id>/screenshots/full-page.png
+```
+
+Default capture should save raw HTML, extracted text/metadata, image URL candidates, claim candidates, evidence annotations, and a report. Image files and screenshots are local media artifacts: download or capture them only when the Director has recorded approval and then add them to `media-asset-manifest.json` as `web_image` or `screenshot` assets.
+
+For 10-20 supplied links, process each URL as an independent one-page source with a stable `source_id`; merge the resulting `web_pages[]`, `claim_ledger[]`, image manifests, and source reports into the project reference analysis rather than storing one large untraceable scrape.
+
 ## Contract Map
 
 - `video-project.schema.json`: durable project index, folder layout, deliverables, artifact paths, Remotion setup, current run/render state.
-- `production-run.schema.json`: one execution attempt, handoffs, approvals, blockers, review loops, invalidation/rerun state.
+- `production-run.schema.json`: one execution attempt, handoffs, approvals, blockers, review loops, invalidation/rerun state, and compact context/resume state.
 - `media-asset-manifest.schema.json`: loaded videos, provider clips, generated clips, rendered clips, subtitles, review frames, technical metadata, rights state, and evidence refs.
 - `remotion-project.schema.json`: Remotion app root, package manager, composition registry, commands, dependency policy, and public asset policy.
 - `reference-analysis.schema.json`: source ledger and timecoded evidence distilled for production.

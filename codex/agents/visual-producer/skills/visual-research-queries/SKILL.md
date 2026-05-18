@@ -8,10 +8,12 @@ description: Generate and refine search queries for scene-level visual research 
 For each scene:
 
 1. Extract concrete nouns, actions, location, mood, camera angle, and motion.
-2. Create broad, narrow, and fallback search queries.
-3. Avoid copyrighted character, brand, or celebrity terms unless explicitly supplied and authorized.
-4. Include negative criteria for unsuitable clips.
-5. Map each query to a route: stock, generated video, Remotion, or user media.
-6. When Freepik/Magnific is a likely stock route, include a concise keyword/search term, optional order/filter notes, and language. Prefer simple searchable subjects/actions over full sentence prompts.
+2. Check `reference-analysis.web_pages[].visual_evidence_candidates`, `claim_ledger[]`, and media manifest assets before inventing new search terms.
+3. Create broad, narrow, and fallback search queries.
+4. Avoid copyrighted character, brand, or celebrity terms unless explicitly supplied and authorized.
+5. Include negative criteria for unsuitable clips.
+6. Map each query to a route: stock, generated video, Remotion, user media, approved web image, or source-card/motion-graphic recreation.
+7. When Freepik/Magnific is a likely stock route, include a concise keyword/search term, optional order/filter notes, and language. Prefer simple searchable subjects/actions over full sentence prompts.
+8. Treat page images and screenshots as evidence candidates until the media asset manifest marks them approved for use; otherwise suggest redrawn diagrams, source cards, or abstracted Remotion graphics.
 
 Return queries grouped by scene id and route.

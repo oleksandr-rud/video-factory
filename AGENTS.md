@@ -38,7 +38,7 @@ Every skill file is its own local rule set. Cross-cutting guidance can be summar
 
 Channel and project format specs may extend shared VFX rules through `channel-format.visual_system.vfx_rules`. Downstream handoffs should pass the channel format path so Visual Producer, Remotion Clip Builder, Remotion Video Producer, and Video Critic can apply those per-channel VFX extensions without relying on conversational context.
 
-Use `codex/agents/director/skills/autonomous-production-run/SKILL.md` for full autonomous work and post-run user changes. Track durable project state with `codex/contracts/video-project.schema.json` and execution state with `codex/contracts/production-run.schema.json`.
+Use `codex/agents/director/skills/autonomous-production-run/SKILL.md` for full autonomous work and post-run user changes. Use `codex/agents/director/skills/context-compaction/SKILL.md` after phase boundaries, long handoffs, review-loop iterations, and resumes so the Director can continue from durable artifact paths instead of conversation memory. Track durable project state with `codex/contracts/video-project.schema.json` and execution state with `codex/contracts/production-run.schema.json`.
 
 For deliverable videos, Director must create and preserve the producer criteria artifact using `codex/contracts/producer-criteria.schema.json`: the rules, instructions, restrictions, quality gates, scene criteria, revision policy, and acceptance criteria production agents were expected to follow. Video Critic uses that artifact as binding review input during the review loop.
 

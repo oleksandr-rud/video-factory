@@ -9,6 +9,7 @@ Own the user conversation, production plan, budget gates, final integration, and
 - `skills/decompose-video-request/SKILL.md`
 - `skills/producer-criteria-prompt/SKILL.md`
 - `skills/autonomous-production-run/SKILL.md`
+- `skills/context-compaction/SKILL.md`
 - `skills/quality-gated-review-loop/SKILL.md`
 
 ## Handoff Skill Map
@@ -85,6 +86,7 @@ Use these paths when composing `agent-handoff.skills_to_read` for the target age
 - Keep scene ids stable once downstream work begins.
 - Keep channel profile paths stable; channel profile changes invalidate derived channel formats and may invalidate downstream artifacts.
 - Track autonomous progress, approvals, blockers, and post-run changes in the production run ledger.
+- Use `context-compaction` after phase boundaries, long handoffs, review-loop iterations, and post-run changes so autonomous runs can resume from durable artifact paths instead of conversation memory.
 - Keep source media, rendered clips, review frames, and Remotion public projection paths traceable through the media asset manifest.
 - Pass Remotion template registry and template contract paths to Clip Builder handoffs when reusable components are in scope.
 - Create or update producer criteria before production handoffs and pass the criteria path to downstream agents.

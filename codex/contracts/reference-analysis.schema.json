@@ -150,6 +150,69 @@
         }
       }
     },
+    "web_pages": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["page_id", "source_id", "url"],
+        "properties": {
+          "page_id": { "type": "string" },
+          "source_id": { "type": "string" },
+          "url": { "type": "string" },
+          "final_url": { "type": "string" },
+          "captured_at": { "type": "string" },
+          "metadata": {
+            "type": "object",
+            "properties": {
+              "title": { "type": "string" },
+              "description": { "type": "string" },
+              "author": { "type": "string" },
+              "publisher": { "type": "string" },
+              "published_date": { "type": "string" },
+              "modified_date": { "type": "string" },
+              "language": { "type": "string" },
+              "canonical_url": { "type": "string" }
+            }
+          },
+          "artifacts": {
+            "type": "object",
+            "properties": {
+              "raw_html_path": { "type": "string" },
+              "extracted_json_path": { "type": "string" },
+              "extracted_markdown_path": { "type": "string" },
+              "image_manifest_path": { "type": "string" },
+              "annotations_path": { "type": "string" },
+              "report_markdown_path": { "type": "string" },
+              "report_json_path": { "type": "string" },
+              "screenshot_path": { "type": "string" }
+            }
+          },
+          "claim_candidates": { "type": "array", "items": { "type": "object" } },
+          "visual_evidence_candidates": { "type": "array", "items": { "type": "object" } },
+          "downloaded_images": { "type": "array", "items": { "type": "object" } },
+          "robots": { "type": "object" },
+          "limitations": { "type": "array", "items": { "type": "string" } },
+          "confidence": { "type": "string", "enum": ["high", "medium", "low", "unknown"] }
+        }
+      }
+    },
+    "claim_ledger": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["claim_id", "claim", "source_ids"],
+        "properties": {
+          "claim_id": { "type": "string" },
+          "claim": { "type": "string" },
+          "source_ids": { "type": "array", "items": { "type": "string" } },
+          "support_state": { "type": "string" },
+          "allowed_use": { "type": "string" },
+          "risk": { "type": "string" },
+          "confidence": { "type": "string", "enum": ["high", "medium", "low", "unknown"] },
+          "evidence_refs": { "type": "array", "items": { "type": "object" } }
+        }
+      }
+    },
     "findings": {
       "type": "object",
       "properties": {
@@ -197,7 +260,8 @@
         "visual_producer": { "type": "array", "items": { "type": "string" } },
         "invideo_ai_generator": { "type": "array", "items": { "type": "string" } },
         "remotion_clip_builder": { "type": "array", "items": { "type": "string" } },
-        "remotion_video_producer": { "type": "array", "items": { "type": "string" } }
+        "remotion_video_producer": { "type": "array", "items": { "type": "string" } },
+        "video_critic": { "type": "array", "items": { "type": "string" } }
       }
     }
   }

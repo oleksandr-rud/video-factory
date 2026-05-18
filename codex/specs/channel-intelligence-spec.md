@@ -56,6 +56,26 @@ ffprobe metadata
 
 The deterministic pass should record tool status and limitations in `reference-analysis.processing_runs[]`. Missing optional tools should produce a `partial` analysis with evidence gaps rather than blocking all production planning.
 
+## Web Content Source Analysis
+
+For supplied blogs, news posts, product pages, and other direct content links, use a one-page source capture lane before scenario or visual planning:
+
+```text
+URL
+-> robots/rights check
+-> raw HTML snapshot
+-> metadata and structured-data extraction
+-> article-like text blocks
+-> claim candidates and annotations
+-> image URL/srcset/Open Graph candidates
+-> optional approved image download or browser screenshot
+-> source report and reference-analysis web_pages[] entry
+```
+
+This is intentionally not a crawler. A batch of 10-20 direct links should produce 10-20 independent `source-media/web-content/<source-id>/` folders and merge the evidence into the project reference analysis. This keeps failures isolated, makes claim provenance auditable, and prevents a later script or visual decision from depending on untraceable page context.
+
+Direct image downloads and browser screenshots are approval-gated because they create local media from external sources. When approval is absent, Channel Intelligence should still catalog image URLs and alt/title metadata as `visual_evidence_candidates[]` with deferred manifest actions.
+
 ## Channel Format Synthesis
 
 The channel format should define:

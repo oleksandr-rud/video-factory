@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "ProductionRun",
   "type": "object",
-  "required": ["run_id", "request_id", "status", "objective", "artifacts", "qa"],
+  "required": ["run_id", "request_id", "status", "objective", "artifacts", "context_state", "qa"],
   "properties": {
     "run_id": { "type": "string" },
     "request_id": { "type": "string" },
@@ -25,6 +25,59 @@
     "media_asset_manifest_path": { "type": "string" },
     "remotion_project_contract_path": { "type": "string" },
     "remotion_app_root_path": { "type": "string" },
+    "context_state": {
+      "type": "object",
+      "required": ["status", "working_set_summary", "current_phase_summary", "artifacts_to_reload_next", "next_actions", "last_compacted_at"],
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": ["fresh", "compacted", "needs_compaction", "stale", "resume_required"]
+        },
+        "working_set_summary": { "type": "string" },
+        "current_phase_summary": { "type": "string" },
+        "last_resume_summary": { "type": "string" },
+        "context_snapshot_path": { "type": "string" },
+        "important_open_decisions": { "type": "array", "items": { "type": "string" } },
+        "active_blockers": { "type": "array", "items": { "type": "string" } },
+        "recent_user_requests": { "type": "array", "items": { "type": "string" } },
+        "recent_changes": { "type": "array", "items": { "type": "string" } },
+        "stale_or_invalidated_artifacts": { "type": "array", "items": { "type": "string" } },
+        "artifacts_to_reload_next": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["kind", "path", "reason"],
+            "properties": {
+              "kind": { "type": "string" },
+              "path": { "type": "string" },
+              "reason": { "type": "string" }
+            }
+          }
+        },
+        "next_actions": { "type": "array", "items": { "type": "string" } },
+        "context_budget_policy": { "type": "string" },
+        "compaction_reason": { "type": "string" },
+        "last_compacted_at": { "type": "string" }
+      }
+    },
+    "context_snapshots": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["snapshot_id", "path", "phase", "reason", "summary", "created_at"],
+        "properties": {
+          "snapshot_id": { "type": "string" },
+          "path": { "type": "string" },
+          "phase": { "type": "string" },
+          "reason": {
+            "type": "string",
+            "enum": ["phase_boundary", "review_loop", "user_change", "context_pressure", "resume", "manual"]
+          },
+          "summary": { "type": "string" },
+          "created_at": { "type": "string" }
+        }
+      }
+    },
     "artifacts": {
       "type": "array",
       "items": {

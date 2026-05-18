@@ -40,6 +40,18 @@ Codex's own public guidance emphasizes configured environments, repository instr
 
 Local decision: channel folders are durable identity and reference state; project folders are durable deliverable workspaces; run folders are execution attempts. Loaded videos, source media, generated clips, rendered clips, subtitles, review frames, and evidence refs are tracked by `media-asset-manifest.schema.json`. The Remotion app is tracked separately by `remotion-project.schema.json` so dependencies, commands, composition ids, and public asset rules are explicit.
 
+## Context Compaction Findings
+
+LangChain's current context-engineering guidance for deep agents separates input context, runtime context, and context compression. It recommends offloading large tool inputs/results to a filesystem, summarizing older messages, using subagents for context quarantine, and keeping active context small by reading files back only when needed. Source: https://docs.langchain.com/oss/python/deepagents/context-engineering
+
+LangChain's short-term memory docs describe long conversations as costly and error-prone even when a model technically supports the context length; common mitigations include trimming, deleting, summarizing, and custom message filtering. For this project, destructive deletion is a bad fit because the Director needs auditability, but summarizing plus artifact references maps well to the run ledger. Source: https://docs.langchain.com/oss/python/langchain/short-term-memory
+
+Letta's compaction docs describe sliding-window summarization, keeping recent messages while summarizing older ones, and configurable compaction modes. Letta's stateful-agent docs also emphasize that old messages remain retrievable after compaction/eviction while important memory is injected back into context. This supports preserving raw records on disk and keeping only compact working memory in the active prompt. Sources: https://docs.letta.com/guides/core-concepts/messages/compaction/ and https://docs.letta.com/guides/core-concepts/stateful-agents
+
+The MemGPT paper frames context management as hierarchical memory: move information between fast limited context and slower larger storage while preserving the illusion of a larger working memory. The local equivalent is `production-run.context_state` as fast memory and project/run artifacts as slower authoritative storage. Source: https://arxiv.org/abs/2310.08560
+
+Local decision: add a Director-owned `context-compaction` skill, not a script. Compaction needs judgment about what is authoritative, stale, blocked, or required next. The skill updates `production-run.context_state`, optionally writes run-local context snapshots, and forces resumes to reload only the next working set rather than the whole conversation.
+
 ## Remotion Capability Findings
 
 The installed Codex Remotion skill is not just a generic style guide. It includes local rules for 3D, animation, assets, audio, audio visualization, captions/subtitles, FFmpeg, GIFs, light leaks, Lottie, maps, text animations, transitions, transparent videos, trimming, videos, and voiceover.
@@ -134,6 +146,22 @@ YouTube's creator playbook for brands uses a content strategy split of hero, hub
 YouTube monetization guidance emphasizes original, authentic, non-repetitive content. It also notes that reviewers may look across a channel's main theme, most viewed videos, newest videos, major watch-time sources, metadata, and About section. This supports adding an explicit redundancy-risk audit before production. Source: https://support.google.com/youtube/answer/1311392
 
 Reference-analysis tools show the same workflow boundary in practice. VidRush separates reference-video transcript rhythm from visual style decisions; ShotBook breaks references into technique, structure, camera, editing, and execution; Video to Prompt turns reference clips into shot-level prompts with camera, lighting, and style notes. Sources: https://docs.vidrush.ai/docs/reference-video, https://shotbook.art/, and https://vidtoprompt.net/
+
+## Web Source And Reference Parsing Findings
+
+For reference videos, the existing deterministic path remains right: `ffprobe` first, scene/segment detection second, keyframes third, and optional OCR/transcript/model interpretation after approval. FFmpeg documents `ffprobe` as a machine-readable media stream inspector with JSON output, and PySceneDetect documents content, threshold, adaptive, and histogram detectors for shot/scene boundary evidence. Sources: https://ffmpeg.org/ffprobe.html and https://www.scenedetect.com/docs/latest/api/detectors.html
+
+For 10-20 supplied content links, the best local default is one-page extraction, not crawling. RFC 9309 specifies robots rules that automated clients are requested to honor, and Scrapy's AutoThrottle guidance reinforces conservative rate/concurrency behavior for broader crawling. Since the user expects direct post links, the local workflow should avoid recursive crawls unless explicitly requested. Sources: https://www.ietf.org/rfc/rfc9309.html and https://doc.scrapy.org/en/latest/topics/autothrottle.html
+
+Article extraction should keep both a raw snapshot and a normalized report. Trafilatura's CLI supports JSON and other structured outputs, image/link preservation, separate output directories, and backup HTML sources; Mozilla Readability returns title, text content, excerpt, byline, site name, language, and published time, while warning that untrusted HTML output needs sanitization. Sources: https://trafilatura.readthedocs.io/en/stable/usage-cli.html and https://github.com/mozilla/readability
+
+Image evidence should be cataloged more carefully than plain `<img src>`. Open Graph defines `og:image` as the image representing the object, Schema.org Article provides article metadata fields such as author and publication date, and responsive-image docs show that pages may expose multiple image candidates through `srcset`/`sizes`. Sources: https://ogp.me/, https://schema.org/Article, and https://developer.mozilla.org/en-US/docs/Web/HTML/Guides/Responsive_images
+
+Screenshots are a fallback evidence layer for dynamic pages, charts, or lazy-loaded visuals. Playwright documents full-page and element screenshots; those should be stored as local artifacts only after the Director records approval because screenshots can capture copyrighted, licensed, logged-in, or sensitive page content. Source: https://playwright.dev/docs/screenshots
+
+Evidence annotations should be explicit. W3C's Web Annotation Data Model supports attaching bodies to web resources or timed media segments; the local equivalent is a lightweight `annotations.json` per source with claim and image targets, evidence refs, confidence, and review purpose. Source: https://www.w3.org/TR/annotation-model/
+
+Local decision: add a project-specific web content lane under `channels/<channel-slug>/projects/<project-slug>/source-media/web-content/<source-id>/`. Each direct URL gets raw HTML, extracted JSON/Markdown, source reports, annotations, image manifests, and optionally approved images/screenshots. These page fragments merge into `reference-analysis.web_pages[]`, `claim_ledger[]`, `evidence_refs[]`, and media manifest assets (`web_snapshot`, `source_report`, `web_image`, `screenshot`) so downstream producers can cite evidence without re-parsing the page.
 
 ## Architecture Decision
 

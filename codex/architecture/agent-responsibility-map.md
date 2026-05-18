@@ -5,7 +5,7 @@ This is the per-agent inventory and analysis for the current Video Factory archi
 Local scan summary:
 
 - Agents: 8
-- Local agent skills: 46
+- Local agent skills: 47
 - Contract schemas: 19
 - Specs: 7
 - Agent reference docs: 4
@@ -121,6 +121,7 @@ Own user conversation, request decomposition, producer criteria, budget/rights a
 - `codex/agents/director/skills/decompose-video-request/SKILL.md`
 - `codex/agents/director/skills/producer-criteria-prompt/SKILL.md`
 - `codex/agents/director/skills/autonomous-production-run/SKILL.md`
+- `codex/agents/director/skills/context-compaction/SKILL.md`
 - `codex/agents/director/skills/quality-gated-review-loop/SKILL.md`
 
 ### Reads And References
@@ -170,7 +171,7 @@ Own user conversation, request decomposition, producer criteria, budget/rights a
 
 ### Analysis Notes
 
-Director is the system's control point. The main risk is missing path propagation or stale artifact invalidation, not lack of authority. The existing skills define the run loop well; the next useful improvement would be a deterministic handoff validation helper that checks required paths, skills, contracts, and budget policy before any agent runs.
+Director is the system's control point. The main risk is missing path propagation, stale artifact invalidation, or context loss during long autonomous runs, not lack of authority. `context-compaction` now gives the Director a durable resume mechanism through `production-run.context_state`; deterministic handoff validation remains optional and should be added only if real runs still miss required paths, skills, contracts, or budget policy.
 
 ## Channel Intelligence
 
@@ -242,6 +243,9 @@ Own upstream channel, source, reference, and reusable format intelligence. It ma
 - `channels/<channel-slug>/assets/`
 - `channels/<channel-slug>/projects/<project-slug>/project.json`
 - `channels/<channel-slug>/projects/<project-slug>/media-asset-manifest.json`
+- `channels/<channel-slug>/projects/<project-slug>/source-media/reference-videos/`
+- `channels/<channel-slug>/projects/<project-slug>/source-media/reference-analysis/`
+- `channels/<channel-slug>/projects/<project-slug>/source-media/web-content/`
 
 ### Feeds
 
@@ -253,7 +257,7 @@ Own upstream channel, source, reference, and reusable format intelligence. It ma
 
 ### Analysis Notes
 
-Channel Intelligence is correctly upstream because its outputs affect script, voice, visual routes, AI prompts, Remotion styling, final timeline, and critique. Several skills remain checklist-level and should be hardened with explicit return shapes, especially source ledger fields, reference timestamp evidence, channel profile deltas, and downstream invalidation when profile rules change.
+Channel Intelligence is correctly upstream because its outputs affect script, voice, visual routes, AI prompts, Remotion styling, final timeline, and critique. `source-corpus-ingestion`, `reference-video-breakdown`, and `web-content-synthesis` now have structured evidence graphs, path patterns, approval gates, and manifest-action rules. Several skills remain checklist-level and should be hardened next, especially channel profile deltas, style tokens, channel format freshness, scenario alignment findings, and redundancy scoring.
 
 ## Creative Producer
 
@@ -652,7 +656,7 @@ Own full Remotion video assembly: timeline sync, scene sequencing, captions/subt
 
 ### Analysis Notes
 
-Remotion Video Producer's boundary is clean: it assembles and validates the full timeline but does not judge final viewer-facing quality. The main hardening needs are exact pass/fail categories for render QA, explicit RC versioning, strict manifest update rules, and complete frame-range/caption/audio coverage in the timeline sync plan.
+Remotion Video Producer's boundary is clean: it assembles and validates the full timeline but does not judge final viewer-facing quality. `timeline-sync-plan` now preserves Visual Producer selection authority, and `render-release-candidate` now requires immutable RC versioning and reproducibility evidence. The remaining hardening needs are caption/subtitle output shape, post-production deliverable shape, and broader media manifest propagation.
 
 ## Video Critic
 
@@ -790,10 +794,10 @@ Every artifact that affects delivery should preserve at least one trace:
 
 1. Manual inventory counts remain fragile; current scan is 46 local skills and 19 contracts.
 2. The first four critical judgment/QA skills are now hardened: `clip-candidate-ranking`, `generated-clip-qa`, `render-qa`, and `artifact-consistency-audit`.
-3. Next thin skills before reliable autonomous runs: `render-release-candidate`, `timeline-sync-plan`, and the thinner Channel Intelligence skills.
+3. Next thin skills before reliable autonomous runs: `subtitle-caption-pipeline`, `remotion-post-production`, and the thinner Channel Intelligence skills.
 4. Deterministic handoff validation should stay optional until real runs show repeated drift; prompt/spec hardening is the current priority.
 5. Every media-producing skill should either update the media asset manifest or explicitly state why no media manifest update was possible.
-6. Timeline helpers must consume Visual Producer selections and must not silently become creative visual-ranking authorities.
+6. Timeline helpers now default to consuming Visual Producer selections and can only choose repair fallback visuals through explicit Director-reviewed repair mode.
 7. Review assets and paid model critique need reproducibility fields: prompt path, request preview path, raw response path, model, review mode, frame list, and limitations.
 8. Remotion template governance is now present, but project/channel template override examples are still needed.
 9. Current `channels/` has no durable project artifacts yet, so the next real production run should generate example channel profile, project, manifest, run ledger, and criteria artifacts.
