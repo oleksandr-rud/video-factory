@@ -5,17 +5,17 @@ This plan turns the current architecture gaps into concrete implementation work.
 Current repo inventory from local scan:
 
 - Agents: 8
-- Local `SKILL.md` files: 48
-- Non-Director skills: 43
-- Director handoff map entries: 43
-- Contract schemas: 19
+- Local `SKILL.md` files: 50
+- Non-Director skills: 44
+- Director handoff map entries: 44
+- Contract schemas: 20
 - Specs: 7
-- Example fixtures: `codex/examples/channel-profile.template.json`, `codex/examples/video-project.template.json`, `codex/examples/media-asset-manifest.template.json`, `codex/examples/producer-criteria.template.json`, `codex/examples/remotion-project.template.json`, `codex/examples/remotion-template.template.json`, and `codex/examples/production-run.template.json`
+- Example fixtures: `codex/examples/channel-profile.template.json`, `codex/examples/video-project.template.json`, `codex/examples/media-asset-manifest.template.json`, `codex/examples/producer-criteria.template.json`, `codex/examples/remotion-project.template.json`, `codex/examples/remotion-template.template.json`, `codex/examples/production-run.template.json`, and `codex/examples/agent-handoff.artifact-repair.template.json`
 - Duplicate skill names: 0
 - Missing Director handoff map entries: 0
 - Strong skills by hardening template: 31
 - Missing skill script references: 0
-- API/paid-looking skills missing approval terms: 0
+- API/paid-looking skills missing approval terms: 1 (`codex/agents/remotion-clip-builder/skills/vfx-quality-performance-hardening/SKILL.md`)
 - Durable channel/project examples in `channels/`: none beyond `channels/.gitkeep`; reusable placeholders live under `codex/examples/`
 
 ## Hardening Standard
@@ -127,7 +127,7 @@ Do not add a validation helper yet. Revisit a helper only if persisted handoffs 
 
 ### 2a. Keep Director Context Compaction Explicit
 
-Current status: Director has a dedicated `context-compaction` skill, required `production-run.context_state` contract fields, optional `production-run.invalidation_graph` support, and reusable fixtures under `codex/examples/` for channel profile, video project, media manifest, producer criteria, Remotion project, Remotion template, and production run artifacts.
+Current status: Director has a dedicated `context-compaction` skill, required `production-run.context_state` contract fields, optional `production-run.invalidation_graph` support, repair-handoff routing reference, and reusable fixtures under `codex/examples/` for channel profile, video project, media manifest, producer criteria, Remotion project, Remotion template, production run, and artifact repair handoff artifacts.
 
 Required rule:
 

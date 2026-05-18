@@ -12,6 +12,7 @@ Convert the user request into a Director-owned production brief, artifact path m
 - User request, attached/source files, URLs, target platform, deadline, and explicit constraints
 - Existing channel/project/run paths when resuming or changing a prior run
 - Repo architecture rules, agent `AGENT.md` files, Director handoff skill map, and contract schemas
+- Director repair routing reference at `codex/agents/director/references/artifact-problem-routing.md` when the request is a repair, critique follow-up, sync failure, or post-run change
 - Budget policy, provider preferences, credentials availability, and approval state
 - Existing channel profile, source/reference analysis, producer criteria, media manifest, Remotion app contract, or render artifacts when available
 
@@ -31,7 +32,8 @@ Convert the user request into a Director-owned production brief, artifact path m
 11. Build handoffs using `codex/contracts/agent-handoff.schema.json`; include project path, media asset manifest path, Remotion project contract path, Remotion template registry/contract paths, channel profile path, channel format path, and producer criteria path when available.
 12. Treat Visual Producer `handoff_recommendations[]` as routing input only. The Director decides whether to create downstream InVideo AI Generator or Remotion Clip Builder handoffs and names the target agent's local skills.
 13. Mark visual research as a non-skippable dependency in the plan when channel format, producer criteria, scene composition, template requirements, VFX requirements, source-card rules, or provider choices depend on reference/source visuals. The planned Visual Producer output must include `scene-visual-pack.schema.json` plus route/query research, fallback coverage, and approval/deferred actions.
-14. Use `autonomous-production-run` when the user expects the Director to keep working until complete or blocked.
+14. For repair, critique follow-up, stale artifact, or "things are off" requests, normalize the reported problem using `artifact-problem-routing.md`, choose the owning agent from that reference, and create only owner-scoped repair handoffs. Do not let the consuming agent silently rewrite upstream artifacts.
+15. Use `autonomous-production-run` when the user expects the Director to keep working until complete or blocked.
 
 ## Required Output
 

@@ -8,9 +8,9 @@ Local scan summary:
 - Local agent skills: 50
 - Contract schemas: 20
 - Specs: 7
-- Agent reference docs: 4
+- Agent reference docs: 5
 - Shared Remotion template contracts: 4
-- Example fixtures: `codex/examples/channel-profile.template.json`, `codex/examples/video-project.template.json`, `codex/examples/media-asset-manifest.template.json`, `codex/examples/producer-criteria.template.json`, `codex/examples/remotion-project.template.json`, `codex/examples/remotion-template.template.json`, and `codex/examples/production-run.template.json`
+- Example fixtures: `codex/examples/channel-profile.template.json`, `codex/examples/video-project.template.json`, `codex/examples/media-asset-manifest.template.json`, `codex/examples/producer-criteria.template.json`, `codex/examples/remotion-project.template.json`, `codex/examples/remotion-template.template.json`, `codex/examples/production-run.template.json`, and `codex/examples/agent-handoff.artifact-repair.template.json`
 - Channel project artifacts currently present: none beyond `channels/.gitkeep`
 
 ## Architecture Rule
@@ -48,6 +48,7 @@ Architecture and global specs:
 
 Agent-local reference docs:
 
+- `codex/agents/director/references/artifact-problem-routing.md`: Director repair routing reference for mapping sync, QA, critique, and boundary-check findings to owner-scoped handoffs.
 - `codex/agents/channel-intelligence/references/reference-analysis-dimensions.md`: dimensions for reference video, web/blog source, and channel format analysis.
 - `codex/agents/invideo-ai-generator/references/invideo-ai-generation.md`: InVideo routes, model notes, positive prompt structure, negative prompt policy, and generation checklist.
 - `codex/agents/remotion-clip-builder/references/remotion-component-stack.md`: Remotion-native stack, official templates, packages, dependency guardrails, and local template rules.
@@ -137,6 +138,7 @@ Own user conversation, request decomposition, producer criteria, budget/rights a
 
 - `codex/agents/director/skills/decompose-video-request/SKILL.md`
 - `codex/agents/director/skills/producer-criteria-prompt/SKILL.md`
+- `codex/agents/director/skills/scene-artifact-sync/SKILL.md`
 - `codex/agents/director/skills/autonomous-production-run/SKILL.md`
 - `codex/agents/director/skills/context-compaction/SKILL.md`
 - `codex/agents/director/skills/quality-gated-review-loop/SKILL.md`
@@ -149,6 +151,7 @@ Own user conversation, request decomposition, producer criteria, budget/rights a
 - `codex/specs/project-artifact-structure-spec.md`
 - `codex/specs/remotion-production-spec.md`
 - `codex/specs/video-critique-spec.md`
+- `codex/agents/director/references/artifact-problem-routing.md` when routing repair handoffs from sync, QA, critique, or boundary-check findings.
 - Every target agent `AGENT.md` and only the target skill files named in each handoff.
 - All current run artifacts when integrating, rerouting, or delivering.
 
@@ -158,6 +161,7 @@ Own user conversation, request decomposition, producer criteria, budget/rights a
 - `codex/contracts/production-run.schema.json`
 - `codex/contracts/video-project.schema.json`
 - `codex/contracts/producer-criteria.schema.json`
+- `codex/contracts/scene-artifact-sync.schema.json`
 - `codex/contracts/remotion-project.schema.json` when resolving Remotion setup.
 - Final delivery notes and release-gate decisions.
 

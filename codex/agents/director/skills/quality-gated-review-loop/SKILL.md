@@ -41,6 +41,8 @@ Every critic handoff must include:
    - If major findings exist in gate categories, route fixes unless the configured gate allows them.
    - If only accepted minor findings/notes remain, the Director may approve RC with residual risks.
 5. Dispatch revision handoffs by owner agent. Include the exact finding ids, scene ids, timestamps, evidence, producer criteria, previous failed fix attempts, and expected output artifacts.
+   - Use `codex/agents/director/references/artifact-problem-routing.md` to map each finding to the correct owner, target skills, output contract, invalidation scope, and definition of done.
+   - Do not dispatch a repair to the agent that merely observed the problem unless that agent also owns the affected artifact.
 6. Re-render downstream artifacts after fixes, then run Video Critic again.
 
 ## Revision Dependency Rules
@@ -66,6 +68,8 @@ Also add an `invalidation_graph.events[]` entry when any of these are true:
 - Critic evidence gaps: rerun `prepare-multimodal-review-package` or request missing inputs before changing production artifacts.
 
 Graph event fields should include `trigger`, source critique finding or change id when available, affected artifacts, preserved artifacts, rerun scope, owner agents, created timestamp, and notes. Mark any affected node status as `stale` or `invalidated` before dispatching the owner handoff.
+
+When findings are mixed or ambiguous, normalize them into the finding shape from `artifact-problem-routing.md` before creating handoffs. Prefer one owner-scoped handoff per artifact owner over one broad handoff that asks a specialist to coordinate unrelated repairs.
 
 ## Default Gate Policy
 

@@ -668,3 +668,33 @@ This follow-up was added after the visual debugging compaction when the next iss
 - `codex/agents/director/skills/scene-artifact-sync/scripts/build_scene_artifact_sync_report.py` creates a JSON report from scenario, visual pack, candidate, AI package, Remotion clip package, and timeline sync artifacts.
 - `codex/agents/remotion-video-producer/scripts/build_timeline_sync_plan.py` now requires `--visual-pack` and `--scene-artifact-sync`, carries scene lineage into each timeline scene, and marks failing sync rows as blockers.
 - `codex/agents/video-critic/scripts/prepare_video_review_assets.py` now accepts `--scene-artifact-sync` so critic evidence packages can carry the sync report path.
+
+## Follow-Up: Artifact Problem Handoff Routing
+
+User asked to find the Codex references and prepare handoffs for problems where agents detect cross-artifact drift, stale props, visual pack mismatch, render QA issues, critique findings, or post-run changes.
+
+### Routing Design Change
+
+- Added a Director-owned routing reference instead of giving every agent authority to wire the whole project.
+- Agents may cross-review consumed inputs, but repair handoffs are routed to the artifact owner.
+- The Director now uses a normalized finding shape with `problem_id`, `finding_source`, `problem_type`, scene ids, affected artifacts, evidence refs, owner, and recommended action.
+- Repair handoffs now explicitly include source finding ids, evidence, scene lineage, invalidated/preserved artifacts, output contract, validation evidence, stop conditions, and budget policy.
+
+### New Files Added
+
+1. `codex/agents/director/references/artifact-problem-routing.md`
+2. `codex/examples/agent-handoff.artifact-repair.template.json`
+
+### Existing Files Updated For Routing
+
+1. `AGENTS.md`
+2. `codex/agents/director/AGENT.md`
+3. `codex/agents/director/skills/decompose-video-request/SKILL.md`
+4. `codex/agents/director/skills/autonomous-production-run/SKILL.md`
+5. `codex/agents/director/skills/quality-gated-review-loop/SKILL.md`
+6. `codex/agents/director/skills/scene-artifact-sync/SKILL.md`
+7. `codex/architecture/agent-responsibility-map.md`
+8. `codex/specs/agent-system-integrated-spec.md`
+9. `codex/specs/orchestrator-agent-architecture-spec.md`
+10. `codex/specs/project-artifact-structure-spec.md`
+11. `codex/architecture/session-change-log-remotion-visual-debugging-2026-05-18.md`

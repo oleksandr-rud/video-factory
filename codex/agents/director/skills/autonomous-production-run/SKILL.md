@@ -21,6 +21,8 @@ Use this after `decompose-video-request` when the user wants a full run, `/goal`
 9. Build each handoff using `codex/contracts/agent-handoff.schema.json`.
    - Every handoff must include canonical fields: `handoff_id`, `run_id`, `project_path`, `skills_to_read`, `output_contract`, `definition_of_done`, `stop_conditions`, and `budget_policy`.
    - A production agent's `handoff_recommendations[]` are not executable work by themselves. Convert them into Director-owned handoffs before downstream agents run.
+   - For repair, sync, QA, or critique findings, load `codex/agents/director/references/artifact-problem-routing.md` and route the problem to the owner agent named there.
+   - Repair handoffs must include the source finding id, problem type, affected scene ids, affected artifacts, preserved artifacts, invalidated artifacts, and required validation evidence.
    - Only name skills that belong to the target agent's folder or explicitly approved built-in skills.
    - Include the project path in downstream handoff inputs once it exists.
    - Include the media asset manifest path, Remotion project contract path, and relevant Remotion template registry/contract paths in downstream handoff inputs once they exist.
@@ -51,6 +53,7 @@ Use this after `decompose-video-request` when the user wants a full run, `/goal`
    - Quality gated review loop after the first critique if findings do not pass release-candidate gates.
 11. Parallelize only independent work. Do not run a downstream agent before its required input artifact exists.
 12. After each handoff, validate that the returned artifact matches its output contract, update the media asset manifest, project index, and run ledger, run scene artifact sync when scene-linked artifacts changed, and send one targeted repair handoff if required fields or QA evidence are missing.
+   - The targeted repair handoff must go to the artifact owner, not merely to the agent that noticed the problem.
 13. Run `context-compaction` after each phase boundary, long handoff, review-loop iteration, user change, or large research/tool-output step. Keep the active working set limited to the current phase, next handoff, approvals, blockers, and `context_state.artifacts_to_reload_next`.
 14. When rerun dependencies become hard to audit from `review_loops[]`, add or update `production-run.invalidation_graph` with artifact nodes, dependency edges, and invalidation events before dispatching repairs.
 15. Continue until complete, blocked, waiting for approval, or release-candidate gates pass.
@@ -124,8 +127,9 @@ When the user changes or updates the request after a full run:
    - critique/revision plan
    - delivery metadata only
    - channel profile only
-3. Preserve stable ids when possible. Change scene ids only when scene boundaries or order change.
-4. Re-run only affected agents and downstream dependents.
+3. For every affected problem, normalize it through `codex/agents/director/references/artifact-problem-routing.md` before deciding owner and downstream rerun scope.
+4. Preserve stable ids when possible. Change scene ids only when scene boundaries or order change.
+5. Re-run only affected agents and downstream dependents.
    - Channel/source/reference changes can invalidate producer criteria, scenario, visual plan, specialist clips, timeline, render, and critique.
    - Channel profile changes can invalidate channel format, producer criteria, scenario voice direction, visuals, Remotion styles, timeline, render, and critique.
    - Channel format changes, including `visual_system.vfx_rules`, can invalidate producer criteria, visual pack constraints, Remotion clip packages, timeline/render QA, and critique.
@@ -138,8 +142,8 @@ When the user changes or updates the request after a full run:
    - Remotion template changes invalidate every clip package that references that template, then timeline, render, and critique.
    - Source media or Remotion public projection changes invalidate affected visual candidates, clips, timeline sync, render, and critique.
    - Timeline, subtitle, audio mix, transition, layout, animation, or export changes invalidate visual debugging, render, and critique.
-5. Update artifact versions and QA.
-6. Return a concise diff: what changed, what was regenerated, what stayed valid, and any residual blocker.
+6. Update artifact versions and QA.
+7. Return a concise diff: what changed, what was regenerated, what stayed valid, and any residual blocker.
 
 Do not restart the whole pipeline unless the request changes the channel format, core topic, or scenario structure enough to invalidate downstream artifacts.
 

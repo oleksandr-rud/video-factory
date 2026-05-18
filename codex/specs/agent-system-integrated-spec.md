@@ -109,6 +109,7 @@ Relations:
 Gaps:
 
 - `decompose-video-request` is now hardened with production brief, path map, agent plan, approval gates, and handoff summary.
+- `scene-artifact-sync` and `codex/agents/director/references/artifact-problem-routing.md` are the Director repair-routing pair for stale scene-linked artifacts, boundary-check failures, render QA findings, critique findings, and post-run changes.
 - The Director has enough rules, but the autonomous run should eventually write a machine-readable invalidation graph, not only prose.
 - The Director handoff map must stay complete for every current agent-owned skill; missing map entries are a P0 routing issue.
 - Handoff creation should first be hardened in prompts/specs. Add a deterministic helper only later if real runs still miss required fields.
@@ -272,6 +273,7 @@ Legend:
 | Creative Producer | `tts-production-plan` | Strong | Recently upgraded. | Keep provider execution guarded; ensure human narration also uses the contract. |
 | Director | `decompose-video-request` | Strong | Hardened with structured production brief, artifact path map, agent plan, initial handoffs, approvals, media manifest policy, stop conditions, and handoff summary. | Keep as the Director's first planning gate before autonomous runs. |
 | Director | `producer-criteria-prompt` | Medium | Contract exists, but skill needs a stricter example return shape. | Add exact producer criteria summary, scene criteria coverage, hard gate ids, threshold defaults, and revision policy. |
+| Director | `scene-artifact-sync` | Strong | Director-owned scene lineage gate with repair-owner statuses for missing, stale, orphaned, conflicting, or decision-required downstream artifacts. | Use with `artifact-problem-routing.md` before creating owner-scoped repair handoffs. |
 | Director | `autonomous-production-run` | Strong | Good run loop with canonical handoff fields, context compaction, media manifest requirements, and optional invalidation graph support. | Keep handoff validation script optional unless real runs drift. |
 | Director | `context-compaction` | Strong | New Director skill for durable resume summaries and reload lists. | Keep run-ledger context state authoritative; do not replace artifact contracts with prose summaries. |
 | Director | `quality-gated-review-loop` | Medium | Good policy with optional invalidation graph events for complex reruns, but still lacks the full standard output-section shape. | Add full Required Output, Status Policy, Evidence Required, Definition Of Done, and Handoff Summary sections later. |
@@ -341,6 +343,8 @@ Every handoff must include:
 - revision policy
 
 Specialist agents may return handoff recommendations, but recommendations are not executable. Only the Director creates executable `agent-handoff` records.
+
+Repair handoffs use `codex/agents/director/references/artifact-problem-routing.md` to normalize the finding, choose the owner agent, select target skills, attach evidence, and define downstream invalidation. The agent that finds a problem is not automatically the agent that should fix it.
 
 ### Approval Rules
 

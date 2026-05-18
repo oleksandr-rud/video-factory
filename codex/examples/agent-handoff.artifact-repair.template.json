@@ -1,0 +1,68 @@
+{
+  "handoff_id": "handoff_<run-id>_<owner-agent>_<problem-id>",
+  "run_id": "run_<project-slug>_001",
+  "project_id": "project_<project-slug>",
+  "project_path": "channels/<channel-slug>/projects/<project-slug>/project.json",
+  "request_id": "request_<id>",
+  "from_agent": "director",
+  "to_agent": "<owner-agent>",
+  "phase": "artifact_repair",
+  "channel_profile_path": "channels/<channel-slug>/channel-profile.json",
+  "channel_format_path": "channels/<channel-slug>/formats/<format-id>.json",
+  "producer_criteria_path": "channels/<channel-slug>/projects/<project-slug>/producer-criteria.json",
+  "media_asset_manifest_path": "channels/<channel-slug>/projects/<project-slug>/media-asset-manifest.json",
+  "scene_artifact_sync_report_path": "channels/<channel-slug>/projects/<project-slug>/runs/<run-id>/scene-artifact-sync.json",
+  "remotion_project_contract_path": "remotion/remotion-project.json",
+  "depends_on": [
+    "handoff or artifact id that produced the finding"
+  ],
+  "status": "planned",
+  "autonomy_mode": "approval_gated",
+  "objective": "Repair <problem-type> for <scene-id or artifact path> while preserving current source ownership and returning the expected output contract.",
+  "inputs": [
+    {
+      "kind": "problem",
+      "path_or_value": "<problem-id>",
+      "notes": "Finding source, severity, owner mapping, and recommended action from artifact-problem-routing.md."
+    },
+    {
+      "kind": "source_finding",
+      "path_or_value": "channels/<channel-slug>/projects/<project-slug>/reviews/<critique-or-qa>.json",
+      "notes": "Include finding ids, timestamps, sampled frames, screenshots, or artifact fields that prove the issue."
+    },
+    {
+      "kind": "scenario_scene",
+      "path_or_value": "channels/<channel-slug>/projects/<project-slug>/scenario.json#<scene-id>",
+      "notes": "Include scene_id, scene_index, timing, and scenario_scene_fingerprint for scene-linked repairs."
+    },
+    {
+      "kind": "scene_visual_pack",
+      "path_or_value": "channels/<channel-slug>/projects/<project-slug>/scene-visual-pack.json#<scene-pack-id>",
+      "notes": "Include scene_pack_id, prop requirements, route, candidate requirements, and scene pack fingerprint when relevant."
+    }
+  ],
+  "allowed_paths": [
+    "channels/<channel-slug>/projects/<project-slug>/<owner-owned-artifact-folder>/",
+    "remotion/<owner-owned-remotion-path-if-needed>/"
+  ],
+  "skills_to_read": [
+    "codex/agents/<owner-agent>/skills/<skill-name>/SKILL.md"
+  ],
+  "output_contract": "codex/contracts/<owner-output-contract>.schema.json",
+  "expected_artifacts": [
+    "channels/<channel-slug>/projects/<project-slug>/<owner-artifact>.json"
+  ],
+  "definition_of_done": [
+    "The owner artifact is repaired or explicitly blocked with structured evidence.",
+    "Current scene lineage fields are preserved when the repair is scene-linked.",
+    "Validation evidence is written or referenced, and downstream invalidation is reported."
+  ],
+  "stop_conditions": [
+    "Paid API spend, generation credits, licensed media, paid template use, external critique, or release waiver is required without approval.",
+    "Required source artifacts are missing or stale and cannot be repaired inside the owner scope.",
+    "The fix belongs to another production agent.",
+    "The same blocker persists after one targeted repair attempt."
+  ],
+  "revision_policy": "Repair only the affected owner-scoped artifacts. Return handoff recommendations for other owners instead of editing their artifacts.",
+  "budget_policy": "No paid API calls, generation credits, licensed downloads, external uploads, paid critique, or paid templates without explicit Director/user approval."
+}

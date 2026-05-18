@@ -85,15 +85,21 @@ Local skills:
 
 - `codex/agents/director/skills/decompose-video-request/SKILL.md`
 - `codex/agents/director/skills/producer-criteria-prompt/SKILL.md`
+- `codex/agents/director/skills/scene-artifact-sync/SKILL.md`
 - `codex/agents/director/skills/autonomous-production-run/SKILL.md`
 - `codex/agents/director/skills/context-compaction/SKILL.md`
 - `codex/agents/director/skills/quality-gated-review-loop/SKILL.md`
+
+References:
+
+- `codex/agents/director/references/artifact-problem-routing.md`
 
 Writes or updates:
 
 - `channels/<channel-slug>/projects/<project-slug>/production-run.json`
 - `channels/<channel-slug>/projects/<project-slug>/project.json`
 - `channels/<channel-slug>/projects/<project-slug>/producer-criteria.json`
+- `channels/<channel-slug>/projects/<project-slug>/runs/<run-id>/scene-artifact-sync.json`
 - `channels/<channel-slug>/projects/<project-slug>/runs/<run-id>/context/context-snapshot-<timestamp>.json`
 - `codex/contracts/agent-handoff.schema.json` shaped handoff files when persisted
 
@@ -357,6 +363,7 @@ Current real architecture and runtime artifacts:
 - `codex/examples/remotion-project.template.json`
 - `codex/examples/remotion-template.template.json`
 - `codex/examples/production-run.template.json`
+- `codex/examples/agent-handoff.artifact-repair.template.json`
 - `codex/contracts/*.schema.json`
 - `remotion/remotion-project.json`
 - `remotion/package.json`
@@ -445,6 +452,7 @@ The Director creates handoffs only after enough inputs exist for the target agen
 - `channel_profile_path` when available
 - `channel_format_path` when available
 - `producer_criteria_path`
+- `scene_artifact_sync_report_path` when scene-linked artifacts exist
 - `media_asset_manifest_path` when media is in scope
 - `remotion_project_contract_path` when Remotion is in scope
 - local skills to read
@@ -455,7 +463,7 @@ The Director creates handoffs only after enough inputs exist for the target agen
 - stop conditions
 - revision policy
 
-The Director also adds the handoff to `production-run.json` with status. Handoff recommendations from specialists are advisory until the Director turns them into this structure.
+The Director also adds the handoff to `production-run.json` with status. Handoff recommendations from specialists are advisory until the Director turns them into this structure. For sync, QA, critique, boundary-check, and post-run change problems, the Director uses `codex/agents/director/references/artifact-problem-routing.md` to choose the owner agent, target skills, output contract, and invalidation scope.
 
 ### 5. Phase Order
 
@@ -587,15 +595,15 @@ The final delivery note should list actual file paths, residual risks, waivers i
 Current static audit:
 
 - 8 agents
-- 48 local agent skills
-- 43 non-Director skills
-- 43 Director handoff references
-- 19 contract schemas
-- 21 strong skills by local hardening checks
+- 50 local agent skills
+- 44 non-Director skills
+- 44 Director handoff references
+- 20 contract schemas
+- 31 strong skills by local hardening checks
 - 0 missing script references
 - 0 missing Director handoff refs
 - 0 stale Director handoff refs
 - 0 skills missing frontmatter
-- 0 paid/API-looking skills missing approval terms
+- 1 paid/API-looking skill missing approval terms
 
 The architecture is structurally ready. The main remaining risk is uneven skill hardness: several skills still behave more like checklists than strict contract-producing procedures.

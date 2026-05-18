@@ -75,6 +75,7 @@ The purpose is to stop drift. Scenario scenes are the identity source. Visual pa
    - AI package stale: rerun InVideo AI Generator for affected scene ids
    - selected media/candidate mismatch: rerun Visual Producer validation/ranking
    - timeline mismatch only: rerun Remotion Video Producer timeline sync
+   - ambiguous ownership, mixed findings, approval needs, or waiver decisions: keep with Director and use `codex/agents/director/references/artifact-problem-routing.md` before creating repair handoffs
 10. Update project/run state with the sync report path and invalidated artifacts. Do not let downstream work proceed while any required scene is `missing_downstream`, `stale_downstream`, `orphaned_downstream`, or `conflicting_routes` unless the Director records a waiver.
 
 ## Required Output

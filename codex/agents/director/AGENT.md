@@ -62,6 +62,10 @@ Use these paths when composing `agent-handoff.skills_to_read` for the target age
 - `../video-critic/skills/multimodal-video-critique/SKILL.md`
 - `../video-critic/skills/revision-prioritization/SKILL.md`
 
+## Repair Routing Reference
+
+Use `references/artifact-problem-routing.md` when a boundary check, scene artifact sync report, render QA result, Video Critic report, or user change needs a repair handoff. The reference maps problem types to the correct owner agent, target skills, output contract, evidence inputs, invalidation scope, and definition of done.
+
 ## Inputs
 
 - User request
@@ -89,6 +93,7 @@ Use these paths when composing `agent-handoff.skills_to_read` for the target age
 - Keep budget, API spend, licensed downloads, and paid generation under explicit approval.
 - Keep scene ids stable once downstream work begins.
 - Treat scenario scenes as the identity source. Run `scene-artifact-sync` whenever scenario scenes, visual packs, props, clip packages, selected candidates, AI packages, voice/caption timing, or timeline sync may have drifted.
+- When an agent reports a problem in another agent's artifact, do not ask it to repair that artifact directly. Use the repair routing reference to create a Director-owned `agent-handoff` for the artifact owner.
 - Keep channel profile paths stable; channel profile changes invalidate derived channel formats and may invalidate downstream artifacts.
 - Track autonomous progress, approvals, blockers, and post-run changes in the production run ledger.
 - Use `context-compaction` after phase boundaries, long handoffs, review-loop iterations, and post-run changes so autonomous runs can resume from durable artifact paths instead of conversation memory.
