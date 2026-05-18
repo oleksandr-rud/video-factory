@@ -64,6 +64,14 @@ def relpath(path: Path | str | None, repo_root: Path) -> str | None:
         return str(resolved)
 
 
+def path_is_under(path: Path, root: Path) -> bool:
+    try:
+        path.resolve().relative_to(root.resolve())
+        return True
+    except ValueError:
+        return False
+
+
 def run_json(command: list[str]) -> dict[str, Any]:
     completed = subprocess.run(command, check=True, capture_output=True, text=True)
     return json.loads(completed.stdout)
@@ -445,15 +453,6 @@ def manifest_assets(
             "related_contract_paths": related_contracts,
         },
         {
-            "asset_id": f"asset-{source_slug}-reference-probe",
-            "kind": "metadata",
-            "origin": "derived",
-            "status": "loaded",
-            "canonical_path": probe_path,
-            "derived_from_asset_ids": [f"asset-{source_slug}-reference-video"],
-            "related_contract_paths": related_contracts,
-        },
-        {
             "asset_id": f"asset-{source_slug}-reference-scenes",
             "kind": "metadata",
             "origin": "derived",
@@ -472,6 +471,16 @@ def manifest_assets(
             "related_contract_paths": related_contracts,
         },
     ]
+    if probe_path:
+        assets.append({
+            "asset_id": f"asset-{source_slug}-reference-probe",
+            "kind": "metadata",
+            "origin": "derived",
+            "status": "loaded",
+            "canonical_path": probe_path,
+            "derived_from_asset_ids": [f"asset-{source_slug}-reference-video"],
+            "related_contract_paths": related_contracts,
+        })
     if ocr_path:
         assets.append({
             "asset_id": f"asset-{source_slug}-reference-ocr",
@@ -556,6 +565,10 @@ def main() -> int:
     analysis_id = args.analysis_id or f"reference-analysis-{slugify(source_id)}"
     video_id = args.video_id or f"reference-video-{slugify(source_id)}"
     limitations: list[str] = []
+    if not path_is_under(output_path, repo_root):
+        limitations.append("Output path is outside repo root; durable contract paths should be repo-relative for project artifacts.")
+    if not path_is_under(work_dir, repo_root):
+        limitations.append("Work directory is outside repo root; durable sidecar paths should be repo-relative for project artifacts.")
 
     technical, probe_path, probe_notes = probe_video(video_path, work_dir, repo_root)
     limitations.extend(probe_notes)
@@ -618,7 +631,7 @@ def main() -> int:
         evidence_gaps.append("No keyframes were extracted; visual evidence is incomplete.")
 
     status = "complete" if technical and frame_samples and not limitations else "partial"
-    if not technical and not frame_samples:
+    if not video_path.exists() and not args.transcript_path and not args.model_observation_path:
         status = "blocked"
 
     analysis = drop_none({

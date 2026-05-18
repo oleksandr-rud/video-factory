@@ -39,8 +39,8 @@ Dry local run:
 python codex/agents/channel-intelligence/scripts/analyze_reference_video.py `
   --video "C:\path\reference.mp4" `
   --source-id "source-ref-001" `
-  --work-dir "channels\demo\projects\sample\source-media\reference-analysis\source-ref-001" `
-  --output "channels\demo\projects\sample\source-media\reference-analysis\source-ref-001\reference-analysis.json"
+  --work-dir "channels/demo/projects/sample/source-media/reference-analysis/source-ref-001" `
+  --output "channels/demo/projects/sample/source-media/reference-analysis/source-ref-001/reference-analysis.json"
 ```
 
 With manifest update:
@@ -49,9 +49,9 @@ With manifest update:
 python codex/agents/channel-intelligence/scripts/analyze_reference_video.py `
   --video "C:\path\reference.mp4" `
   --source-id "source-ref-001" `
-  --work-dir "channels\demo\projects\sample\source-media\reference-analysis\source-ref-001" `
-  --output "channels\demo\projects\sample\source-media\reference-analysis\source-ref-001\reference-analysis.json" `
-  --media-asset-manifest "channels\demo\projects\sample\media-asset-manifest.json" `
+  --work-dir "channels/demo/projects/sample/source-media/reference-analysis/source-ref-001" `
+  --output "channels/demo/projects/sample/source-media/reference-analysis/source-ref-001/reference-analysis.json" `
+  --media-asset-manifest "channels/demo/projects/sample/media-asset-manifest.json" `
   --update-media-asset-manifest
 ```
 

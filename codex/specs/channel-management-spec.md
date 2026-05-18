@@ -45,6 +45,8 @@ channels/<channel-slug>/
           search-results/
           <scene-id>/
       source-media/
+        reference-videos/
+        reference-analysis/
         loaded-videos/
         provider-clips/
         generated-clips/

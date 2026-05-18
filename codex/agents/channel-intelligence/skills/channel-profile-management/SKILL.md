@@ -43,6 +43,8 @@ channels/<channel-slug>/
       visuals/
         candidates/
       source-media/
+        reference-videos/
+        reference-analysis/
         loaded-videos/
         provider-clips/
         generated-clips/

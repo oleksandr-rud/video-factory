@@ -88,6 +88,8 @@
         "voiceover_path": { "type": "string" },
         "visuals_path": { "type": "string" },
         "source_media_path": { "type": "string" },
+        "reference_videos_path": { "type": "string" },
+        "reference_analysis_path": { "type": "string" },
         "loaded_videos_path": { "type": "string" },
         "rendered_clips_path": { "type": "string" },
         "remotion_path": { "type": "string" },
