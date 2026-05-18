@@ -16,6 +16,11 @@
       "enum": ["draft", "active", "needs_review", "deprecated"]
     },
     "source_analysis_ids": { "type": "array", "items": { "type": "string" } },
+    "visual_research_artifact_paths": { "type": "array", "items": { "type": "string" } },
+    "visual_research_status": {
+      "type": "string",
+      "enum": ["not_required", "required_missing", "draft", "complete", "needs_approval", "blocked"]
+    },
     "target_content_mismatch_policy": {
       "type": "string",
       "enum": ["none", "visual_format_only", "needs_target_substitution", "blocked", "unknown"]

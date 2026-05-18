@@ -78,6 +78,27 @@
       "type": "array",
       "items": { "type": "string" }
     },
+    "visual_research_requirements": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": ["not_required", "required_missing", "draft", "complete", "needs_approval", "blocked"]
+        },
+        "scene_visual_pack_path": { "type": "string" },
+        "visual_research_artifact_paths": { "type": "array", "items": { "type": "string" } },
+        "required_before": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["channel_format_final", "producer_criteria_active", "ai_generation", "remotion_clip", "timeline_sync", "render", "critique"]
+          }
+        },
+        "requirements": { "type": "array", "items": { "type": "string" } },
+        "approval_blockers": { "type": "array", "items": { "type": "string" } },
+        "deferred_actions": { "type": "array", "items": { "type": "string" } }
+      }
+    },
     "provider_constraints": {
       "type": "array",
       "items": { "type": "string" }

@@ -7,6 +7,8 @@ description: Generate and refine search queries for scene-level visual research 
 
 Build search-query sets that preserve why each query exists, which evidence shaped it, and when to stop searching. Do not collapse visual research into one generic keyword list.
 
+This skill is part of the required visual research gate for deliverable videos and channel-format/producer-criteria work. Even when provider API search, downloads, or paid generation are not approved, the query research must still preserve planned routes, evidence refs, rejected-query logic, stop criteria, and deferred approval actions so channel format requirements are grounded in actual scene needs.
+
 ## Inputs
 
 - Scenario scene ids, narration, on-screen text, duration, and visual intent
@@ -35,6 +37,7 @@ Build search-query sets that preserve why each query exists, which evidence shap
 8. Avoid copyrighted characters, brand names, celebrity names, logos, and restricted locations unless supplied and authorized.
 9. Preserve rejected queries with reasons when they are too broad, too copyrighted, source-inaccurate, provider-hostile, redundant, or likely to retrieve unusable media.
 10. Define stop criteria per scene: enough high-fit candidates, no safe provider route, approval needed, fallback route preferred, or specialist handoff needed.
+11. Summarize format/criteria implications for the visual pack: route constraints, source-card needs, template/VFX requirements, provider limitations, and visual requirements that should be promoted into channel format or producer criteria.
 
 ## Required Output
 
@@ -70,7 +73,8 @@ Return this structure or embed it in `scene-visual-pack.schema.json` fields:
         }
       ],
       "search_stop_criteria": ["string"],
-      "approvals_needed": ["api_search | file_download | final_use | source_image_use"]
+      "approvals_needed": ["api_search | file_download | final_use | source_image_use"],
+      "format_requirement_implications": ["string"]
     }
   ],
   "next_recommended_step": "string"
@@ -85,7 +89,7 @@ Return this structure or embed it in `scene-visual-pack.schema.json` fields:
 
 ## Status Policy
 
-- Return `complete` when each scene has route-grouped queries, rejected-query reasons, and stop criteria.
+- Return `complete` when each scene has route-grouped queries, rejected-query reasons, stop criteria, and format/criteria implications or an explicit `not_applicable` reason.
 - Return `needs_approval` when the next search requires provider API use, source image/screenshot use, licensed media, or rights-sensitive search terms.
 - Return `blocked` when no allowed route can produce a usable visual and no fallback route is viable.
 - Return `needs_revision` when scene goals, source grounding, platform constraints, or provider scope are too vague.

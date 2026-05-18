@@ -35,6 +35,34 @@
         "confidence": { "type": "string", "enum": ["high", "medium", "low", "unknown"] }
       }
     },
+    "visual_research_status": {
+      "type": "string",
+      "enum": ["not_required", "required_missing", "planned", "complete", "needs_approval", "blocked"]
+    },
+    "format_requirement_updates": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["requirement_id", "scope", "requirement"],
+        "properties": {
+          "requirement_id": { "type": "string" },
+          "scope": {
+            "type": "string",
+            "enum": ["channel_format", "producer_criteria", "scene", "template", "vfx", "media", "provider", "other"]
+          },
+          "scene_ids": { "type": "array", "items": { "type": "string" } },
+          "requirement": { "type": "string" },
+          "evidence_refs": { "type": "array", "items": { "type": "object" } },
+          "affected_contracts": { "type": "array", "items": { "type": "string" } },
+          "priority": {
+            "type": "string",
+            "enum": ["required", "recommended", "optional"]
+          },
+          "approval_needed": { "type": "boolean" },
+          "notes": { "type": "string" }
+        }
+      }
+    },
     "scene_packs": {
       "type": "array",
       "items": {
@@ -182,6 +210,30 @@
                 "definition_of_done": { "type": "array", "items": { "type": "string" } },
                 "approval_notes": { "type": "string" },
                 "blocked_until": { "type": "string" }
+              }
+            }
+          },
+          "format_requirement_updates": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["requirement_id", "scope", "requirement"],
+              "properties": {
+                "requirement_id": { "type": "string" },
+                "scope": {
+                  "type": "string",
+                  "enum": ["channel_format", "producer_criteria", "scene", "template", "vfx", "media", "provider", "other"]
+                },
+                "scene_ids": { "type": "array", "items": { "type": "string" } },
+                "requirement": { "type": "string" },
+                "evidence_refs": { "type": "array", "items": { "type": "object" } },
+                "affected_contracts": { "type": "array", "items": { "type": "string" } },
+                "priority": {
+                  "type": "string",
+                  "enum": ["required", "recommended", "optional"]
+                },
+                "approval_needed": { "type": "boolean" },
+                "notes": { "type": "string" }
               }
             }
           }

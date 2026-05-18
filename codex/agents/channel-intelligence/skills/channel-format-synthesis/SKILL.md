@@ -10,7 +10,8 @@ Create a versioned, evidence-backed channel format. Preserve channel consistency
 ## Inputs
 
 - Channel profile, channel root path, existing channel formats, and recent project history when available
-- Reference analysis package with `source_ledger[]`, `claim_ledger[]`, `reference_beats[]`, `downstream_guidance`, evidence gaps, and confidence notes
+- Reference analysis package with `source_ledger[]`, `claim_ledger[]`, `reference_beats[]`, `reference_video_plan`, `downstream_guidance`, evidence gaps, and confidence notes
+- Visual Producer scene visual pack and visual research query groups when available
 - Style tokens or style-system extraction output
 - Media asset manifest and reusable asset/template ids
 - Producer criteria, platform targets, target duration range, audience, and explicit user/Director strategy
@@ -21,6 +22,7 @@ Create a versioned, evidence-backed channel format. Preserve channel consistency
 1. Read the channel profile, reference analysis, style tokens, source ledger, and media manifest. Do not promote rules with missing evidence as durable defaults.
    - If reference content conflicts with the target channel/project description but the reference is visually strong, preserve it as visual-format evidence. Extract structure, pacing, composition, caption/graphics, transition, motion, source-card, thumbnail, and VFX rules, but do not import its facts, audience promise, topic claims, product claims, or one-off subject choices.
    - Mark the derived format as `project_variant` or `experimental` when the only evidence is a mismatched-content reference and channel evidence is weak.
+   - When a scene visual pack or visual research query groups exist, read them before finalizing channel format visual rules. Treat them as significant evidence for what the format can actually support scene by scene.
 2. Define the channel promise, audience, content pillars, video themes, platform targets, and content mix.
 3. Define reusable narrative rules: hook families, episode structure, pacing bands, proof style, transitions between ideas, CTA behavior, and payoff expectations.
 4. Define reusable visual/audio systems from style tokens and channel defaults, including caption, layout, source-card, thumbnail, motion, audio, and VFX rules.
@@ -34,8 +36,10 @@ Create a versioned, evidence-backed channel format. Preserve channel consistency
    - `experimental`: rules that need more audience evidence before becoming durable defaults.
 8. Add anti-redundancy thresholds and flex zones for unique angle, examples, visual moments, data, references, opening pattern, proof order, and CTA wording.
 9. Add a freshness policy. Define when the format becomes stale or needs review: old evidence, declining intro hold, declining watch time, repeated redundancy flags, topic decay, changed platform strategy, conflicting new references, or user/Director override.
-10. Attach evidence ids, source ids, asset ids, template ids, template contract paths, VFX rule refs, confidence, and evidence mode for important rules.
-11. Add a target-content substitution note when visual-format rules came from mismatched references. State which scene patterns transfer and which content elements must be replaced by target-channel/project evidence.
+10. Derive final visual requirements from Visual Producer research when available: scene route patterns, primary/fallback coverage, provider constraints, search gaps, approved/deferred assets, source-card behavior, reusable template needs, target-content substitutions, and route-specific VFX constraints.
+11. Attach evidence ids, source ids, asset ids, template ids, template contract paths, VFX rule refs, visual pack paths, query group refs, confidence, and evidence mode for important rules.
+12. Add a target-content substitution note when visual-format rules came from mismatched references. State which scene patterns transfer and which content elements must be replaced by target-channel/project evidence.
+13. If visual research is in scope but missing, return `needs_revision` or a draft/experimental format with `visual_research_status: missing`; do not mark the visual system as final.
 
 ## Required Output
 
@@ -51,6 +55,8 @@ Return a package matching `codex/contracts/channel-format.schema.json` and inclu
     "status": "draft | active | needs_review | deprecated",
     "format_type": "channel_default | project_variant | experimental",
     "source_analysis_ids": ["string"],
+    "visual_research_artifact_paths": ["string"],
+    "visual_research_status": "not_required | required_missing | draft | complete | needs_approval | blocked",
     "target_content_mismatch_policy": "none | visual_format_only | needs_target_substitution | blocked",
     "confidence": "high | medium | low | unknown"
   },
@@ -110,9 +116,10 @@ Return a package matching `codex/contracts/channel-format.schema.json` and inclu
 ## Status Policy
 
 - Return `complete` when a versioned format has evidence-backed rules, freshness policy, anti-redundancy thresholds, and downstream invalidation.
+- Return `complete` for deliverable/channel-format work only when required visual research has been consumed, or when it is explicitly not required by the Director.
 - Return `needs_approval` when format activation depends on licensed assets, user-owned brand materials, paid provider outputs, direct screenshot reuse, or a user waiver.
 - Return `blocked` when there is not enough evidence to create even an experimental format or when format rules would require protected copying.
-- Return `needs_revision` when source/reference/style inputs conflict, freshness evidence is too old, or required channel profile data is missing.
+- Return `needs_revision` when source/reference/style inputs conflict, freshness evidence is too old, required channel profile data is missing, or visual research required for format requirements has not been done.
 - Content mismatch alone is not a blocker when the reference is used only for visual format. Block only when the mismatch would leak wrong facts into the target video, require copied material, or leave no way to substitute target content.
 
 ## Evidence Required

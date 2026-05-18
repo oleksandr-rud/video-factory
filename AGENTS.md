@@ -55,14 +55,15 @@ You are the <agent-name> agent for the Video Factory project. Read your AGENT.md
 1. Director decomposes the request, creates the producer criteria artifact, and sets acceptance criteria.
 2. Channel Intelligence creates or updates `channels/<channel-slug>/channel-profile.json` when a durable channel is in scope, creates or updates `channels/<channel-slug>/projects/<project-slug>/project.json` for durable deliverables, and records loaded source/reference media in a media asset manifest before producing reusable reference and channel-format packages.
 3. Creative Producer creates or revises the scenario, scene list, narration, and voiceover package using the channel profile, channel format, and source evidence. When ElevenLabs is the route, it uses inherited voice direction, quality-first model policy, target language/accent selection, provider inventory, and guarded scripts before any approved generation.
-4. Visual Producer creates the visual pack, researches routes, validates candidates, selects primary/fallback visual choices, and returns downstream handoff recommendations using the channel format and reference analysis.
-5. Director converts Visual Producer handoff recommendations into formal InVideo AI Generator and Remotion Clip Builder handoffs when specialist work is needed.
-6. InVideo AI Generator prepares approved AI video prompt packages, generates or records generated clip variants, and returns QA-backed clip candidates.
-7. Remotion Clip Builder implements selected deterministic clips, component templates, motion graphics, and VFX overlays inside the shared `remotion/` app or an approved project-specific Remotion app.
-8. Remotion Video Producer builds a timeline sync plan, then assembles the full timeline, captions/subtitles, audio, transitions, render release candidate, and technical render QA evidence using local Remotion `public/` assets tracked by the media asset manifest.
-9. Video Critic prepares multimodal review assets, prefers approved hybrid critique with direct video plus sampled frame stills when provider limits and media policy allow it, critiques the render candidate scene by scene against production criteria and viewer experience, and returns gate results plus a revision plan.
-10. Director routes failed gates back to owning agents, requests a new render, and repeats critique until gates pass, a stop condition is hit, or the user approves a waiver.
-11. Director resolves cross-stage conflicts and delivers the final package.
+4. Visual Producer creates the visual pack, researches routes, validates candidates, selects primary/fallback visual choices, and returns downstream handoff recommendations using the channel format and reference analysis. For deliverable videos and channel-format work, this visual research gate is non-skippable: route/query research, fallback coverage, evidence refs, deferred approval actions, and format requirement updates must exist or be explicitly blocked before specialist generation, Remotion clip building, timeline assembly, or final channel-format/producer-criteria activation.
+5. Director routes Visual Producer's `format_requirement_updates[]` back into Channel Intelligence and producer criteria when visual research changes channel format rules, VFX/template requirements, source-card behavior, provider constraints, target-content substitutions, or scene-specific hard gates.
+6. Director converts Visual Producer handoff recommendations into formal InVideo AI Generator and Remotion Clip Builder handoffs when specialist work is needed.
+7. InVideo AI Generator prepares approved AI video prompt packages, generates or records generated clip variants, and returns QA-backed clip candidates.
+8. Remotion Clip Builder implements selected deterministic clips, component templates, motion graphics, and VFX overlays inside the shared `remotion/` app or an approved project-specific Remotion app.
+9. Remotion Video Producer builds a timeline sync plan, then assembles the full timeline, captions/subtitles, audio, transitions, render release candidate, and technical render QA evidence using local Remotion `public/` assets tracked by the media asset manifest.
+10. Video Critic prepares multimodal review assets, prefers approved hybrid critique with direct video plus sampled frame stills when provider limits and media policy allow it, critiques the render candidate scene by scene against production criteria and viewer experience, and returns gate results plus a revision plan.
+11. Director routes failed gates back to owning agents, requests a new render, and repeats critique until gates pass, a stop condition is hit, or the user approves a waiver.
+12. Director resolves cross-stage conflicts and delivers the final package.
 
 ## Change Handling
 

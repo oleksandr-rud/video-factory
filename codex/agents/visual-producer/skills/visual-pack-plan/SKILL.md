@@ -7,6 +7,8 @@ description: Create a per-scene visual pack plan that lists visual goals, routes
 
 Create the scene-level visual routing contract. This is a planning artifact, not provider execution and not Remotion implementation.
 
+This skill is a required visual research gate for deliverable videos, reference-driven formats, and channel-format/producer-criteria updates. Its output is not optional decoration: Channel Intelligence and the Director use it to finalize channel format visual requirements, VFX rules, reusable template needs, source-card behavior, provider constraints, and scene-specific producer criteria.
+
 ## Inputs
 
 - Scenario contract with stable scene ids, narration, durations, and visual intent
@@ -38,6 +40,7 @@ Create the scene-level visual routing contract. This is a planning artifact, not
 14. Keep handoff recommendations implementation-neutral. State need, required inputs, constraints, output contract, approval notes, and definition of done. Let the Director create the actual `agent-handoff`.
 15. When recommending InVideo AI Generator or Remotion Clip Builder work, pass the scene-specific reference subset (`reference_beat_ids`, `reference_materials`, `reference_asset_paths`, evidence refs, source asset ids) plus the full `overall_reference_summary` path or object. This lets specialists analyze scene by scene without losing the full-reference context.
 16. Do not mark a scene visually blocked only because the reference topic differs from the target topic. Mark it blocked only when there is no viable target-content substitution, rights-safe recreation, or allowed route.
+17. Return `format_requirement_updates[]` for Channel Intelligence and Director. Include any channel-format/producer-criteria changes discovered during visual research: route viability, required reusable templates, VFX constraints, safe-area needs, source-card requirements, provider limitations, approval gates, deferred assets, and scene-specific hard visual gates.
 
 ## Required Output
 
@@ -70,19 +73,31 @@ Return a visual pack matching `codex/contracts/scene-visual-pack.schema.json` an
       "blockers": ["string"]
     }
   ],
+  "format_requirement_updates": [
+    {
+      "requirement_id": "string",
+      "scope": "channel_format | producer_criteria | scene | template | vfx | media | provider",
+      "scene_ids": ["string"],
+      "requirement": "string",
+      "evidence_refs": ["string"],
+      "affected_contracts": ["codex/contracts/channel-format.schema.json", "codex/contracts/producer-criteria.schema.json"],
+      "priority": "required | recommended | optional",
+      "approval_needed": false
+    }
+  ],
   "next_recommended_step": "string"
 }
 ```
 
 ## Contract Fields Populated
 
-- `scene-visual-pack.schema.json`: all project/channel fields, `scene_packs[]`, route decisions, candidate requirements, search queries, AI/Remotion briefs, template hints, reference beat ids, scene decomposition notes, reference materials, evidence refs, source asset ids, VFX requirements, and handoff recommendations
+- `scene-visual-pack.schema.json`: all project/channel fields, `scene_packs[]`, route decisions, candidate requirements, search queries, AI/Remotion briefs, template hints, reference beat ids, scene decomposition notes, reference materials, evidence refs, source asset ids, VFX requirements, `format_requirement_updates[]`, and handoff recommendations
 - `agent-handoff.schema.json`: not written here; `handoff_recommendations[]` provide Director routing input
 - `media-asset-manifest.schema.json`: updated or deferred only for media dependencies and future local/public projection needs
 
 ## Status Policy
 
-- Return `complete` when every scene has a route plan, candidate requirements, fallback, and explicit next step.
+- Return `complete` when every scene has a route plan, candidate requirements, fallback, visual research/query coverage, format requirement updates or `not_applicable`, and explicit next step.
 - Return `needs_approval` when the next useful action is provider API use, paid generation, licensed download, source image/screenshot use, or rights-sensitive final use.
 - Return `blocked` when a scene cannot be visually satisfied under allowed routes, rights, or budget.
 - Return `needs_revision` when scenario, channel format, source evidence, or producer criteria are too unstable to plan visuals.

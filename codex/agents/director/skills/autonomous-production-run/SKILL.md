@@ -30,7 +30,11 @@ Use this after `decompose-video-request` when the user wants a full run, `/goal`
    - Channel profile management before channel format synthesis when a durable channel exists.
    - Media asset manifest creation before reference-video analysis, web content synthesis, visual candidate selection, Remotion clip building, render packaging, or final critique when media files are in scope.
    - Channel Intelligence before scenario and visual planning when references, channel data, web sources, or redundancy concerns exist.
+   - Treat initial channel format and producer criteria as draft when reference videos, source visuals, durable channel style, VFX rules, reusable templates, visual-format-only references, or provider/media choices are in scope.
    - Creative Producer before Visual Producer; if voiceover is in scope, produce the voiceover package before final timeline assembly.
+   - Visual Producer visual research is a required gate for deliverable videos and channel-format work. It must produce or update the scene visual pack, route/query research, candidate requirements, fallback coverage, visual evidence refs, and handoff recommendations before the Director creates InVideo AI Generator, Remotion Clip Builder, or Remotion Video Producer handoffs.
+   - After Visual Producer completes visual research, route a finalization/update pass to Channel Intelligence and `producer-criteria-prompt` when visual research changes or clarifies channel format requirements, VFX requirements, reusable templates/assets, source-card behavior, target-content substitutions, provider constraints, rights/approval needs, or scene-specific visual gates.
+   - Do not mark channel format, producer criteria, or visual requirements final for a deliverable video until the visual research gate is `complete`, `needs_approval`, or explicitly `blocked` with a Director-visible reason. If provider API search or downloads are not approved, the visual research gate still must preserve query plans, deferred manifest actions, and fallback routes.
    - Visual Producer before InVideo AI Generator and Remotion Clip Builder.
    - Existing Remotion template selection before bespoke Remotion clip implementation only when `template_hint`, reusable channel assets, overlays, lower thirds, caption styles, source cards, or repeated motion patterns are in scope and the template fits the producer criteria. Complex VFX may combine multiple templates or use bespoke Remotion code.
    - InVideo AI Generator and Remotion Clip Builder before Remotion Video Producer.
@@ -118,6 +122,7 @@ When the user changes or updates the request after a full run:
    - Channel/source/reference changes can invalidate producer criteria, scenario, visual plan, specialist clips, timeline, render, and critique.
    - Channel profile changes can invalidate channel format, producer criteria, scenario voice direction, visuals, Remotion styles, timeline, render, and critique.
    - Channel format changes, including `visual_system.vfx_rules`, can invalidate producer criteria, visual pack constraints, Remotion clip packages, timeline/render QA, and critique.
+   - Visual research changes can invalidate channel format visual rules, producer criteria visual gates, reusable template requirements, specialist prompts/clips, timeline, render, and critique.
    - Scenario or narration changes invalidate scene-level voice, visuals, specialist clips, timeline, render, and critique.
    - Voiceover, caption, or timestamp changes invalidate timeline sync, render, and critique.
    - Visual route or candidate changes invalidate affected specialist clips, timeline, render, and critique.

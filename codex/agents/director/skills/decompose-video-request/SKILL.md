@@ -20,16 +20,18 @@ Convert the user request into a Director-owned production brief, artifact path m
 1. Extract goal, audience, platform, duration, aspect ratio, language, tone, source material, deliverables, and success criteria.
 2. Classify the request as analysis-only, planning, asset preparation, full autonomous production, revision, review, or delivery.
 3. Decide which broad production and validation agents are needed: Channel Intelligence, Creative Producer, Visual Producer, InVideo AI Generator, Remotion Clip Builder, Remotion Video Producer, Video Critic.
+   - Include Visual Producer for every deliverable video, channel-format build/update, reference-video-driven format, visual-format-only reference, reusable visual system, stock/media/generative route, Remotion visual route, or scene-level composition requirement. Do not classify it as optional just because provider search/download/generation needs approval.
 4. If the request names a durable channel, create or resolve `channels/<channel-slug>/channel-profile.json` through Channel Intelligence `channel-profile-management`.
 5. If the request is a durable deliverable, create or resolve `channels/<channel-slug>/projects/<project-slug>/project.json` using `codex/contracts/video-project.schema.json`.
 6. Create or resolve the shared Remotion app contract using `codex/contracts/remotion-project.schema.json`; default to the repo `remotion/` app unless a project-specific app is justified.
 7. If reusable Remotion components are likely, resolve the app template registry and reserve project template contract paths using `codex/contracts/remotion-template.schema.json`.
 8. Create stable repo-relative POSIX artifact paths under the project folder for the run ledger, producer criteria, media manifest, reference analysis, source reports, channel format, scenario, voiceover package, visual pack, candidates, source media, AI generation packages, Remotion templates/clips, timeline sync plan, render packages, critique reports, review assets, and QA.
-9. Run `producer-criteria-prompt` to create the first criteria artifact. Update scene-specific criteria after scenario scene ids exist.
+9. Run `producer-criteria-prompt` to create the first criteria artifact. Update scene-specific criteria after scenario scene ids exist, and update visual criteria again after Visual Producer returns the scene visual pack/research queries.
 10. Define approval gates for paid APIs, licensed media, remote render-time assets, provider downloads, generation jobs, voice/TTS, external critique, likeness/logo use, and release waivers.
 11. Build handoffs using `codex/contracts/agent-handoff.schema.json`; include project path, media asset manifest path, Remotion project contract path, Remotion template registry/contract paths, channel profile path, channel format path, and producer criteria path when available.
 12. Treat Visual Producer `handoff_recommendations[]` as routing input only. The Director decides whether to create downstream InVideo AI Generator or Remotion Clip Builder handoffs and names the target agent's local skills.
-13. Use `autonomous-production-run` when the user expects the Director to keep working until complete or blocked.
+13. Mark visual research as a non-skippable dependency in the plan when channel format, producer criteria, scene composition, template requirements, VFX requirements, source-card rules, or provider choices depend on reference/source visuals. The planned Visual Producer output must include `scene-visual-pack.schema.json` plus route/query research, fallback coverage, and approval/deferred actions.
+14. Use `autonomous-production-run` when the user expects the Director to keep working until complete or blocked.
 
 ## Required Output
 
@@ -62,6 +64,7 @@ Return:
       "depends_on": ["string"],
       "skills_to_read": ["string"],
       "output_contract": "string",
+      "non_skippable": false,
       "approval_gates": ["string"],
       "definition_of_done": ["string"]
     }
