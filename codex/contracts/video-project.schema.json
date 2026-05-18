@@ -47,7 +47,7 @@
         "properties": {
           "kind": {
             "type": "string",
-            "enum": ["full_video", "short_clip", "thumbnail", "subtitle", "caption_json", "source_package", "project_archive", "other"]
+            "enum": ["full_video", "short_clip", "thumbnail", "subtitle", "caption_json", "source_package", "media_manifest", "remotion_project_contract", "review_assets", "project_archive", "other"]
           },
           "path_or_expected_path": { "type": "string" },
           "status": {
@@ -63,6 +63,9 @@
       "properties": {
         "production_run_path": { "type": "string" },
         "producer_criteria_path": { "type": "string" },
+        "media_asset_manifest_paths": { "type": "array", "items": { "type": "string" } },
+        "remotion_project_contract_path": { "type": "string" },
+        "remotion_app_root_path": { "type": "string" },
         "reference_analysis_path": { "type": "string" },
         "channel_format_path": { "type": "string" },
         "scenario_paths": { "type": "array", "items": { "type": "string" } },
@@ -73,7 +76,8 @@
         "remotion_clip_package_paths": { "type": "array", "items": { "type": "string" } },
         "timeline_sync_plan_paths": { "type": "array", "items": { "type": "string" } },
         "render_package_paths": { "type": "array", "items": { "type": "string" } },
-        "critique_report_paths": { "type": "array", "items": { "type": "string" } }
+        "critique_report_paths": { "type": "array", "items": { "type": "string" } },
+        "review_asset_paths": { "type": "array", "items": { "type": "string" } }
       }
     },
     "folder_layout": {
@@ -82,11 +86,29 @@
         "scenario_path": { "type": "string" },
         "voiceover_path": { "type": "string" },
         "visuals_path": { "type": "string" },
+        "source_media_path": { "type": "string" },
+        "loaded_videos_path": { "type": "string" },
+        "rendered_clips_path": { "type": "string" },
         "remotion_path": { "type": "string" },
+        "remotion_public_projection_path": { "type": "string" },
+        "remotion_public_path": { "type": "string" },
         "renders_path": { "type": "string" },
         "reviews_path": { "type": "string" },
+        "review_assets_path": { "type": "string" },
         "runs_path": { "type": "string" },
         "delivery_path": { "type": "string" }
+      }
+    },
+    "remotion_setup": {
+      "type": "object",
+      "properties": {
+        "remotion_project_id": { "type": "string" },
+        "remotion_project_contract_path": { "type": "string" },
+        "app_root_path": { "type": "string" },
+        "public_root_path": { "type": "string" },
+        "static_file_prefix": { "type": "string" },
+        "composition_ids": { "type": "array", "items": { "type": "string" } },
+        "notes": { "type": "string" }
       }
     },
     "runs": {

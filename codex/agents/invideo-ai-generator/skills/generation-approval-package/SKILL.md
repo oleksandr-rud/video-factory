@@ -13,7 +13,7 @@ Workflow:
    - `pending` before Director approval.
    - `approved` only after explicit approval.
    - `rejected` when Director denies or budget blocks the run.
-4. Record exactly what the generation dialog will submit: prompt, model, duration, aspect ratio, quality mode, reference assets, and expected outputs.
+4. Record exactly what the generation dialog will submit: prompt, model, duration, aspect ratio, quality mode, reference assets, expected outputs, and target media asset manifest path.
 5. If approval is missing, return a package with status `needs_approval`; do not run generation.
 
 Return an approval-ready generation package matching `codex/contracts/ai-video-generation-package.schema.json`.

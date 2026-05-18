@@ -7,7 +7,13 @@
     "analysis_id": { "type": "string" },
     "request_id": { "type": "string" },
     "scenario_id": { "type": "string" },
+    "project_id": { "type": "string" },
+    "project_path": { "type": "string" },
     "channel_id": { "type": "string" },
+    "channel_profile_id": { "type": "string" },
+    "channel_slug": { "type": "string" },
+    "channel_profile_path": { "type": "string" },
+    "media_asset_manifest_path": { "type": "string" },
     "status": {
       "type": "string",
       "enum": ["planned", "in_progress", "complete", "partial", "blocked"]
@@ -19,17 +25,32 @@
         "required": ["source_id", "kind", "path_or_url"],
         "properties": {
           "source_id": { "type": "string" },
+          "asset_id": { "type": "string" },
+          "evidence_ref_id": { "type": "string" },
           "kind": {
             "type": "string",
             "enum": ["reference_video", "local_video", "webpage", "blog", "channel_data", "best_practice", "brand_asset", "user_note", "other"]
           },
           "path_or_url": { "type": "string" },
+          "local_path": { "type": "string" },
           "title": { "type": "string" },
           "owner": { "type": "string" },
           "date": { "type": "string" },
           "rights_notes": { "type": "string" },
           "summary": { "type": "string" },
-          "confidence": { "type": "string", "enum": ["high", "medium", "low", "unknown"] }
+          "confidence": { "type": "string", "enum": ["high", "medium", "low", "unknown"] },
+          "captured_artifacts": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "kind": { "type": "string" },
+                "path": { "type": "string" },
+                "asset_id": { "type": "string" },
+                "notes": { "type": "string" }
+              }
+            }
+          }
         }
       }
     },
@@ -41,6 +62,7 @@
         "properties": {
           "video_id": { "type": "string" },
           "source_id": { "type": "string" },
+          "media_asset_id": { "type": "string" },
           "duration_seconds": { "type": "number" },
           "transcript_path": { "type": "string" },
           "thumbnail_path": { "type": "string" },
@@ -86,6 +108,22 @@
         "story_opportunities": { "type": "array", "items": { "type": "string" } },
         "rights_or_policy_risks": { "type": "array", "items": { "type": "string" } },
         "evidence_gaps": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "evidence_refs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["evidence_id", "source_id", "description"],
+        "properties": {
+          "evidence_id": { "type": "string" },
+          "source_id": { "type": "string" },
+          "asset_id": { "type": "string" },
+          "description": { "type": "string" },
+          "timestamp_seconds": { "type": "number" },
+          "path_or_url": { "type": "string" },
+          "confidence": { "type": "string", "enum": ["high", "medium", "low", "unknown"] }
+        }
       }
     },
     "downstream_guidance": {

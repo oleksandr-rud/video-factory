@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Run or prepare an OpenRouter direct-video critique."""
+"""Run or prepare an OpenRouter hybrid video critique."""
 
 from __future__ import annotations
 
@@ -17,6 +17,7 @@ from typing import Any
 OPENROUTER_CHAT_URL = "https://openrouter.ai/api/v1/chat/completions"
 DEFAULT_MODEL = os.environ.get("OPENROUTER_VIDEO_MODEL", "qwen/qwen3.6-plus")
 DEFAULT_MAX_VIDEO_BYTES = 256 * 1024 * 1024
+DEFAULT_MAX_FRAME_IMAGES = int(os.environ.get("OPENROUTER_VIDEO_REVIEW_MAX_FRAME_IMAGES", "12"))
 
 
 REPORT_SCHEMA: dict[str, Any] = {
@@ -114,7 +115,7 @@ def required_report_defaults(artifact_paths: dict[str, Any], artifacts: dict[str
             "failed_gates": [],
             "waived_gates": [],
             "next_action": "ask_user",
-            "stop_reason": "Direct-video critique requires approval before gate decision.",
+            "stop_reason": "OpenRouter video critique requires approval before gate decision.",
         },
     }
 
@@ -151,6 +152,36 @@ def video_data_url(video_path: str, max_video_bytes: int, allow_large_upload: bo
     return f"data:{video_mime_type(video_path)};base64,{encoded}"
 
 
+def image_mime_type(image_path: str) -> str:
+    suffix = pathlib.Path(image_path).suffix.lower()
+    return {
+        ".jpg": "image/jpeg",
+        ".jpeg": "image/jpeg",
+        ".png": "image/png",
+        ".webp": "image/webp",
+        ".gif": "image/gif",
+    }.get(suffix, "image/jpeg")
+
+
+def image_data_url(image_path: str) -> str:
+    path = pathlib.Path(image_path)
+    encoded = base64.b64encode(path.read_bytes()).decode("ascii")
+    return f"data:{image_mime_type(image_path)};base64,{encoded}"
+
+
+def selected_frame_image_paths(review_assets: dict[str, Any], max_frame_images: int) -> list[str]:
+    paths: list[str] = []
+    if max_frame_images <= 0:
+        return paths
+    for sample in review_assets.get("frame_samples", []):
+        frame_path = sample.get("frame_path")
+        if frame_path and os.path.exists(frame_path):
+            paths.append(frame_path)
+        if len(paths) >= max_frame_images:
+            break
+    return paths
+
+
 def extract_output_text(response: dict[str, Any]) -> str:
     choices = response.get("choices") or []
     if choices:
@@ -181,7 +212,7 @@ def parse_jsonish(text: str) -> dict[str, Any] | None:
     return None
 
 
-def build_prompt(review_assets: dict[str, Any], artifacts: dict[str, Any]) -> str:
+def build_prompt(review_assets: dict[str, Any], artifacts: dict[str, Any], attached_frame_count: int) -> str:
     frame_lines = []
     for sample in review_assets.get("frame_samples", []):
         frame_lines.append(
@@ -193,10 +224,11 @@ def build_prompt(review_assets: dict[str, Any], artifacts: dict[str, Any]) -> st
     artifact_text = json.dumps(artifacts, indent=2, ensure_ascii=False)
     return f"""You are an independent senior video critic for the Video Factory production pipeline.
 
-Review the attached video directly, using the artifact text for scenario, timing, captions, channel rules, producer criteria, rights notes, and previous iteration context. Be direct and evidence-based.
+Review the attached video and any attached sampled frame stills, using the artifact text for scenario, timing, captions, channel rules, producer criteria, rights notes, and previous iteration context. Be direct and evidence-based.
 
 Important evidence rules:
-- Use the video input for visual, motion, framing, transition, caption readability, visible text, watermark, artifact, and continuity observations.
+- Use the video input for temporal evidence: motion, transitions, continuity, pacing, scene boundaries, and time-localized visual events.
+- Use attached sampled frame stills as sharper checkpoints for captions, visible text, safe areas, framing, watermarks, brand details, and single-frame artifacts.
 - Do not infer spoken audio content unless captions, transcript, or voiceover artifacts are supplied.
 - Treat producer criteria as binding. The general rubric fills gaps but does not override the criteria.
 - Mark missing evidence as unknown or fail according to the gate policy. Do not invent provenance, licensing, or source support.
@@ -205,7 +237,7 @@ Important evidence rules:
 Return JSON only. Use this shape:
 {{
   "status": "reviewed|needs_revision|blocked|approved",
-  "review_mode": "direct_video|hybrid",
+  "review_mode": "hybrid|direct_video",
   "video_observations": [{{"timestamp_seconds": 0, "scene_id": "scene-01", "observation": "..."}}],
   "scores": {{"story_clarity": 0-10, "hook_strength": 0-10, "pacing": 0-10, "visual_quality": 0-10, "visual_relevance": 0-10, "audio_quality": 0-10, "subtitle_sync": 0-10, "brand_fit": 0-10, "platform_fit": 0-10, "factual_alignment": 0-10, "originality": 0-10, "accessibility": 0-10, "overall": 0-10}},
   "findings": [{{"severity": "blocker|major|minor|note", "category": "story|hook|pacing|visual|audio|subtitles|sync|brand|platform|factual|rights|technical|accessibility|engagement|redundancy|other", "scene_id": "scene-01", "timestamp_seconds": 0, "evidence": "...", "description": "...", "recommendation": "...", "owner_agent": "..."}}],
@@ -228,6 +260,8 @@ Required passes:
 Frame sample index from the prepared review package:
 {chr(10).join(frame_lines)}
 
+Attached frame stills in this request: {attached_frame_count}
+
 Artifacts:
 {artifact_text}
 """
@@ -237,20 +271,25 @@ def build_payload(
     model: str,
     prompt: str,
     video_url: str,
+    image_urls: list[str],
     max_tokens: int,
     temperature: float,
     structured_output: bool,
     require_parameters: bool,
 ) -> dict[str, Any]:
+    content: list[dict[str, Any]] = [
+        {"type": "text", "text": prompt},
+        {"type": "video_url", "video_url": {"url": video_url}},
+    ]
+    for image_url in image_urls:
+        content.append({"type": "image_url", "image_url": {"url": image_url}})
+
     payload: dict[str, Any] = {
         "model": model,
         "messages": [
             {
                 "role": "user",
-                "content": [
-                    {"type": "text", "text": prompt},
-                    {"type": "video_url", "video_url": {"url": video_url}},
-                ],
+                "content": content,
             }
         ],
         "max_tokens": max_tokens,
@@ -270,9 +309,15 @@ def build_payload(
     return payload
 
 
-def write_payload_preview(path: str, payload: dict[str, Any], video_source: str) -> None:
+def write_payload_preview(path: str, payload: dict[str, Any], video_source: str, frame_sources: list[str]) -> None:
     preview = json.loads(json.dumps(payload))
-    preview["messages"][0]["content"][1]["video_url"]["url"] = video_source
+    frame_index = 0
+    for content_item in preview["messages"][0]["content"]:
+        if content_item.get("type") == "video_url":
+            content_item["video_url"]["url"] = video_source
+        if content_item.get("type") == "image_url":
+            content_item["image_url"]["url"] = frame_sources[frame_index] if frame_index < len(frame_sources) else "<frame data omitted>"
+            frame_index += 1
     pathlib.Path(path).write_text(json.dumps(preview, indent=2, ensure_ascii=False), encoding="utf-8")
 
 
@@ -300,6 +345,8 @@ def main() -> int:
     parser.add_argument("--video-url", help="Public video URL to send instead of base64-encoding review_assets.video_path.")
     parser.add_argument("--max-video-bytes", type=int, default=DEFAULT_MAX_VIDEO_BYTES)
     parser.add_argument("--allow-large-upload", action="store_true")
+    parser.add_argument("--max-frame-images", type=int, default=DEFAULT_MAX_FRAME_IMAGES)
+    parser.add_argument("--no-frame-images", action="store_true")
     parser.add_argument("--max-tokens", type=int, default=12000)
     parser.add_argument("--temperature", type=float, default=0)
     parser.add_argument("--no-structured-output", action="store_true")
@@ -325,7 +372,9 @@ def main() -> int:
         "producer_criteria": load_text_or_json(artifact_paths.get("producer_criteria_path")),
         "previous_critique": load_json(artifact_paths.get("previous_critique_path")),
     }
-    prompt = build_prompt(review_assets, drop_none(artifacts))
+    frame_paths = [] if args.no_frame_images else selected_frame_image_paths(review_assets, args.max_frame_images)
+    review_mode = "hybrid" if frame_paths else "direct_video"
+    prompt = build_prompt(review_assets, drop_none(artifacts), len(frame_paths))
     output_dir = os.path.dirname(os.path.abspath(args.output))
     os.makedirs(output_dir, exist_ok=True)
     prompt_path = os.path.join(output_dir, "openrouter-video-critique-prompt.txt")
@@ -335,16 +384,18 @@ def main() -> int:
     video_path = review_assets.get("video_path")
     video_source_label = args.video_url or video_path or ""
     placeholder_video_url = args.video_url or f"data:{video_mime_type(video_path or 'video.mp4')};base64,<omitted>"
+    placeholder_image_urls = [f"data:{image_mime_type(path)};base64,<omitted>" for path in frame_paths]
     preview_payload = build_payload(
         args.model,
         prompt,
         placeholder_video_url,
+        placeholder_image_urls,
         args.max_tokens,
         args.temperature,
         not args.no_structured_output,
         not args.allow_parameter_fallback,
     )
-    write_payload_preview(payload_preview_path, preview_payload, video_source_label or placeholder_video_url)
+    write_payload_preview(payload_preview_path, preview_payload, video_source_label or placeholder_video_url, frame_paths)
 
     scenario = artifacts.get("scenario") or {}
     render = artifacts.get("render_package") or {}
@@ -357,16 +408,17 @@ def main() -> int:
         "review_iteration": args.review_iteration,
         "previous_critique_id": args.previous_critique_id,
         "status": "needs_approval",
-        "review_mode": "direct_video",
+        "review_mode": review_mode,
         "model": {
             "provider": "openrouter",
             "model_id": args.model,
             "prompt_path": prompt_path,
-            "notes": "Dry-run direct-video prompt prepared; no API call made.",
+            "notes": f"Dry-run {review_mode} prompt prepared; no API call made.",
         },
         "inputs": {
             "video_path": video_path,
             "review_assets_path": args.review_assets,
+            "frame_image_paths": frame_paths,
             **artifact_paths,
         },
         "producer_criteria": defaults["producer_criteria"],
@@ -378,7 +430,7 @@ def main() -> int:
         "limitations": review_assets.get("limitations", []),
         "qa": {
             "status": "not_run",
-            "summary": "OpenRouter direct-video critique prepared but not executed.",
+            "summary": f"OpenRouter {review_mode} critique prepared but not executed.",
         },
     }
 
@@ -398,11 +450,13 @@ def main() -> int:
                 print("review assets must include video_path when --video-url is not supplied", file=sys.stderr)
                 return 2
             video_url = video_data_url(video_path, args.max_video_bytes, args.allow_large_upload)
+        image_urls = [image_data_url(path) for path in frame_paths]
 
         payload = build_payload(
             args.model,
             prompt,
             video_url,
+            image_urls,
             args.max_tokens,
             args.temperature,
             not args.no_structured_output,
@@ -414,7 +468,7 @@ def main() -> int:
         output_text = extract_output_text(raw_response)
         parsed = parse_jsonish(output_text) or {}
         base_report.update(drop_none(parsed))
-        base_report["review_mode"] = base_report.get("review_mode") or "direct_video"
+        base_report["review_mode"] = base_report.get("review_mode") or review_mode
         base_report["model"] = {
             **base_report.get("model", {}),
             "provider": "openrouter",
@@ -422,12 +476,12 @@ def main() -> int:
             "prompt_path": prompt_path,
             "raw_response_path": raw_path,
             "request_id": raw_response.get("id"),
-            "notes": "Executed with direct video input through OpenRouter chat completions.",
+            "notes": f"Executed with OpenRouter chat completions using {review_mode} input.",
         }
         if not parsed.get("status") or base_report.get("status") == "needs_approval":
             base_report["status"] = "reviewed"
         if not parsed.get("qa") or base_report.get("qa", {}).get("status") == "not_run":
-            base_report["qa"] = {"status": "partial", "summary": "OpenRouter direct-video model critique returned."}
+            base_report["qa"] = {"status": "partial", "summary": f"OpenRouter {review_mode} model critique returned."}
 
     merge_required_report_defaults(base_report, defaults)
 

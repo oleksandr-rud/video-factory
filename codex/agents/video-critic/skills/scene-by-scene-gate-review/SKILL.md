@@ -15,8 +15,8 @@ Read all supplied criteria, not just the rendered video:
 - producer criteria artifact with rules, instructions, restrictions, scene criteria, revision policy, and intended style constraints
 - scenario and scene list
 - channel format and reference analysis
-- visual pack, selected candidates, AI generation packages, Remotion clip packages
-- voiceover package, captions, timeline sync plan, render package, and sampled review frames
+- media asset manifest, visual pack, selected candidates, AI generation packages, Remotion clip packages
+- voiceover package, captions, timeline sync plan, render package, sampled review frames, and hybrid/direct-video observations when approved
 - previous critique reports and revision attempts if this is not the first review iteration
 
 ## Workflow
@@ -54,4 +54,4 @@ Read all supplied criteria, not just the rendered video:
 - Do not pass a video because it is generally good if a hard rule failed.
 - Do not fail a video for taste if the issue is outside the production criteria and not a viewer-experience defect.
 - Compare against the actual final render, not the intended plan.
-- If the frame samples are insufficient, request more samples through `prepare-multimodal-review-package` before declaring pass.
+- If hybrid/direct-video evidence is unavailable and frame samples are insufficient, request more samples through `prepare-multimodal-review-package` before declaring pass.

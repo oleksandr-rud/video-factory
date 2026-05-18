@@ -6,6 +6,13 @@
   "properties": {
     "candidate_id": { "type": "string" },
     "scene_id": { "type": "string" },
+    "project_id": { "type": "string" },
+    "project_path": { "type": "string" },
+    "channel_profile_id": { "type": "string" },
+    "channel_slug": { "type": "string" },
+    "channel_profile_path": { "type": "string" },
+    "media_asset_manifest_path": { "type": "string" },
+    "media_asset_id": { "type": "string" },
     "route": {
       "type": "string",
       "enum": ["remotion_generated", "ai_video_generation", "stock_clip", "user_supplied_media"]
@@ -14,11 +21,25 @@
     "source_url": { "type": "string" },
     "preview_url": { "type": "string" },
     "local_path": { "type": "string" },
+    "remotion_static_file_path": { "type": "string" },
     "remotion_clip_package_path": { "type": "string" },
     "ai_video_generation_package_path": { "type": "string" },
     "generation_id": { "type": "string" },
     "prompt_or_query": { "type": "string" },
     "license_summary": { "type": "string" },
+    "evidence_refs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "evidence_id": { "type": "string" },
+          "source_id": { "type": "string" },
+          "asset_id": { "type": "string" },
+          "description": { "type": "string" },
+          "timestamp_seconds": { "type": "number" }
+        }
+      }
+    },
     "cost_estimate": { "type": "string" },
     "technical": {
       "type": "object",

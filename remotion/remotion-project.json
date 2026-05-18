@@ -1,0 +1,100 @@
+{
+  "remotion_project_id": "shared-remotion-app",
+  "scope": "shared_app",
+  "status": "validated",
+  "app_root_path": "remotion",
+  "package_json_path": "remotion/package.json",
+  "src_root_path": "remotion/src",
+  "public_root_path": "remotion/public",
+  "render_output_root_path": "remotion/out",
+  "package_manager": "npm",
+  "remotion_version": "4.0.462",
+  "template_source": {
+    "name": "Remotion blank template",
+    "url": "https://www.remotion.dev/docs",
+    "license_summary": "Remotion project scaffold; repo package is private/unlicensed",
+    "approval_required": false
+  },
+  "composition_registry": [
+    {
+      "composition_id": "VideoFactoryMain",
+      "composition_type": "full_video",
+      "owner_agent": "remotion-video-producer",
+      "source_paths": [
+        "remotion/src/Root.tsx",
+        "remotion/src/Composition.tsx"
+      ],
+      "output_contracts": [
+        "codex/contracts/timeline-sync-plan.schema.json",
+        "codex/contracts/render-package.schema.json"
+      ],
+      "status": "previewed",
+      "notes": "Default composition shell accepts scene props and local staticFile assets."
+    }
+  ],
+  "dependencies": [
+    {
+      "name": "@remotion/cli",
+      "version": "4.0.462",
+      "purpose": "Remotion Studio, bundling, stills, and rendering",
+      "license_summary": "Remotion package license applies",
+      "approval_required": false
+    },
+    {
+      "name": "remotion",
+      "version": "4.0.462",
+      "purpose": "Remotion React runtime",
+      "license_summary": "Remotion package license applies",
+      "approval_required": false
+    },
+    {
+      "name": "react",
+      "version": "19.2.3",
+      "purpose": "React component runtime",
+      "license_summary": "MIT",
+      "approval_required": false
+    },
+    {
+      "name": "react-dom",
+      "version": "19.2.3",
+      "purpose": "React DOM runtime",
+      "license_summary": "MIT",
+      "approval_required": false
+    }
+  ],
+  "public_asset_policy": {
+    "public_root_path": "remotion/public",
+    "static_file_prefix": "channels/<channel-slug>/projects/<project-slug>/",
+    "media_asset_manifest_path": "channels/<channel-slug>/projects/<project-slug>/media-asset-manifest.json",
+    "mirror_rules": [
+      "Keep canonical source media in the channel project folder.",
+      "Copy or mirror only render-needed assets into remotion/public.",
+      "Record canonical_path, remotion_public_path, and static_file_path in the media asset manifest."
+    ],
+    "remote_asset_policy": "forbidden_for_final_render"
+  },
+  "commands": {
+    "install": "npm install",
+    "studio": "npm run studio",
+    "lint": "npm run lint",
+    "render": "npm run render:main",
+    "still": "npm run still:main",
+    "bundle": "npm run build"
+  },
+  "artifact_paths": {
+    "preview_output_path": "remotion/out/video-factory-main.png",
+    "render_output_path": "remotion/out/video-factory-main.mp4"
+  },
+  "qa": {
+    "status": "pass",
+    "summary": "Dependencies installed, lint/typecheck passed, and a still render completed for VideoFactoryMain.",
+    "checks": [
+      "npm install",
+      "npm run lint",
+      "npm run still:main"
+    ],
+    "risks": [
+      "npm audit reported two low-severity vulnerabilities in installed dependencies."
+    ]
+  }
+}

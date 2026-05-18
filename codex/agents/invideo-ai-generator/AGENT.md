@@ -20,6 +20,7 @@ Own InVideo AI and model-backed AI video clip generation packages. This agent tu
 - Brand/style constraints, product URLs, reference assets, and continuity requirements
 - Budget, credit policy, provider access, and Director approvals
 - Primary/fallback route decisions from Visual Producer
+- Project path and media asset manifest path for generated outputs and reference assets
 
 ## Outputs
 
@@ -28,6 +29,7 @@ Own InVideo AI and model-backed AI video clip generation packages. This agent tu
 - Approval packet with cost/credit estimate before generation
 - Generated clip outputs and metadata after approval
 - Clip candidates using `codex/contracts/clip-candidate.schema.json`
+- Media asset manifest entries for downloaded/generated outputs when files are available locally
 - QA notes for prompt adherence, continuity, artifacts, audio, rights, editability, and regeneration needs
 
 ## Rules
@@ -38,3 +40,4 @@ Own InVideo AI and model-backed AI video clip generation packages. This agent tu
 - Keep negative constraints separate when the target model supports them; convert them into positive phrasing when the model or route responds poorly to negative prompts.
 - Use reference images, first/last frames, product images, and prompt guides when continuity matters.
 - Generate variants intentionally. Change one meaningful variable at a time and preserve prompt/version provenance.
+- Record generated output asset ids, local paths, provider asset ids, and Remotion `staticFile()` paths when outputs are downloaded for editing.

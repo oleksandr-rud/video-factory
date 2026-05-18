@@ -18,11 +18,12 @@ Workflow:
    - Remotion Three: 3D mockups, camera moves, product objects, spatial UI.
    - Remotion Skia: Skia-heavy vector/canvas effects.
    - Canvas/WebGL inside Remotion: procedural particles or shader-like effects when CSS/SVG is insufficient.
-4. Define frame ranges, entry/exit timing, blend mode, z-index, safe areas, and alpha behavior.
-5. Make props typed and deterministic: `durationInFrames`, colors, seed, intensity, text, audio path, and transparent mode.
-6. Add preview checks: one still frame at a representative frame, one motion preview or full render for complex VFX.
-7. For overlays, define both opaque and transparent render commands when needed.
-8. Write or update a Remotion clip package matching `codex/contracts/remotion-clip-package.schema.json`.
+4. Resolve the Remotion app contract and media asset manifest. Use the shared `remotion/` app by default, and record source media asset ids plus `staticFile()` paths for any local media.
+5. Define frame ranges, entry/exit timing, blend mode, z-index, safe areas, and alpha behavior.
+6. Make props typed and deterministic: `durationInFrames`, colors, seed, intensity, text, audio path, and transparent mode.
+7. Add preview checks: one still frame at a representative frame, one motion preview or full render for complex VFX.
+8. For overlays, define both opaque and transparent render commands when needed.
+9. Write or update a Remotion clip package matching `codex/contracts/remotion-clip-package.schema.json`, including project/channel fields, Remotion app path, media manifest path, source asset ids, and output asset ids when available.
 
 Definition of done:
 

@@ -28,12 +28,27 @@ Anthropic's agent workflow guidance supports routing when distinct categories ne
 
 Local decision: production agents call only local skills and approved built-in skills. Cross-agent work is expressed as a handoff recommendation, then the Director creates the actual `agent-handoff` with target agent, inputs, allowed paths, output contract, budget policy, and definition of done. This keeps ownership clear, prevents context bleed, and makes run-ledger state easier to audit.
 
+## Project Workspace And Artifact Findings
+
+LangChain Deep Agents is relevant as a comparable architecture because it treats planning, subagents, filesystem tools, persistent memory, filesystem permissions, and human-in-the-loop controls as harness capabilities rather than prompt-only conventions. This supports the local choice to put durable channel/project/run state in inspectable files and folders. Source: https://docs.langchain.com/oss/python/deepagents/overview
+
+LangChain's subagent guidance says subagents are useful for context isolation and specialized instructions, but not for simple single-step work or cases where overhead outweighs the benefit. That supports a small set of broad production-role agents and project folders that carry state between them. Source: https://docs.langchain.com/oss/python/deepagents/subagents
+
+OpenAI's Agents SDK represents handoffs as explicit delegation to another specialist agent and supports custom handoff input schemas. That maps directly to the local `agent-handoff` schema and argues for typed artifact paths, allowed paths, and output contracts instead of informal prompt handoffs. Source: https://openai.github.io/openai-agents-python/handoffs/
+
+Codex's own public guidance emphasizes configured environments, repository instructions, testing commands, and evidence such as terminal logs and test outputs. That supports adding a concrete `remotion/` app plus contracts for Remotion setup and media artifacts instead of keeping the render environment implicit. Source: https://openai.com/index/introducing-codex/
+
+Local decision: channel folders are durable identity and reference state; project folders are durable deliverable workspaces; run folders are execution attempts. Loaded videos, source media, generated clips, rendered clips, subtitles, review frames, and evidence refs are tracked by `media-asset-manifest.schema.json`. The Remotion app is tracked separately by `remotion-project.schema.json` so dependencies, commands, composition ids, and public asset rules are explicit.
+
 ## Remotion Capability Findings
 
 The installed Codex Remotion skill is not just a generic style guide. It includes local rules for 3D, animation, assets, audio, audio visualization, captions/subtitles, FFmpeg, GIFs, light leaks, Lottie, maps, text animations, transitions, transparent videos, trimming, videos, and voiceover.
 
 Current Remotion docs support a broad post-production stack:
 
+- Remotion's current project setup starts with `npx create-video@latest`, then Studio and CLI rendering; that justifies a real shared `remotion/` app in this repo rather than purely abstract render prompts. Source: https://www.remotion.dev/docs
+- Remotion resolves local render assets through `staticFile()` from the app's `public/` folder; the `public/` folder must sit beside the Remotion `package.json`. This justifies the project media manifest plus Remotion public projection rule. Source: https://www.remotion.dev/docs/staticfile
+- Remotion's `<Artifact>` can emit sidecar files during rendering, including thumbnails, which supports treating subtitle files, metadata, thumbnails, QA reports, and review frames as first-class artifacts. Source: https://www.remotion.dev/docs/artifact
 - Captions can be imported from `.srt`, transcribed from audio, displayed as timed caption pages, and exported as burned-in subtitles or separate `.srt` artifacts. Source: https://www.remotion.dev/docs/captions
 - Remotion caption transcription can use local Whisper.cpp, browser Whisper, OpenAI Whisper, or ElevenLabs Speech to Text, and all routes can normalize to Remotion's `Caption` type for downstream caption utilities. Source: https://www.remotion.dev/docs/captions/transcribing
 - Caption display uses `Caption[]` JSON, `createTikTokStyleCaptions()`, and `<Sequence>` frame ranges, which makes caption timing a first-class timeline input rather than an afterthought. Source: https://www.remotion.dev/docs/captions/displaying
@@ -92,7 +107,7 @@ The local design therefore adds `voiceover-package.schema.json`, guarded ElevenL
 
 The Video Critic is an independent validation agent, not a new production department. It exists because a final rendered video should be judged against the viewer experience, source/story intent, channel rules, and delivery artifacts by a different context than the one that built it.
 
-Current OpenAI docs support image inputs through the Responses API and note that multiple image inputs can be included in one request, with limits and token cost. They do not make direct local video-file critique the stable default path. Therefore the local critic prepares sampled frames plus transcript/captions, timeline metadata, render metadata, and production contracts, then sends that bounded multimodal package to an approved vision-capable model. Sources: https://platform.openai.com/docs/guides/vision and https://platform.openai.com/docs/api-reference/responses
+Current OpenRouter docs support video inputs through `/api/v1/chat/completions` using `video_url` with public URLs or base64 data URLs, and the model metadata for `qwen/qwen3.6-plus` exposes text, image, and video input with text output. Qwen's own visual-understanding docs recommend `qwen3.6-plus` for image/video understanding, list a 1M context window, and document 2-hour / 2GB video support. Therefore hybrid critique is now the preferred route when Director approval, provider limits, and media policy allow it: direct video for temporal understanding, sampled frame stills for sharp text/caption/safe-area checks, and transcript/captions plus production artifacts for audio/story/source evidence. Sources: https://openrouter.ai/docs/guides/overview/multimodal/videos, https://openrouter.ai/qwen/qwen3.6-plus, and https://docs.qwencloud.com/developer-guides/getting-started/vision-models
 
 The model call is approval-gated because image inputs are billed and may involve sensitive media. The same agent can still run artifact-only critique without spend.
 

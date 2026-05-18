@@ -6,8 +6,14 @@
   "properties": {
     "scenario_id": { "type": "string" },
     "scene_visual_pack_id": { "type": "string" },
+    "project_id": { "type": "string" },
+    "project_path": { "type": "string" },
+    "channel_profile_id": { "type": "string" },
+    "channel_slug": { "type": "string" },
+    "channel_profile_path": { "type": "string" },
     "reference_analysis_id": { "type": "string" },
     "channel_format_id": { "type": "string" },
+    "media_asset_manifest_path": { "type": "string" },
     "scene_packs": {
       "type": "array",
       "items": {
@@ -17,6 +23,19 @@
           "scene_id": { "type": "string" },
           "visual_goal": { "type": "string" },
           "source_ids": { "type": "array", "items": { "type": "string" } },
+          "source_asset_ids": { "type": "array", "items": { "type": "string" } },
+          "evidence_refs": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "evidence_id": { "type": "string" },
+                "source_id": { "type": "string" },
+                "asset_id": { "type": "string" },
+                "description": { "type": "string" }
+              }
+            }
+          },
           "mood": { "type": "string" },
           "camera_or_motion": { "type": "string" },
           "format_rules_applied": { "type": "array", "items": { "type": "string" } },

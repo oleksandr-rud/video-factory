@@ -47,14 +47,14 @@ You are the <agent-name> agent for the Video Factory project. Read your AGENT.md
 ## Pipeline
 
 1. Director decomposes the request, creates the producer criteria artifact, and sets acceptance criteria.
-2. Channel Intelligence creates or updates `channels/<channel-slug>/channel-profile.json` when a durable channel is in scope, creates or updates `channels/<channel-slug>/projects/<project-slug>/project.json` for durable deliverables, then analyzes reference videos, source pages, channel data, and best-practice specs into reusable reference and channel-format packages.
+2. Channel Intelligence creates or updates `channels/<channel-slug>/channel-profile.json` when a durable channel is in scope, creates or updates `channels/<channel-slug>/projects/<project-slug>/project.json` for durable deliverables, and records loaded source/reference media in a media asset manifest before producing reusable reference and channel-format packages.
 3. Creative Producer creates or revises the scenario, scene list, narration, and voiceover package using the channel profile, channel format, and source evidence. When ElevenLabs is the route, it uses inherited voice direction, provider inventory, and guarded scripts before any approved generation.
 4. Visual Producer creates the visual pack, researches routes, validates candidates, selects primary/fallback visual choices, and returns downstream handoff recommendations using the channel format and reference analysis.
 5. Director converts Visual Producer handoff recommendations into formal InVideo AI Generator and Remotion Clip Builder handoffs when specialist work is needed.
 6. InVideo AI Generator prepares approved AI video prompt packages, generates or records generated clip variants, and returns QA-backed clip candidates.
-7. Remotion Clip Builder implements selected deterministic clips, component templates, motion graphics, and VFX overlays.
-8. Remotion Video Producer builds a timeline sync plan, then assembles the full timeline, captions/subtitles, audio, transitions, render release candidate, and technical render QA evidence.
-9. Video Critic prepares multimodal review assets, critiques the render candidate scene by scene against production criteria and viewer experience, and returns gate results plus a revision plan.
+7. Remotion Clip Builder implements selected deterministic clips, component templates, motion graphics, and VFX overlays inside the shared `remotion/` app or an approved project-specific Remotion app.
+8. Remotion Video Producer builds a timeline sync plan, then assembles the full timeline, captions/subtitles, audio, transitions, render release candidate, and technical render QA evidence using local Remotion `public/` assets tracked by the media asset manifest.
+9. Video Critic prepares multimodal review assets, prefers approved hybrid critique with direct video plus sampled frame stills when provider limits and media policy allow it, critiques the render candidate scene by scene against production criteria and viewer experience, and returns gate results plus a revision plan.
 10. Director routes failed gates back to owning agents, requests a new render, and repeats critique until gates pass, a stop condition is hit, or the user approves a waiver.
 11. Director resolves cross-stage conflicts and delivers the final package.
 
@@ -62,12 +62,17 @@ You are the <agent-name> agent for the Video Factory project. Read your AGENT.md
 
 After a full run, treat new user requests as change requests against `codex/contracts/production-run.schema.json`. The Director should classify the impact, preserve stable ids where possible, re-run only affected agents and downstream dependents, update artifact versions and QA, then report what changed and what stayed valid.
 
+Persist contract paths as repo-relative POSIX strings such as `channels/<channel-slug>/projects/<project-slug>/project.json`. Resolve absolute filesystem paths only when running tools.
+
 ## Shared Contracts
 
 - `codex/contracts/agent-handoff.schema.json`
 - `codex/contracts/video-project.schema.json`
 - `codex/contracts/production-run.schema.json`
 - `codex/contracts/channel-profile.schema.json`
+- `codex/contracts/media-asset-manifest.schema.json`
+- `codex/contracts/remotion-project.schema.json`
+- `codex/contracts/remotion-template.schema.json`
 - `codex/contracts/producer-criteria.schema.json`
 - `codex/contracts/reference-analysis.schema.json`
 - `codex/contracts/channel-format.schema.json`

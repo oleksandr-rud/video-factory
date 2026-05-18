@@ -14,6 +14,7 @@ Ask for a Remotion component package, not a website component:
 - A single named React/TypeScript export for the component.
 - A clear composition id suggestion.
 - Props shape for scene copy, colors, assets, duration, seed, and feature flags.
+- Props and notes should reference media asset ids plus Remotion `staticFile()` paths, not only loose local filenames.
 - Uses Remotion APIs: `useCurrentFrame()`, `useVideoConfig()`, `AbsoluteFill`, `Sequence`, `Series`, `interpolate()`, `spring()`, `random(seed)`, `staticFile()`, and approved `@remotion/*` packages.
 - Uses Remotion-native templates/packages only. Do not import generic web component libraries.
 - Uses deterministic frame math. Do not use `Math.random()`, wall-clock time, browser storage, fetch-at-render-time remote data, or live network assets.
@@ -30,7 +31,7 @@ Ask for a Remotion component package, not a website component:
    - aspect ratio and dimensions
    - required text/captions
    - allowed Remotion packages
-   - local asset paths
+   - media asset ids and local `staticFile()` asset paths
    - style references in words
    - explicit forbidden dependencies
 3. Request structured output when possible:
@@ -69,7 +70,7 @@ Generate a Remotion-only TypeScript component for scene <scene_id>.
 Goal: <visual goal>.
 Duration: <seconds> seconds at <fps> fps, <width>x<height>.
 Allowed packages: <core remotion and approved @remotion/* packages>.
-Assets: <local public/staticFile paths>.
+Assets: <media asset ids and local public/staticFile paths>.
 Rules: named export <ComponentName>; deterministic frame math; no generic web component libraries; no Math.random; no remote runtime fetches; code only.
 Return structured fields: component_name, composition_id, dependencies, code, props_schema, preview_frames, notes.
 ```

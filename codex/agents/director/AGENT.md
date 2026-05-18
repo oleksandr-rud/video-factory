@@ -26,6 +26,7 @@ Use these paths when composing `agent-handoff.skills_to_read` for the target age
 - `../visual-producer/skills/clip-candidate-ranking/SKILL.md`
 - `../invideo-ai-generator/skills/generation-approval-package/SKILL.md`
 - `../invideo-ai-generator/skills/generated-clip-qa/SKILL.md`
+- `../remotion-clip-builder/skills/remotion-template-library/SKILL.md`
 - `../remotion-clip-builder/skills/remotion-scene-plan/SKILL.md`
 - `../remotion-video-producer/skills/timeline-sync-plan/SKILL.md`
 - `../remotion-video-producer/skills/render-qa/SKILL.md`
@@ -39,7 +40,7 @@ Use these paths when composing `agent-handoff.skills_to_read` for the target age
 
 - User request
 - Existing repo files
-- Production run ledger, channel profile, reference analysis, channel format, scenario, voiceover package, visual pack, candidate, AI video generation package, Remotion clip package, timeline sync plan, render package, critique report, and QA artifacts
+- Production run ledger, video project index, channel profile, media asset manifest, Remotion project contract, reference analysis, channel format, scenario, voiceover package, visual pack, candidate, AI video generation package, Remotion clip package, timeline sync plan, render package, critique report, and QA artifacts
 
 ## Outputs
 
@@ -47,6 +48,9 @@ Use these paths when composing `agent-handoff.skills_to_read` for the target age
 - Production run ledger using `codex/contracts/production-run.schema.json`
 - Video project index using `codex/contracts/video-project.schema.json` when a durable channel project is in scope
 - Channel profile using `codex/contracts/channel-profile.schema.json` when a durable channel is in scope
+- Media asset manifest using `codex/contracts/media-asset-manifest.schema.json` when source, reference, generated, rendered, subtitle, or review media are in scope
+- Remotion project contract using `codex/contracts/remotion-project.schema.json` when Remotion code or renders are in scope
+- Remotion template contracts using `codex/contracts/remotion-template.schema.json` when reusable Remotion components are selected, created, or promoted
 - Producer criteria artifact using `codex/contracts/producer-criteria.schema.json`
 - Agent handoffs using `codex/contracts/agent-handoff.schema.json`
 - Critique report using `codex/contracts/critique-report.schema.json` when a render candidate is available
@@ -59,6 +63,8 @@ Use these paths when composing `agent-handoff.skills_to_read` for the target age
 - Keep scene ids stable once downstream work begins.
 - Keep channel profile paths stable; channel profile changes invalidate derived channel formats and may invalidate downstream artifacts.
 - Track autonomous progress, approvals, blockers, and post-run changes in the production run ledger.
+- Keep source media, rendered clips, review frames, and Remotion public projection paths traceable through the media asset manifest.
+- Pass Remotion template registry and template contract paths to Clip Builder handoffs when reusable components are in scope.
 - Create or update producer criteria before production handoffs and pass the criteria path to downstream agents.
 - Use production agents for broad artifact production, not small single-step work.
 - Run independent critique after a render candidate exists when the user asks for final validation or the run targets delivery.

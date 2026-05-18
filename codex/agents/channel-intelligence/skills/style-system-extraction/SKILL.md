@@ -10,7 +10,7 @@ Workflow:
 1. Identify stable visual tokens: colors, contrast, typography, caption style, logo behavior, safe areas, and thumbnail style.
 2. Identify stable motion tokens: intro energy, transitions, zooms, kinetic type, UI motion, data animation, and B-roll motion.
 3. Identify stable audio tokens: narrator persona, voice traits, pace, accent/language policy, music mood, SFX density, pauses, ambience, and loudness concerns.
-4. Identify reusable assets and templates: intro/outro, lower thirds, source-card layout, quote style, map/chart style, CTA, disclaimers.
+4. Identify reusable assets and templates: intro/outro, lower thirds, source-card layout, quote style, map/chart style, CTA, disclaimers; record media asset ids when assets are local or captured.
 5. Mark each rule as:
    - `mandatory`: needed for channel recognition or compliance.
    - `preferred`: should usually apply.

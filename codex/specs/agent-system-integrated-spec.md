@@ -1,0 +1,472 @@
+# Agent System Integrated Spec
+
+## Purpose
+
+This spec consolidates the Video Factory agent architecture, contracts, skill responsibilities, relation model, and remaining gaps. It is meant to be the system-level audit artifact to read before changing agent boundaries, adding skills, or wiring a full autonomous production run.
+
+## Research Basis
+
+The architecture should stay close to these external patterns:
+
+- OpenAI Agents SDK handoffs: use explicit delegation with structured handoff input, optional input filtering, and specialist agents rather than informal cross-agent context sharing. Source: https://openai.github.io/openai-agents-python/handoffs/
+- Anthropic agent workflow guidance: prefer simple workflows when possible; use routing, orchestrator-worker, and evaluator-optimizer loops only where the task benefits from specialist context or iterative review. Source: https://www.anthropic.com/engineering/building-effective-agents
+- LangGraph workflows: orchestrator-worker workflows use shared state and worker outputs returned to the orchestrator; evaluator-optimizer loops route feedback back until an acceptance condition passes. Source: https://docs.langchain.com/oss/python/langgraph/workflows-agents
+- Remotion docs: Remotion supports project scaffolding, Studio, CLI render, server-side rendering, captions/subtitles, render variants, transparent video, stills, GIFs, Lambda, GitHub Actions, and Cloud Run. Sources: https://www.remotion.dev/docs/ and https://www.remotion.dev/docs/render/
+- Remotion captions: captions/subtitles are a first-class Remotion workflow with import, transcribe, display, and export paths. Source: https://www.remotion.dev/docs/captions/
+- ElevenLabs TTS with timestamps: the timestamp endpoint returns audio plus character-level original and normalized alignment data, which is useful for subtitle and visual sync. Source: https://elevenlabs.io/docs/api-reference/text-to-speech-with-timestamps
+- InVideo Agent One credit controls: generation can spend credits and should be approval-gated; approval UI exposes prompt, model, duration, and aspect ratio before generation. Source: https://help.invideo.io/en/articles/14718313-how-credits-are-charged-in-agent-one
+
+## Current Architecture Status
+
+The system now has:
+
+- 8 agents
+- 41 local skills
+- 18 contracts
+- 6 local specs
+- persistent channel/project state
+- first-class producer criteria
+- media asset manifests
+- Remotion project contracts
+- independent critic/review loop
+
+This is no longer just a prompt collection. It is a typed production workflow where agents exchange file-backed contracts and the Director owns the run ledger.
+
+## Core Pattern
+
+Use a Director plus bounded production agents and one independent validation agent.
+
+```text
+User request
+  -> Director
+  -> Channel Intelligence
+  -> Creative Producer
+  -> Visual Producer
+  -> InVideo AI Generator and/or Remotion Clip Builder
+  -> Remotion Video Producer
+  -> Video Critic
+  -> Director review loop and delivery
+```
+
+The key rule is that specialist-to-specialist work crosses through the Director. Production agents do not execute another production agent's skills. They may recommend handoffs; the Director turns those recommendations into `agent-handoff` artifacts.
+
+## State Model
+
+Use three durable state levels:
+
+- Channel: reusable brand, format, voice, governance, assets, references, and project registry.
+- Project: one video deliverable with all source media, artifacts, render candidates, review evidence, and delivery files.
+- Run: one execution attempt with handoffs, approvals, blockers, review loops, and rerun state.
+
+Canonical media should live under the project. Remotion `public/` should be treated as a render-visible projection, not the source of truth.
+
+## Contract Map
+
+| Contract | Owner | Purpose | Gap |
+|---|---|---|---|
+| `agent-handoff.schema.json` | Director | Structured delegation, inputs, allowed paths, skills, output contract, budget policy | Strong. Consider requiring `handoff_id` and `status` if every handoff is persisted. |
+| `video-project.schema.json` | Director / Channel Intelligence | Durable project index under a channel | Good. Scaffold helper exists; needs examples/templates and validation fixtures. |
+| `production-run.schema.json` | Director | Execution ledger, handoffs, approvals, review loops, blockers | Good. Could add explicit invalidation graph if reruns become complex. |
+| `channel-profile.schema.json` | Channel Intelligence | Persistent channel identity, brand, content, voice, governance | Good. Needs examples/templates. |
+| `media-asset-manifest.schema.json` | Channel Intelligence / media-producing agents | Canonical source/generated/rendered/review asset ledger | Strong direction. Needs strict update rules in every media-producing skill. |
+| `remotion-project.schema.json` | Director / Remotion agents | Shared or project Remotion app metadata, commands, dependencies, public asset policy | Good. Shared app exists; a bootstrap/check skill would still make setup validation more repeatable. |
+| `producer-criteria.schema.json` | Director | Binding acceptance criteria, hard gates, scene criteria, thresholds, revision policy | Strong. Needs every production handoff to receive the path. |
+| `reference-analysis.schema.json` | Channel Intelligence | Source/reference evidence and downstream guidance | Good. Needs stricter output in source/reference skills. |
+| `channel-format.schema.json` | Channel Intelligence | Reusable format rules derived from profile/references | Good. Needs freshness/version policy. |
+| `scenario.schema.json` | Creative Producer | Timed scenario and scene list | Good after scene-breakdown hardening. |
+| `voiceover-package.schema.json` | Creative Producer | Voice direction, provider payload, audio paths, captions, QA | Good after TTS hardening. |
+| `scene-visual-pack.schema.json` | Visual Producer | Per-scene visual goals, routes, constraints, downstream handoff recommendations | Good. Needs selected primary/fallback fields or a separate selection artifact if rankings get richer. |
+| `clip-candidate.schema.json` | Visual Producer / InVideo / Remotion Clip Builder | Comparable candidate record across source routes | Good. Could add `validation_report_path` if evidence grows. |
+| `ai-video-generation-package.schema.json` | InVideo AI Generator | Model route, prompts, approval, outputs, QA | Good. Needs provider-specific examples. |
+| `remotion-clip-package.schema.json` | Remotion Clip Builder | Short clip/component package, dependencies, outputs, QA | Good. Needs stack decision path if dependency choices become formal artifacts. |
+| `timeline-sync-plan.schema.json` | Remotion Video Producer | Frame-accurate scene, audio, caption, visual alignment | Good. Needs stricter relationship to voiceover timestamp alignment. |
+| `render-package.schema.json` | Remotion Video Producer | Render RC package, outputs, commands, subtitles, audio mix, QA | Good. Release approval intentionally stays outside this contract. |
+| `critique-report.schema.json` | Video Critic | Independent review, scene gates, scores, findings, revision plan, gate decision | Good. Needs reviewer prompt archive for reproducibility. |
+
+## Agent Relation Model
+
+### Director
+
+Owns user conversation, decomposition, producer criteria, approvals, handoffs, run ledger, final integration, review-loop routing, and delivery.
+
+Consumes all artifacts. Produces `agent-handoff`, `production-run`, `video-project`, `producer-criteria`, and final delivery notes.
+
+Relations:
+
+- Calls Channel Intelligence when channel, references, source material, or anti-redundancy matter.
+- Calls Creative Producer after source/channel context is sufficient.
+- Calls Visual Producer after scenario exists.
+- Converts Visual Producer handoff recommendations into InVideo or Remotion Clip Builder handoffs.
+- Calls Remotion Video Producer after approved candidates/clip packages and voice/caption inputs exist.
+- Calls Video Critic after a render candidate exists.
+
+Gaps:
+
+- The Director has enough rules, but the autonomous run should eventually write a machine-readable invalidation graph, not only prose.
+- Handoff creation would benefit from a deterministic helper script to prevent missing paths or wrong skills.
+- The Director should always attach `producer_criteria_path`, `media_asset_manifest_path`, and `remotion_project_contract_path` when available.
+
+### Channel Intelligence
+
+Owns channel profile, source corpus, reference analysis, channel format, style extraction, scenario alignment, and redundancy risk.
+
+Relations:
+
+- Feeds Creative Producer with source evidence, channel voice, and format rules.
+- Feeds Visual Producer with visual style, reference patterns, evidence refs, and anti-copy guidance.
+- Feeds InVideo and Remotion agents indirectly through channel format, media manifest, and producer criteria.
+- Feeds Video Critic with source/channel criteria for final comparison.
+
+Gaps:
+
+- Many skills are still checklist-like and need exact return shapes.
+- Media asset manifest updates must be made explicit in `source-corpus-ingestion` and `reference-video-breakdown`.
+- Channel profile updates need change impact rules: channel voice/visual changes can invalidate channel format, scenario, visuals, voiceover, Remotion themes, and critique criteria.
+
+### Creative Producer
+
+Owns scenario, scene breakdown, narration, voice direction, provider-ready voiceover package, and script-level claim notes.
+
+Relations:
+
+- Consumes Channel Intelligence and producer criteria.
+- Feeds Visual Producer with stable scene ids, visual intent, and source ids.
+- Feeds Remotion Video Producer with scenario timing, voiceover package, captions, and pronunciation/timing notes.
+- Feeds Video Critic with intended script, claims, and audio expectations.
+
+Gaps:
+
+- `write-scenario` and `voice-casting` remain thinner than `scene-breakdown` and `tts-production-plan`.
+- Claim-check ownership needs sharper split: Creative may draft claim notes, but source confidence belongs to Channel Intelligence.
+- If human voiceover is used, the package should still use the same voiceover contract rather than bypassing it.
+
+### Visual Producer
+
+Owns scene visual pack, visual research, provider search specs, candidate validation, ranking, and downstream handoff recommendations.
+
+Relations:
+
+- Consumes scenario, reference analysis, channel format, media manifest, and producer criteria.
+- Produces candidate records and handoff recommendations for InVideo or Remotion Clip Builder.
+- Does not perform InVideo model selection or Remotion component planning.
+- Feeds Remotion Video Producer with approved primary/fallback candidates.
+- Feeds Video Critic with visual expectations, provenance, and selection rationale.
+
+Gaps:
+
+- `visual-validation` is now strong; remaining visual skills should catch up.
+- `clip-candidate-ranking` is very thin and should require score explanations, tie-breakers, and fallback coverage.
+- `provider-clip-search` should require source/provider metadata, search query provenance, rights state, and media manifest entries.
+- `visual-research-queries` should define query sets by route and preserve rejected query logic.
+
+### InVideo AI Generator
+
+Owns provider/model AI generation package, prompts, negative constraints, approval packet, variants, generated outputs, and generated clip QA.
+
+Relations:
+
+- Runs only after Visual Producer selects or recommends `ai_video_generation` and Director creates a handoff.
+- Returns AI generation package and clip candidates.
+- Updates media asset manifest for downloaded/generated outputs.
+- Feeds Remotion Video Producer through approved clip candidates.
+- Feeds Video Critic with prompts, approvals, outputs, and QA.
+
+Gaps:
+
+- Most skills lack explicit `Required Output` and `Definition Of Done` sections.
+- Model selection should write a structured route decision, not only a recommendation.
+- Prompt builder should require prompt versioning, reference asset ids, duration/aspect ratio constraints, and failure guardrails.
+- Generation iteration should define max variants, one-variable-change discipline, and stop conditions.
+- Generated clip QA should mirror Visual Validation's pass/fail evidence format.
+
+### Remotion Clip Builder
+
+Owns deterministic 5-20 second clips, VFX overlays, motion graphics, component templates, preview evidence, and reusable clip packages.
+
+Relations:
+
+- Runs after Visual Producer recommends `remotion_generated` and Director creates a handoff.
+- Consumes scenario scene ids, visual briefs, media manifest, Remotion project contract, and producer criteria.
+- Produces Remotion clip packages and sometimes clip candidates.
+- Feeds Remotion Video Producer with component paths, composition ids, props, outputs, and render commands.
+
+Gaps:
+
+- `remotion-stack-selection` is now strong.
+- `remotion-scene-plan` should include an explicit component plan object, props plan, asset needs, and preview frames.
+- `remotion-ai-component-prompt` needs an output format for generated prompt packets and compile-error repair loops.
+- `remotion-vfx-clip` has a definition of done but should more explicitly map outputs into `remotion-clip-package`.
+- A Remotion app bootstrap/check skill is missing.
+
+### Remotion Video Producer
+
+Owns full-video assembly, timeline sync, captions/subtitles, audio mix, post-production, render RC package, and technical render QA.
+
+Relations:
+
+- Consumes scenario, voiceover, visual candidates, Remotion clip packages, media manifest, Remotion project contract, and producer criteria.
+- Produces timeline sync plan, render package, subtitles, audio mix notes, preview/final outputs, and technical QA.
+- Requests Director handoff to Clip Builder if new reusable clips/VFX are needed.
+- Does not approve viewer-facing release gates.
+
+Gaps:
+
+- `timeline-sync-plan` is moderate but should require all selected visuals/audio/captions by scene id and frame range.
+- `subtitle-caption-pipeline` needs exact Caption JSON/SRT output contract and safe-area QA.
+- `render-release-candidate` should require manifest updates and explicit RC versioning.
+- `render-qa` should have stricter technical pass/fail categories and explicitly exclude release approval.
+- `remotion-post-production` should define expected timeline source files, composition ids, and render-readiness checks.
+
+### Video Critic
+
+Owns independent validation of the final rendered candidate. Produces critique report and revision plan; never edits production artifacts.
+
+Relations:
+
+- Consumes render package, final video path, producer criteria, scenario, channel format, source evidence, media manifest, timeline sync, voiceover, captions, visual pack, candidates, AI packages, and Remotion packages.
+- Produces critique report with scene gates, scores, findings, gate decision, limitations, and revision plan.
+- Sends recommendations to Director, not directly to producers.
+
+Gaps:
+
+- Critic skills are conceptually strong but need more exact return shapes.
+- `prepare-multimodal-review-package` should require manifest entries for sampled frames and review assets.
+- `artifact-consistency-audit` should produce findings in the same structure as critique report.
+- `multimodal-video-critique` should archive prompt and raw response paths for reproducibility.
+- `revision-prioritization` should output an explicit owner/rerun dependency map.
+
+## Skill Gap Matrix
+
+Legend:
+
+- Strong: enough for autonomous handoff now.
+- Medium: usable but needs stricter return shape or evidence rules.
+- Thin: checklist-level; should be upgraded before high-autonomy use.
+
+| Agent | Skill | Status | Gap | Recommended Spec Upgrade |
+|---|---|---:|---|---|
+| Channel Intelligence | `source-corpus-ingestion` | Thin | Normalizes sources but does not define ledger output shape or manifest update rules. | Add required source ledger fields, asset ids, evidence refs, rights state, unsupported-source policy, and done criteria. |
+| Channel Intelligence | `channel-profile-management` | Medium | Has workflow but not strict output summary or invalidation impact. | Add channel profile delta, project creation result, changed fields, downstream invalidation, and QA summary. |
+| Channel Intelligence | `reference-video-breakdown` | Medium | Rich purpose, but output and evidence format are still loose. | Require timecoded sections, shot/pacing/audio/caption observations, reusable patterns, do-not-copy notes, media asset ids, and confidence. |
+| Channel Intelligence | `web-content-synthesis` | Thin | Lacks exact claim/evidence output and unsupported claim handling. | Add claim ledger, visual evidence opportunities, source confidence, rights notes, and scenario guidance. |
+| Channel Intelligence | `style-system-extraction` | Thin | Mentions style extraction but lacks structured style tokens. | Add colors, typography, layout, captions, motion, audio, thumbnail, reusable assets, evidence refs, and inheritance priority. |
+| Channel Intelligence | `channel-format-synthesis` | Thin | Produces channel format but no explicit version/freshness policy. | Add versioned format package, source ids, inherited channel fields, must-vary rules, anti-redundancy criteria, and QA. |
+| Channel Intelligence | `scenario-alignment-brief` | Thin | Useful review but not contract-backed. | Add findings with severity, scene ids, source gaps, channel-fit gaps, and owner recommendations. |
+| Channel Intelligence | `redundancy-risk-audit` | Thin | No scoring or stop policy. | Add redundancy score, repeated-element evidence, risk categories, required changes, and pass/fail threshold. |
+| Creative Producer | `write-scenario` | Thin | Points to scenario contract but lacks required return summary and source validation. | Add scenario JSON fields, claim/source validation, novelty angle, changed scene ids, and blocked states. |
+| Creative Producer | `scene-breakdown` | Strong | Recently upgraded. | Keep as reference pattern for other skills. |
+| Creative Producer | `voice-casting` | Thin | Voice direction is qualitative and not contract-shaped. | Add voice direction object, scoring rubric, inherited channel rules, rejected styles, rights constraints, and selection rationale. |
+| Creative Producer | `elevenlabs-voice-selection` | Medium | Has workflow/scripts but not a compact output schema. | Add provider inventory snapshot path, ranked candidates, selected voice, approval state, continuity/risk notes, and dry-run evidence. |
+| Creative Producer | `tts-production-plan` | Strong | Recently upgraded. | Keep provider execution guarded; ensure human narration also uses the contract. |
+| Director | `decompose-video-request` | Medium | Good stage planning but should emit a standard production brief object. | Add structured brief, artifact paths, agent dependencies, initial handoffs, approvals, and project/channel state. |
+| Director | `producer-criteria-prompt` | Medium | Contract exists, but skill needs a stricter example return shape. | Add exact producer criteria summary, scene criteria coverage, hard gate ids, threshold defaults, and revision policy. |
+| Director | `autonomous-production-run` | Strong | Good run loop. | Add deterministic invalidation graph and handoff validation helper later. |
+| Director | `quality-gated-review-loop` | Medium | Good policy, but rerun dependency graph should be more formal. | Add owner-to-rerun matrix and explicit stale artifact marking rules. |
+| Visual Producer | `visual-pack-plan` | Medium | Has done criteria but no JSON return shape. | Add scene pack summary, route decision evidence, fallback coverage, and handoff recommendations. |
+| Visual Producer | `visual-research-queries` | Thin | Query generation lacks provenance and rejection logic. | Add query groups by route/provider, expected evidence, rejected queries, and search stop criteria. |
+| Visual Producer | `provider-clip-search` | Thin | Search spec lacks normalized candidate output. | Add provider metadata, license status, local/download state, technical metadata, and manifest update rules. |
+| Visual Producer | `ai-video-generation-brief` | Medium | Has DoD and correct handoff boundary. | Add structured brief object with prompt intent, references, constraints, fallback, and cost risk. |
+| Visual Producer | `visual-validation` | Strong | Recently upgraded. | Use as validation template for generated clip QA. |
+| Visual Producer | `clip-candidate-ranking` | Thin | Ranking is too small for autonomous candidate selection. | Add score explanation, primary/fallback decision, tie-breakers, rejected candidates, and coverage by scene. |
+| InVideo AI Generator | `invideo-model-selection` | Thin | No structured model decision or approval risk object. | Add route decision, model limits, duration/aspect ratio, quality mode, cost risk, fallback model, and assumptions. |
+| InVideo AI Generator | `ai-video-prompt-builder` | Thin | Prompt shape is underspecified for reproducibility. | Add positive prompt, negative constraints, prompt guide notes, references, model settings, version, and blocked terms. |
+| InVideo AI Generator | `negative-prompt-guardrails` | Thin | Good heuristic but no output object. | Add unsupported negatives, converted positive constraints, artifact prevention checklist, and model-specific notes. |
+| InVideo AI Generator | `generation-approval-package` | Thin | Approval packet needs exact fields. | Add prompt, model, duration, aspect ratio, resolution, variant count, credit estimate, approval state, and expiry. |
+| InVideo AI Generator | `generation-iteration-plan` | Thin | Variants and rerolls are not bounded enough. | Add max variants, one-variable-change plan, QA target, retry stop conditions, and cost ceiling. |
+| InVideo AI Generator | `generated-clip-qa` | Thin | QA checklist not aligned with Visual Validation's evidence format. | Add pass/fail per dimension, candidate updates, generated output ids, rights state, and reroll recommendation. |
+| Remotion Clip Builder | `remotion-scene-plan` | Thin | Needs more implementation-ready details. | Add component plan, props schema, asset needs, composition id, timing map, stack decision, and preview plan. |
+| Remotion Clip Builder | `remotion-stack-selection` | Strong | Recently upgraded. | Consider a formal stack-decision artifact if choices become large. |
+| Remotion Clip Builder | `remotion-ai-component-prompt` | Medium | Strong guidance but output is prompt-oriented, not contract-oriented. | Add generated prompt packet, targeted edit plan, compile error repair loop, and validation checklist. |
+| Remotion Clip Builder | `remotion-vfx-clip` | Medium | Has DoD but should map every output into clip package fields. | Add `remotion-clip-package` update checklist and manifest output entries. |
+| Remotion Video Producer | `subtitle-caption-pipeline` | Thin | Caption path is not contract-shaped. | Add Caption JSON/SRT output, source alignment, safe-area QA, burned-in/separate subtitle decisions, and blockers. |
+| Remotion Video Producer | `timeline-sync-plan` | Medium | Workflow exists but return shape should be stricter. | Add scene frame ranges, selected visual layers, voice/caption ranges, transition handles, and QA failure policy. |
+| Remotion Video Producer | `remotion-post-production` | Medium | Good scope but needs exact deliverables. | Add timeline source files, composition ids, media normalization, audio mix, transition map, render-readiness checks. |
+| Remotion Video Producer | `render-release-candidate` | Thin | RC package should be fully deterministic. | Add RC versioning, commands, outputs, manifest updates, rights notes, known blockers, and reproducibility checks. |
+| Remotion Video Producer | `render-qa` | Thin | Needs technical categories and release boundary. | Add render health, media presence, audio sync, captions, export settings, output metadata, and explicit "not release approval". |
+| Video Critic | `prepare-multimodal-review-package` | Medium | Workflow exists but output should be structured. | Add frame sample list, ffprobe metadata, direct video route, manifest asset ids, missing evidence, and limitations. |
+| Video Critic | `scene-by-scene-gate-review` | Medium | Good process, no final JSON shape. | Add exact scene review object, criterion results, gate status, unknown evidence policy, and failed gate ids. |
+| Video Critic | `artifact-consistency-audit` | Thin | Checklist not mapped tightly to critique findings. | Add finding schema, artifact mismatch categories, provenance failures, and owner mapping. |
+| Video Critic | `multimodal-video-critique` | Medium | Good dimensions, needs reproducibility output. | Add prompt path, raw response path, model limits, media handling approval, and hybrid/direct/frame-only mode notes. |
+| Video Critic | `revision-prioritization` | Medium | Good owner mapping, but rerun dependencies are implicit. | Add affected artifacts, invalidation scope, approval needs, expected rerun chain, and stop/waiver recommendations. |
+
+## Cross-Agent Relation Rules
+
+### Handoff Rules
+
+Every handoff must include:
+
+- role and scope
+- agent path
+- skill files to read
+- objective
+- inputs with artifact paths
+- allowed paths
+- output contract
+- budget and approval policy
+- definition of done
+- stop conditions
+- revision policy
+
+Specialist agents may return handoff recommendations, but recommendations are not executable. Only the Director creates executable `agent-handoff` records.
+
+### Approval Rules
+
+Approval is required for:
+
+- paid API spend
+- AI generation credits
+- licensed media downloads
+- paid Remotion Pro templates or commercial assets
+- voice cloning, likeness use, or unclear voice rights
+- cloud transcription/alignment if it spends credits
+- multimodal critique through a paid or external provider
+- release gate waivers
+
+### Evidence Rules
+
+Every source-backed claim, reference-derived rule, visual candidate, generated clip, Remotion asset, render output, sampled review frame, and critique finding should be traceable through one of:
+
+- source id
+- evidence ref
+- media asset id
+- artifact path
+- timestamp
+- frame path
+- provider request id
+
+Missing evidence is allowed in early planning but should become a blocker before release-candidate approval when it affects rights, factual claims, selected media, captions, audio sync, or delivery quality.
+
+## Artifact Flow
+
+```text
+channel-profile
+  -> channel-format
+  -> producer-criteria
+  -> scenario
+  -> voiceover-package
+  -> scene-visual-pack
+  -> clip-candidate
+  -> ai-video-generation-package / remotion-clip-package
+  -> timeline-sync-plan
+  -> render-package
+  -> critique-report
+  -> production-run review loop
+  -> video-project delivery state
+```
+
+The media asset manifest runs alongside the whole flow. It is not a late-stage artifact; it should be updated whenever source, generated, rendered, subtitle, thumbnail, review, or delivery media becomes real.
+
+## Rerun And Invalidation Rules
+
+| Change | Invalidate | Rerun |
+|---|---|---|
+| Channel profile brand/audio/visual rules | Channel format, producer criteria, scenario/visual/voice assumptions | Channel Intelligence, affected downstream agents, Critic |
+| Source/reference evidence | Reference analysis, claims, visual evidence, factual gates | Channel Intelligence, Creative Producer, affected downstream agents |
+| Producer criteria | All subsequent review assumptions | Director criteria update, affected production agents if rules changed, Critic |
+| Scenario scene ids/timing/script | Voiceover, visual pack, AI prompts, Remotion clips, timeline, render, critique | Creative Producer, Visual Producer, affected generators, Remotion Video Producer, Critic |
+| Voiceover audio/timestamps | Timeline sync, captions, render, critique | Creative Producer, Remotion Video Producer, Critic |
+| Visual route/candidate | InVideo/Remotion clip packages, timeline, render, critique | Visual Producer, affected generator, Remotion Video Producer, Critic |
+| AI generated clip | Clip candidate, media manifest, timeline, render, critique | InVideo AI Generator, Remotion Video Producer, Critic |
+| Remotion clip/component | Clip package, timeline, render, critique | Remotion Clip Builder, Remotion Video Producer, Critic |
+| Timeline/captions/audio mix/export | Render package, critique | Remotion Video Producer, Critic |
+| Critique metadata only | Critique report, run ledger | Video Critic or Director only |
+
+## Review Loop Spec
+
+The review loop is an evaluator-optimizer loop:
+
+1. Remotion Video Producer produces a render candidate and technical QA.
+2. Video Critic evaluates the final video against producer criteria, scenario, source/channel evidence, artifacts, and viewer experience.
+3. Director validates the critique report and gate decision.
+4. Director routes exact findings to owning agents.
+5. Affected agents revise only stale artifacts.
+6. Remotion Video Producer rerenders.
+7. Video Critic reviews again.
+8. Loop stops when gates pass, a user waiver is recorded, approval is needed, a blocker repeats, or max iterations is reached.
+
+Do not let producing agents self-approve final viewer quality. Do not let the critic edit artifacts directly.
+
+## Standard Skill Hardening Template
+
+Every skill that will be used in autonomous production should eventually include:
+
+```text
+Inputs
+Workflow
+Required Output
+Contract Fields Populated
+Status Policy
+Evidence Required
+Approval / Stop Conditions
+Definition Of Done
+Handoff Summary Shape
+```
+
+Standard handoff summary:
+
+```json
+{
+  "status": "complete | needs_approval | blocked | needs_revision",
+  "artifact_paths": ["string"],
+  "changed_files": ["string"],
+  "populated_contracts": ["string"],
+  "validation_performed": ["string"],
+  "assumptions": ["string"],
+  "blockers": ["string"],
+  "risks": ["string"],
+  "next_recommended_step": "string"
+}
+```
+
+Validation-style skills should additionally return:
+
+```json
+{
+  "item_id": "string",
+  "status": "pass | fail | partial | unknown | needs_approval",
+  "evidence": "string",
+  "reason": "string",
+  "recommendation": "string",
+  "owner_agent": "string",
+  "blocks_delivery": true
+}
+```
+
+## Priority Backlog
+
+### P0: Required Before Reliable Autonomous Runs
+
+1. Harden `clip-candidate-ranking`, `render-qa`, `render-release-candidate`, `generated-clip-qa`, and `artifact-consistency-audit`.
+2. Add a deterministic handoff validation helper or script.
+3. Add a Remotion app bootstrap/check skill or script tied to `remotion-project.schema.json`.
+4. Require all media-producing skills to update or explicitly defer media asset manifest entries.
+5. Add explicit invalidation graph support to production-run handling.
+
+### P1: Required Before Multi-Project Channel Operation
+
+1. Add examples/templates for channel profile, video project, media manifest, producer criteria, and Remotion project contracts.
+2. Harden Channel Intelligence skills with structured output and channel/profile invalidation.
+3. Harden Visual Producer search/ranking skills with evidence and fallback coverage.
+4. Extend the existing channel/project scaffold with examples, fixture validation, and any needed Remotion public projection maintenance helpers.
+
+### P2: Useful For Scale
+
+1. Add skill-level golden test prompts or fixture artifacts.
+2. Add schema validation scripts for produced JSON artifacts.
+3. Add reviewer prompt archive and raw model response archive policy.
+4. Add report generation from production-run ledger.
+
+## Final Architecture Judgment
+
+The current agent count is justified. The system is not over-split by intent; it is split by production responsibility:
+
+- Director for orchestration and approvals
+- Channel Intelligence for reusable channel/source state
+- Creative Producer for script and voice
+- Visual Producer for visual route and candidate decisions
+- InVideo AI Generator for credit-sensitive AI video generation
+- Remotion Clip Builder for reusable deterministic short clips/VFX
+- Remotion Video Producer for full timeline/render production
+- Video Critic for independent final review
+
+The remaining risk is not the number of agents. The risk is uneven skill hardness. Some skills now behave like production contracts; others still behave like checklists. The next architectural work should make the thin skills emit structured artifacts, evidence, status, stop conditions, and definitions of done.

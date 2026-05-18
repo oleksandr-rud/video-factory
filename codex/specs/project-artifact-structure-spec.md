@@ -1,0 +1,99 @@
+# Project Artifact Structure Spec
+
+## Purpose
+
+This spec defines how Video Factory stores durable project workspaces, loaded source media, Remotion-visible assets, rendered clips, render release candidates, review evidence, and run ledgers.
+
+## Core Decision
+
+Use three levels of state:
+
+- Channel: `channels/<channel-slug>/` stores reusable brand, format, voice, governance, references, and project registry.
+- Project: `channels/<channel-slug>/projects/<project-slug>/` stores one durable video deliverable and all source/artifact state needed to revise it.
+- Run: `channels/<channel-slug>/projects/<project-slug>/runs/<run-id>/` stores one execution attempt, review loop state, approvals, and rerun history.
+
+Do not put top-level runs directly under the channel. Runs are attempts; projects are deliverables.
+
+Contract path values should be repo-relative POSIX strings such as `channels/<channel-slug>/projects/<project-slug>/project.json`, even on Windows. Tool commands may resolve them to absolute filesystem paths at execution time, but persisted JSON artifacts should remain portable.
+
+## Project Folder Standard
+
+```text
+channels/<channel-slug>/projects/<project-slug>/
+  project.json
+  production-run.json
+  producer-criteria.json
+  media-asset-manifest.json
+  scenario/
+  voiceover/
+  visuals/
+    candidates/
+  source-media/
+    loaded-videos/
+    provider-clips/
+    generated-clips/
+  remotion/
+    props/
+    clips/
+    timeline/
+    public-projection/
+  renders/
+    previews/
+    rc/
+    final/
+  reviews/
+    assets/
+    evidence/
+  runs/
+    <run-id>/
+  delivery/
+```
+
+## Remotion Public Projection
+
+The shared Remotion app lives at `remotion/`. Its `public/` folder is the render-visible projection, not the source of truth for media ownership.
+
+For each project, the render-visible projection target is:
+
+```text
+remotion/public/channels/<channel-slug>/projects/<project-slug>/
+```
+
+Use this rule:
+
+1. Keep canonical user/source/provider/generated media under the project folder.
+2. Copy or mirror render-needed media into `remotion/public/channels/<channel-slug>/projects/<project-slug>/...`.
+3. Record each asset in `media-asset-manifest.json` with `canonical_path`, `remotion_public_path`, and `static_file_path`.
+4. Use the `static_file_path` value in Remotion code through `staticFile()`.
+5. Do not render from remote media URLs unless the Director records an explicit approval and risk note.
+
+## Contract Map
+
+- `video-project.schema.json`: durable project index, folder layout, deliverables, artifact paths, Remotion setup, current run/render state.
+- `production-run.schema.json`: one execution attempt, handoffs, approvals, blockers, review loops, invalidation/rerun state.
+- `media-asset-manifest.schema.json`: loaded videos, provider clips, generated clips, rendered clips, subtitles, review frames, technical metadata, rights state, and evidence refs.
+- `remotion-project.schema.json`: Remotion app root, package manager, composition registry, commands, dependency policy, and public asset policy.
+- `reference-analysis.schema.json`: source ledger and timecoded evidence distilled for production.
+- `clip-candidate.schema.json`, `ai-video-generation-package.schema.json`, `remotion-clip-package.schema.json`, `timeline-sync-plan.schema.json`, and `render-package.schema.json`: media-producing contracts that must point back to project, channel, media manifest, and source/output asset ids when available.
+
+## Evidence Rules
+
+- Every source-backed claim, reference-derived style rule, downloaded/provider clip, AI-generated clip, Remotion render, and review frame should have an asset id or evidence ref.
+- Missing rights, missing local paths, or missing technical metadata are not blockers for early planning, but they must be blockers before render release-candidate approval.
+- Keep failed or superseded assets in the manifest unless rights require deletion; mark status instead of deleting provenance.
+
+## Research Basis
+
+LangChain Deep Agents uses planning, subagents, filesystem tools, persistent memory, permissions, and human-in-the-loop controls as harness capabilities for complex tasks. That supports keeping project state in inspectable files rather than packing all context into prompts. Source: https://docs.langchain.com/oss/python/deepagents/overview
+
+LangChain's subagent guidance recommends specialized subagents for context isolation and clear descriptions, while warning against subagents for simple tasks. This supports the current Director plus bounded production-agent model. Source: https://docs.langchain.com/oss/python/deepagents/subagents
+
+OpenAI Agents SDK handoffs support explicit delegation and custom handoff input schemas. This maps to the local `agent-handoff` contract and argues for typed paths instead of informal cross-agent messages. Source: https://openai.github.io/openai-agents-python/handoffs/
+
+Remotion's current setup docs use `npx create-video@latest`, Remotion Studio, and CLI rendering as the basic workflow. Source: https://www.remotion.dev/docs
+
+Remotion requires assets in a project `public/` folder to be loaded through `staticFile()`, and the `public/` folder must sit next to the `package.json` containing the Remotion dependency. Source: https://www.remotion.dev/docs/staticfile
+
+Remotion render docs support Studio, CLI, server-side rendering, Lambda, GitHub Actions, Cloud Run, and variants such as audio-only, still images, image sequences, GIFs, and transparent videos. Source: https://www.remotion.dev/docs/render
+
+Remotion's `<Artifact>` can emit extra files during rendering, including thumbnails. This supports tracking render sidecars and evidence files as first-class artifacts. Source: https://www.remotion.dev/docs/artifact

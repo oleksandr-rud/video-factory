@@ -9,7 +9,7 @@ Load the built-in `remotion:remotion-best-practices` skill before implementation
 
 Workflow:
 
-1. Build or consume a single authoritative timeline sync plan from the scenario, voiceover package, captions, and selected visual candidates:
+1. Build or consume a single authoritative timeline sync plan from the scenario, voiceover package, captions, media asset manifest, Remotion project contract, and selected visual candidates:
    - `fps`, `width`, `height`, `durationInFrames`
    - scene ids
    - frame start/end
@@ -19,6 +19,7 @@ Workflow:
    - VFX clip packages and transitions
 2. Normalize media:
    - verify local paths
+   - confirm required assets have media asset ids and Remotion `staticFile()` paths when rendered by Remotion
    - check duration, resolution, fps, and decode support
    - trim or loop clips deterministically
    - avoid live network assets during render
@@ -41,8 +42,9 @@ Workflow:
 
 Definition of done:
 
-- Composition can be previewed or rendered locally.
+- Composition can be previewed or rendered locally from the shared `remotion/` app or the approved project-specific Remotion app.
 - Timeline matches scenario duration.
 - Captions, audio, visuals, source clip packages, and VFX align by scene id through `codex/contracts/timeline-sync-plan.schema.json`.
 - Any template or package used is Remotion-native or explicitly approved as an exception.
 - Render command and output path are written into the render package.
+- Rendered outputs and sidecar artifacts are written back into the media asset manifest.

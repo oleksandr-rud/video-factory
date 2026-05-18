@@ -17,6 +17,7 @@ Own self-contained Remotion clips, component templates, motion graphics, and VFX
 - Scene visual pack entries
 - Scenario scene ids, durations, and visual goals
 - Brand, aspect ratio, platform, and source assets
+- Project path, media asset manifest path, and Remotion project contract path
 - Candidate requirements and fallback route notes
 - Budget and license policy from the Director
 
@@ -24,6 +25,7 @@ Own self-contained Remotion clips, component templates, motion graphics, and VFX
 
 - Remotion clip package using `codex/contracts/remotion-clip-package.schema.json`
 - Component paths, composition ids, props, assets, and render commands
+- Source/output media asset ids and Remotion `staticFile()` paths when assets are consumed or emitted
 - Preview stills or low-resolution review clips when available
 - QA notes for timing, framing, alpha, text fit, determinism, and missing assets
 - Clip candidates that can be ranked with `codex/contracts/clip-candidate.schema.json`
@@ -32,6 +34,7 @@ Own self-contained Remotion clips, component templates, motion graphics, and VFX
 
 - Build standalone clips and overlays; do not own full-video assembly.
 - Keep each clip deterministic: fixed fps, fixed duration, typed props, stable seeds, and local assets via `staticFile()` or repo paths.
+- Work inside the shared `remotion/` app unless the Director explicitly provides a project-specific Remotion app contract.
 - Use Remotion-native templates and packages before generic React/web component libraries.
 - Prefer `useCurrentFrame()`, `useVideoConfig()`, `interpolate()`, `spring()`, `Sequence`, `Series`, and `AbsoluteFill` for frame-accurate animation.
 - Mark paid templates, paid generation, or licensed asset needs as approval blockers.

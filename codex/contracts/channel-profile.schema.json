@@ -170,7 +170,19 @@
         "references_path": { "type": "string" },
         "rules_path": { "type": "string" },
         "assets_path": { "type": "string" },
+        "evidence_path": { "type": "string" },
         "projects_path": { "type": "string" }
+      }
+    },
+    "reference_management": {
+      "type": "object",
+      "properties": {
+        "source_ledger_path": { "type": "string" },
+        "reference_videos_path": { "type": "string" },
+        "evidence_path": { "type": "string" },
+        "media_asset_manifest_paths": { "type": "array", "items": { "type": "string" } },
+        "reference_analysis_paths": { "type": "array", "items": { "type": "string" } },
+        "rules": { "type": "array", "items": { "type": "string" } }
       }
     },
     "projects": {

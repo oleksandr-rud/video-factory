@@ -1,0 +1,127 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "MediaAssetManifest",
+  "type": "object",
+  "required": ["manifest_id", "status", "project_id", "project_path", "assets", "qa"],
+  "properties": {
+    "manifest_id": { "type": "string" },
+    "project_id": { "type": "string" },
+    "project_slug": { "type": "string" },
+    "project_path": { "type": "string" },
+    "channel_profile_id": { "type": "string" },
+    "channel_slug": { "type": "string" },
+    "channel_profile_path": { "type": "string" },
+    "source_ledger_path": { "type": "string" },
+    "status": {
+      "type": "string",
+      "enum": ["planned", "active", "partial", "blocked", "archived"]
+    },
+    "assets": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["asset_id", "kind", "origin", "status", "canonical_path"],
+        "properties": {
+          "asset_id": { "type": "string" },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "reference_video",
+              "source_video",
+              "user_supplied_video",
+              "stock_clip",
+              "ai_generated_clip",
+              "remotion_render",
+              "remotion_preview",
+              "voiceover_audio",
+              "music",
+              "sfx",
+              "image",
+              "thumbnail",
+              "caption_json",
+              "subtitle_srt",
+              "metadata",
+              "review_frame",
+              "other"
+            ]
+          },
+          "origin": {
+            "type": "string",
+            "enum": ["user_supplied", "reference", "web_source", "provider", "ai_generation", "remotion", "derived", "unknown"]
+          },
+          "status": {
+            "type": "string",
+            "enum": ["planned", "referenced", "loaded", "mirrored_to_remotion_public", "generated", "rendered", "blocked", "rejected", "archived"]
+          },
+          "canonical_path": { "type": "string" },
+          "local_original_path": { "type": "string" },
+          "remotion_public_path": { "type": "string" },
+          "static_file_path": { "type": "string" },
+          "source_url": { "type": "string" },
+          "provider": { "type": "string" },
+          "provider_asset_id": { "type": "string" },
+          "title": { "type": "string" },
+          "description": { "type": "string" },
+          "owner": { "type": "string" },
+          "rights": {
+            "type": "object",
+            "properties": {
+              "license_summary": { "type": "string" },
+              "usage_allowed": { "type": "boolean" },
+              "approval_required": { "type": "boolean" },
+              "approved_by": { "type": "string" },
+              "approved_at": { "type": "string" },
+              "attribution_required": { "type": "boolean" },
+              "attribution_text": { "type": "string" },
+              "restrictions": { "type": "array", "items": { "type": "string" } }
+            }
+          },
+          "technical": {
+            "type": "object",
+            "properties": {
+              "duration_seconds": { "type": "number" },
+              "width": { "type": "integer" },
+              "height": { "type": "integer" },
+              "fps": { "type": "number" },
+              "codec": { "type": "string" },
+              "has_audio": { "type": "boolean" },
+              "sample_rate": { "type": "number" },
+              "checksum": { "type": "string" },
+              "probe_path": { "type": "string" }
+            }
+          },
+          "derived_from_asset_ids": { "type": "array", "items": { "type": "string" } },
+          "related_scene_ids": { "type": "array", "items": { "type": "string" } },
+          "related_contract_paths": { "type": "array", "items": { "type": "string" } },
+          "evidence_refs": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["evidence_id", "description"],
+              "properties": {
+                "evidence_id": { "type": "string" },
+                "description": { "type": "string" },
+                "source_id": { "type": "string" },
+                "timestamp_seconds": { "type": "number" },
+                "path_or_url": { "type": "string" },
+                "confidence": { "type": "string", "enum": ["high", "medium", "low", "unknown"] }
+              }
+            }
+          },
+          "notes": { "type": "string" }
+        }
+      }
+    },
+    "qa": {
+      "type": "object",
+      "required": ["status", "summary"],
+      "properties": {
+        "status": { "type": "string", "enum": ["pass", "fail", "partial", "not_run"] },
+        "summary": { "type": "string" },
+        "missing_assets": { "type": "array", "items": { "type": "string" } },
+        "rights_risks": { "type": "array", "items": { "type": "string" } },
+        "technical_risks": { "type": "array", "items": { "type": "string" } }
+      }
+    }
+  }
+}

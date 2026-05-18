@@ -22,6 +22,7 @@ channels/<channel-slug>/
   references/
     source-ledger.json
     reference-videos/
+    evidence/
   rules/
     production-rules.md
     voice-and-tone.md
@@ -35,12 +36,27 @@ channels/<channel-slug>/
       project.json
       production-run.json
       producer-criteria.json
+      media-asset-manifest.json
       scenario/
       voiceover/
       visuals/
+        candidates/
+      source-media/
+        loaded-videos/
+        provider-clips/
+        generated-clips/
       remotion/
+        props/
+        clips/
+        timeline/
+        public-projection/
       renders/
+        previews/
+        rc/
+        final/
       reviews/
+        assets/
+        evidence/
       runs/
       delivery/
 ```
@@ -48,6 +64,10 @@ channels/<channel-slug>/
 `channel-profile.json` must match `codex/contracts/channel-profile.schema.json`.
 
 `projects/<project-slug>/project.json` must match `codex/contracts/video-project.schema.json`.
+
+`projects/<project-slug>/media-asset-manifest.json` must match `codex/contracts/media-asset-manifest.schema.json` and is the local ledger for loaded reference videos, user media, provider clips, generated clips, Remotion previews, render outputs, subtitles, review frames, and evidence references.
+
+Persist contract paths as repo-relative POSIX strings, for example `channels/<channel-slug>/projects/<project-slug>/project.json`. Agents and scripts can resolve those paths to absolute paths for shell commands, but should not write machine-specific absolute paths into channel/project JSON.
 
 ## Projects Versus Runs
 
@@ -57,11 +77,15 @@ Use projects, not top-level runs, under a channel.
 - A run is one execution attempt through the agent pipeline.
 - A project can contain multiple runs when revisions, regenerations, or review-loop attempts happen.
 - Render candidates live under `renders/`; historical execution ledgers live under `runs/`.
+- Source media and rendered clips live under the project, then are copied or mirrored into the Remotion app `public/` tree only when Remotion must load them through `staticFile()`.
+- The project index should track both the project-local staging folder `remotion/public-projection/` and the actual Remotion-visible folder `remotion/public/channels/<channel-slug>/projects/<project-slug>/`.
 
 ## Production Linkage
 
 - `channel-profile.schema.json` is the durable channel identity and asset registry.
 - `video-project.schema.json` is the durable project workspace index for one deliverable under a channel.
+- `media-asset-manifest.schema.json` is the project-local ledger for loaded media, generated/rendered assets, rights state, technical metadata, and evidence refs.
+- `remotion-project.schema.json` describes the shared or project-specific Remotion app, composition registry, commands, dependencies, and public asset policy.
 - `channel-format.schema.json` is a production-ready format package derived from the channel profile plus current references.
 - `scenario.schema.json`, `voiceover-package.schema.json`, `producer-criteria.schema.json`, and `production-run.schema.json` carry channel profile ids/paths so every video can trace its inherited rules.
 - Creative Producer inherits voice direction from `channel_profile.audio_identity.voice_profile` before choosing a provider voice.

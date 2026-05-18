@@ -7,12 +7,12 @@ description: Create or update a reusable channel format package from reference a
 
 Workflow:
 
-1. Read the channel profile, reference analysis package, and source ledger.
+1. Read the channel profile, reference analysis package, source ledger, and media asset manifest when media evidence exists.
 2. Define the channel promise, audience, content pillars, video themes, and platform targets.
 3. Define reusable narrative patterns: hook types, episode structure, pacing bands, proof style, transitions between ideas, and CTA behavior.
 4. Define reusable visual/audio systems from style extraction and channel profile defaults.
 5. Define flex zones where each episode should vary: unique angle, examples, visual moments, data, references, opening pattern, and CTA wording.
 6. Add anti-redundancy rules and channel-level "avoid" patterns.
-7. Attach evidence ids and confidence notes for important rules.
+7. Attach evidence ids, source asset ids, and confidence notes for important rules.
 
 Return a channel format package matching `codex/contracts/channel-format.schema.json`, with `channel_profile_id`, `channel_slug`, and `channel_root_path` when a persistent channel exists.

@@ -8,6 +8,12 @@
     "scenario_id": { "type": "string" },
     "project_id": { "type": "string" },
     "project_path": { "type": "string" },
+    "channel_profile_id": { "type": "string" },
+    "channel_slug": { "type": "string" },
+    "channel_profile_path": { "type": "string" },
+    "media_asset_manifest_path": { "type": "string" },
+    "remotion_project_contract_path": { "type": "string" },
+    "remotion_app_root_path": { "type": "string" },
     "composition_id": { "type": "string" },
     "composition_type": {
       "type": "string",
@@ -18,6 +24,14 @@
     "voiceover_package_path": { "type": "string" },
     "critique_report_path": { "type": "string" },
     "source_clip_packages": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "source_asset_ids": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "output_asset_ids": {
       "type": "array",
       "items": { "type": "string" }
     },
@@ -39,9 +53,11 @@
         "properties": {
           "kind": {
             "type": "string",
-            "enum": ["video", "audio", "subtitle_srt", "thumbnail", "transparent_overlay", "image_sequence", "qa_report", "critique_report"]
+            "enum": ["video", "preview_video", "audio", "subtitle_srt", "caption_json", "thumbnail", "transparent_overlay", "image_sequence", "metadata", "qa_report", "critique_report"]
           },
           "path": { "type": "string" },
+          "media_asset_id": { "type": "string" },
+          "static_file_path": { "type": "string" },
           "codec": { "type": "string" },
           "notes": { "type": "string" }
         }
@@ -96,6 +112,18 @@
       }
     },
     "rights_notes": { "type": "array", "items": { "type": "string" } },
+    "evidence_refs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "evidence_id": { "type": "string" },
+          "source_id": { "type": "string" },
+          "asset_id": { "type": "string" },
+          "description": { "type": "string" }
+        }
+      }
+    },
     "known_blockers": { "type": "array", "items": { "type": "string" } },
     "qa": {
       "type": "object",

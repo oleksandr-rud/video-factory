@@ -11,6 +11,7 @@
     "channel_profile_id": { "type": "string" },
     "channel_slug": { "type": "string" },
     "channel_profile_path": { "type": "string" },
+    "media_asset_manifest_path": { "type": "string" },
     "channel_format_id": { "type": "string" },
     "reference_analysis_id": { "type": "string" },
     "provider": {
@@ -116,8 +117,10 @@
           "text": { "type": "string" },
           "expected_duration_seconds": { "type": "number" },
           "duration_seconds": { "type": "number" },
+          "audio_asset_id": { "type": "string" },
           "audio_path": { "type": "string" },
           "alignment_path": { "type": "string" },
+          "caption_asset_id": { "type": "string" },
           "caption_json_path": { "type": "string" },
           "srt_path": { "type": "string" },
           "request_payload": { "type": "object" },
@@ -133,6 +136,7 @@
           "type": "string",
           "enum": ["elevenlabs_timestamps", "forced_alignment", "transcription", "manual", "unknown"]
         },
+        "caption_asset_id": { "type": "string" },
         "caption_json_path": { "type": "string" },
         "srt_path": { "type": "string" },
         "sync_notes": { "type": "string" }

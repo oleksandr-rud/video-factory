@@ -22,12 +22,15 @@ Channel Intelligence returns three durable artifacts:
 
 - `channels/<channel-slug>/channel-profile.json` using `codex/contracts/channel-profile.schema.json`: durable channel metadata, brand identity, visual identity, audio identity, content strategy, governance, project registry, assets, references, and folder paths.
 - `channels/<channel-slug>/projects/<project-slug>/project.json` using `codex/contracts/video-project.schema.json`: durable project metadata, deliverables, artifact paths, render candidates, run history, and delivery state.
+- `channels/<channel-slug>/projects/<project-slug>/media-asset-manifest.json` using `codex/contracts/media-asset-manifest.schema.json`: loaded reference videos, user-supplied media, provider clips, generated clips, Remotion previews/renders, review frames, rights state, technical metadata, and evidence refs.
 - `codex/contracts/reference-analysis.schema.json`: evidence ledger, source summaries, timecoded reference video breakdowns, extracted patterns, source claims, visual evidence opportunities, risks, and downstream guidance.
 - `codex/contracts/channel-format.schema.json`: channel promise, audience, content pillars, hero/hub/hygiene mix, narrative system, visual system, audio system, technical defaults, reusable assets, and anti-redundancy rules.
 
 ## Channel Folder Standard
 
 Durable channels live under `channels/<channel-slug>` and follow `codex/specs/channel-management-spec.md`. Durable deliverables live under `channels/<channel-slug>/projects/<project-slug>`. Channel profile fields are inherited by project files, channel format packages, and downstream production artifacts.
+
+Persist channel and project contract paths as repo-relative POSIX strings. Local tools can resolve those strings against the repo root, but generated JSON should not contain machine-specific absolute paths.
 
 ## Deep Reference Video Analysis
 

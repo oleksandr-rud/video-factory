@@ -20,6 +20,9 @@
     "channel_slug": { "type": "string" },
     "channel_profile_path": { "type": "string" },
     "producer_criteria_path": { "type": "string" },
+    "media_asset_manifest_path": { "type": "string" },
+    "remotion_project_contract_path": { "type": "string" },
+    "remotion_app_root_path": { "type": "string" },
     "artifacts": {
       "type": "array",
       "items": {
@@ -84,7 +87,7 @@
           "status": { "type": "string", "enum": ["planned", "in_progress", "complete", "blocked", "rejected"] },
           "impact": {
             "type": "string",
-            "enum": ["channel_profile", "channel", "scenario", "voiceover", "visual", "ai_generation", "remotion_clip", "timeline", "timeline_sync", "critique", "delivery_metadata", "unknown"]
+            "enum": ["channel_profile", "channel", "source_media", "scenario", "voiceover", "visual", "ai_generation", "remotion_clip", "remotion_setup", "timeline", "timeline_sync", "critique", "delivery_metadata", "unknown"]
           },
           "affected_artifacts": { "type": "array", "items": { "type": "string" } },
           "actions": { "type": "array", "items": { "type": "string" } },
@@ -115,7 +118,7 @@
             "type": "array",
             "items": {
               "type": "string",
-              "enum": ["channel_profile", "channel", "scenario", "voiceover", "visual", "ai_generation", "remotion_clip", "timeline", "timeline_sync", "render", "critique", "delivery_metadata"]
+              "enum": ["channel_profile", "channel", "source_media", "scenario", "voiceover", "visual", "ai_generation", "remotion_clip", "remotion_setup", "timeline", "timeline_sync", "render", "critique", "delivery_metadata"]
             }
           },
           "routed_actions": {

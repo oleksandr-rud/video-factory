@@ -6,6 +6,14 @@
   "properties": {
     "clip_id": { "type": "string" },
     "scene_id": { "type": "string" },
+    "project_id": { "type": "string" },
+    "project_path": { "type": "string" },
+    "channel_profile_id": { "type": "string" },
+    "channel_slug": { "type": "string" },
+    "channel_profile_path": { "type": "string" },
+    "media_asset_manifest_path": { "type": "string" },
+    "remotion_project_contract_path": { "type": "string" },
+    "remotion_app_root_path": { "type": "string" },
     "candidate_id": { "type": "string" },
     "composition_id": { "type": "string" },
     "route": {
@@ -27,6 +35,14 @@
       "items": { "type": "string" }
     },
     "asset_paths": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "source_asset_ids": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "output_asset_ids": {
       "type": "array",
       "items": { "type": "string" }
     },
@@ -53,9 +69,11 @@
         "properties": {
           "kind": {
             "type": "string",
-            "enum": ["component", "preview_video", "transparent_video", "still", "image_sequence", "metadata", "qa_report"]
+            "enum": ["component", "rendered_clip", "preview_video", "transparent_video", "still", "image_sequence", "metadata", "qa_report"]
           },
           "path": { "type": "string" },
+          "media_asset_id": { "type": "string" },
+          "static_file_path": { "type": "string" },
           "notes": { "type": "string" }
         }
       }
@@ -82,6 +100,18 @@
           "command": { "type": "string" },
           "completed": { "type": "boolean" },
           "notes": { "type": "string" }
+        }
+      }
+    },
+    "evidence_refs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "evidence_id": { "type": "string" },
+          "source_id": { "type": "string" },
+          "asset_id": { "type": "string" },
+          "description": { "type": "string" }
         }
       }
     },

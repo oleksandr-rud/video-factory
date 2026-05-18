@@ -23,6 +23,7 @@ Do not read or call Remotion Clip Builder skills directly. If the timeline revea
 - Voiceover package, music, SFX, captions, subtitle requirements, and timestamp alignment
 - Approved visual candidates and Remotion clip packages
 - Brand, platform, aspect ratio, export settings, and delivery variants
+- Project path, media asset manifest path, and Remotion project contract path
 - Known blockers, rights notes, and budget approvals
 
 ## Outputs
@@ -31,6 +32,7 @@ Do not read or call Remotion Clip Builder skills directly. If the timeline revea
 - Timeline sync plan using `codex/contracts/timeline-sync-plan.schema.json`
 - Render package using `codex/contracts/render-package.schema.json`
 - Captions/subtitle artifacts and audio mix notes
+- Updated media asset manifest entries for preview renders, release candidates, subtitles, thumbnails, and review assets
 - Preview/render commands, output paths, and technical render QA report
 - Remaining blockers and fixes needed before delivery
 
@@ -41,5 +43,6 @@ Do not read or call Remotion Clip Builder skills directly. If the timeline revea
 - Validate subtitles, audio sync, scene ordering, transitions, export settings, and render health.
 - Do not approve release-candidate quality gates; Video Critic evaluates viewer-facing quality and Director approves or waives release gates.
 - Use the timeline sync plan as the source of truth for scene frame ranges, audio placement, caption ranges, and selected visual layers.
+- Use local Remotion `public/` assets tracked by the media asset manifest; do not leave final renders dependent on remote media URLs.
 - Use lower-cost preview/still renders before expensive final renders when practical.
 - Do not make paid API calls, download licensed media, or trigger paid generation without Director approval.

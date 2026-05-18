@@ -1,0 +1,114 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "RemotionProject",
+  "type": "object",
+  "required": [
+    "remotion_project_id",
+    "scope",
+    "status",
+    "app_root_path",
+    "package_manager",
+    "composition_registry",
+    "public_asset_policy",
+    "commands",
+    "qa"
+  ],
+  "properties": {
+    "remotion_project_id": { "type": "string" },
+    "scope": { "type": "string", "enum": ["shared_app", "project_app"] },
+    "status": { "type": "string", "enum": ["planned", "scaffolded", "installed", "validated", "blocked", "archived"] },
+    "project_id": { "type": "string" },
+    "project_path": { "type": "string" },
+    "channel_profile_id": { "type": "string" },
+    "channel_slug": { "type": "string" },
+    "app_root_path": { "type": "string" },
+    "package_json_path": { "type": "string" },
+    "src_root_path": { "type": "string" },
+    "public_root_path": { "type": "string" },
+    "render_output_root_path": { "type": "string" },
+    "package_manager": { "type": "string", "enum": ["npm", "pnpm", "yarn", "bun", "unknown"] },
+    "remotion_version": { "type": "string" },
+    "template_source": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "url": { "type": "string" },
+        "license_summary": { "type": "string" },
+        "approval_required": { "type": "boolean" }
+      }
+    },
+    "composition_registry": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["composition_id", "composition_type", "source_paths", "status"],
+        "properties": {
+          "composition_id": { "type": "string" },
+          "composition_type": { "type": "string", "enum": ["full_video", "short_clip", "transparent_overlay", "still", "template"] },
+          "owner_agent": { "type": "string" },
+          "source_paths": { "type": "array", "items": { "type": "string" } },
+          "default_props_path": { "type": "string" },
+          "output_contracts": { "type": "array", "items": { "type": "string" } },
+          "status": { "type": "string", "enum": ["planned", "implemented", "previewed", "rendered", "blocked", "deprecated"] },
+          "notes": { "type": "string" }
+        }
+      }
+    },
+    "dependencies": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "version"],
+        "properties": {
+          "name": { "type": "string" },
+          "version": { "type": "string" },
+          "purpose": { "type": "string" },
+          "license_summary": { "type": "string" },
+          "approval_required": { "type": "boolean" }
+        }
+      }
+    },
+    "public_asset_policy": {
+      "type": "object",
+      "required": ["public_root_path", "static_file_prefix", "remote_asset_policy"],
+      "properties": {
+        "public_root_path": { "type": "string" },
+        "static_file_prefix": { "type": "string" },
+        "media_asset_manifest_path": { "type": "string" },
+        "mirror_rules": { "type": "array", "items": { "type": "string" } },
+        "remote_asset_policy": { "type": "string", "enum": ["forbidden_for_final_render", "allowed_with_approval", "allowed"] }
+      }
+    },
+    "commands": {
+      "type": "object",
+      "required": ["install", "studio", "lint", "render"],
+      "properties": {
+        "install": { "type": "string" },
+        "studio": { "type": "string" },
+        "lint": { "type": "string" },
+        "render": { "type": "string" },
+        "still": { "type": "string" },
+        "bundle": { "type": "string" }
+      }
+    },
+    "artifact_paths": {
+      "type": "object",
+      "properties": {
+        "props_path": { "type": "string" },
+        "preview_output_path": { "type": "string" },
+        "render_output_path": { "type": "string" },
+        "qa_report_path": { "type": "string" }
+      }
+    },
+    "qa": {
+      "type": "object",
+      "required": ["status", "summary"],
+      "properties": {
+        "status": { "type": "string", "enum": ["pass", "fail", "partial", "not_run"] },
+        "summary": { "type": "string" },
+        "checks": { "type": "array", "items": { "type": "string" } },
+        "risks": { "type": "array", "items": { "type": "string" } }
+      }
+    }
+  }
+}

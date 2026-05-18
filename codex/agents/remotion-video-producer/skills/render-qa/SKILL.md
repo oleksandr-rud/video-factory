@@ -13,6 +13,7 @@ Check:
 - Visual continuity and candidate usage
 - VFX timing, alpha/export behavior, and transition continuity
 - Missing assets or broken media paths
+- Media asset manifest coverage for source clips, Remotion public projection paths, outputs, subtitles, and review-prep artifacts
 - Aspect ratio, resolution, FPS, and export format
 - Subtitle artifact presence when separate `.srt` export is required
 - Rights, attribution, and approval notes

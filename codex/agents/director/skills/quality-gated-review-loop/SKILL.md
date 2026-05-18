@@ -31,7 +31,7 @@ Every critic handoff must include:
 ## Review Loop
 
 1. Prepare or update the render package and review assets.
-2. Ask Video Critic to run `scene-by-scene-gate-review`, `artifact-consistency-audit`, `multimodal-video-critique`, and `revision-prioritization`.
+2. Ask Video Critic to run `scene-by-scene-gate-review`, `artifact-consistency-audit`, `multimodal-video-critique`, and `revision-prioritization`. Prefer approved hybrid critique, meaning direct video plus sampled frame stills, when provider limits and media policy allow it; use direct-video-only if frame extraction fails, and use the sampled-frame multimodal fallback when direct video is unavailable.
 3. Validate the critique report against `codex/contracts/critique-report.schema.json`.
 4. Decide:
    - If all gates pass, mark render package as `approved`, update production run QA to `pass`, record the critique report, and stop.

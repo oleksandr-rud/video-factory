@@ -10,7 +10,7 @@ Use this after `decompose-video-request` and before production handoffs. The art
 ## Workflow
 
 1. Create a JSON artifact matching `codex/contracts/producer-criteria.schema.json`.
-2. Convert the user request, channel profile, channel format, source constraints, platform requirements, budget policy, and known approvals into discrete criteria.
+2. Convert the user request, channel profile, channel format, media asset manifest, Remotion setup constraints, source constraints, platform requirements, budget policy, and known approvals into discrete criteria.
 3. Separate:
    - acceptance criteria: what the finished video must accomplish
    - hard gates: failures that block release unless fixed or waived
@@ -18,6 +18,7 @@ Use this after `decompose-video-request` and before production handoffs. The art
    - forbidden rules: things producers must avoid
    - style rules: preferred channel and brand behavior
    - provider constraints: limits for TTS, AI generation, stock, Remotion templates, paid APIs, and licensed assets
+   - media constraints: allowed source assets, required local media, Remotion `staticFile()` requirements, remote-asset restrictions, and evidence refs
    - scene criteria: per-scene checks keyed by `scene_id`
 4. Set default review thresholds unless the user provides stricter gates:
    - `overall_min`: 8

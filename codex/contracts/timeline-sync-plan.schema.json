@@ -6,6 +6,13 @@
   "properties": {
     "timeline_sync_id": { "type": "string" },
     "scenario_id": { "type": "string" },
+    "project_id": { "type": "string" },
+    "project_path": { "type": "string" },
+    "channel_profile_id": { "type": "string" },
+    "channel_slug": { "type": "string" },
+    "channel_profile_path": { "type": "string" },
+    "media_asset_manifest_path": { "type": "string" },
+    "remotion_project_contract_path": { "type": "string" },
     "voiceover_id": { "type": "string" },
     "scene_visual_pack_id": { "type": "string" },
     "fps": { "type": "number" },
@@ -34,6 +41,9 @@
                 "enum": ["remotion_generated", "ai_video_generation", "stock_clip", "user_supplied_media", "unassigned"]
               },
               "local_path": { "type": "string" },
+              "media_asset_id": { "type": "string" },
+              "source_asset_ids": { "type": "array", "items": { "type": "string" } },
+              "remotion_static_file_path": { "type": "string" },
               "remotion_clip_package_path": { "type": "string" },
               "ai_video_generation_package_path": { "type": "string" },
               "notes": { "type": "string" }

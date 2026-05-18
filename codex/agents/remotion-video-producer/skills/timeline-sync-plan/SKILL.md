@@ -9,19 +9,19 @@ Load `subtitle-caption-pipeline` and the built-in `remotion:remotion-best-practi
 
 ## Workflow
 
-1. Read the scenario, voiceover package, caption artifacts, visual pack, approved clip candidates, Remotion clip packages, channel format, and export settings.
+1. Read the scenario, voiceover package, caption artifacts, visual pack, approved clip candidates, Remotion clip packages, media asset manifest, Remotion project contract, channel format, and export settings.
 2. Build one authoritative scene timeline:
    - scene id
    - narration text
    - audio path and duration
    - caption JSON/SRT path and caption time range
-   - selected visual candidate or Remotion clip package
+   - selected visual candidate, media asset id, `staticFile()` path, or Remotion clip package
    - frame start/end at the target fps
    - overlay, lower-third, CTA, and transition notes
 3. Use `../../scripts/build_timeline_sync_plan.py` to create the first JSON plan when the inputs are already structured.
 4. Adjust scene timing only when audio duration, captions, or selected clip lengths require it. Preserve scene ids and record any drift from the original scenario timing.
 5. Hand the plan to `remotion-post-production` as the source of truth for `<Sequence>`, `<Series>`, audio placement, captions, and visual layers.
-6. QA the plan for missing assets, scene order, timing drift, caption coverage, visual coverage, safe-area conflicts, and duration mismatch.
+6. QA the plan for missing assets, stale manifest references, scene order, timing drift, caption coverage, visual coverage, safe-area conflicts, and duration mismatch.
 
 ## Rules
 

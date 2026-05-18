@@ -25,6 +25,7 @@ Do not read or call downstream agent skills directly. When specialist work is ne
 - Scenario artifact
 - Reference analysis package
 - Channel format package
+- Project media asset manifest for loaded source videos, user media, generated clips, provider clips, and evidence refs
 - Brand/style constraints
 - Available source assets
 - Provider availability and credentials, if any
@@ -38,6 +39,7 @@ Do not read or call downstream agent skills directly. When specialist work is ne
 - Remotion route briefs and downstream handoff recommendations per scene when needed
 - Stock/provider candidate notes
 - Candidate list using `codex/contracts/clip-candidate.schema.json`
+- Media asset ids or evidence refs for candidates when available
 - Primary and fallback visual selections per scene
 - Validation gaps, license notes, and approval flags
 
@@ -46,7 +48,7 @@ Do not read or call downstream agent skills directly. When specialist work is ne
 - Make the first visual route practical, not just attractive.
 - Apply channel style rules and reference evidence without copying reference videos shot-for-shot.
 - Separate "can be searched" from "can be used"; rights and technical fit must be validated.
-- Keep evidence with every candidate: provider, URL, prompt/query, license summary, and technical metadata.
+- Keep evidence with every candidate: provider, URL, prompt/query, media asset id when available, license summary, and technical metadata.
 - Prefer continuity across the whole video over a single impressive clip.
 - Penalize candidates that require expensive generation or licensing when a good deterministic route exists.
 - Do not perform InVideo model selection, provider-ready prompt construction, approval packet creation, paid generation, generated clip QA, or Remotion component planning.

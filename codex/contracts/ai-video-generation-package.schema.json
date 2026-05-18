@@ -6,6 +6,12 @@
   "properties": {
     "generation_id": { "type": "string" },
     "scene_id": { "type": "string" },
+    "project_id": { "type": "string" },
+    "project_path": { "type": "string" },
+    "channel_profile_id": { "type": "string" },
+    "channel_slug": { "type": "string" },
+    "channel_profile_path": { "type": "string" },
+    "media_asset_manifest_path": { "type": "string" },
     "candidate_id": { "type": "string" },
     "provider": {
       "type": "string",
@@ -73,6 +79,19 @@
         }
       }
     },
+    "evidence_refs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "evidence_id": { "type": "string" },
+          "source_id": { "type": "string" },
+          "asset_id": { "type": "string" },
+          "description": { "type": "string" },
+          "timestamp_seconds": { "type": "number" }
+        }
+      }
+    },
     "approval": {
       "type": "object",
       "required": ["status"],
@@ -100,6 +119,8 @@
             "enum": ["video", "preview", "thumbnail", "source_project", "audio", "subtitle", "metadata", "qa_report"]
           },
           "path_or_url": { "type": "string" },
+          "media_asset_id": { "type": "string" },
+          "remotion_static_file_path": { "type": "string" },
           "provider_asset_id": { "type": "string" },
           "notes": { "type": "string" }
         }

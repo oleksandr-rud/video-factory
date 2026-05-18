@@ -1,6 +1,6 @@
 ---
 name: artifact-consistency-audit
-description: Audit final video artifacts for consistency across scenario, render package, timeline sync plan, captions, voiceover, visual candidates, rights notes, and platform requirements. Use before or alongside multimodal critique to catch contract and provenance errors.
+description: Audit final video artifacts for consistency across scenario, render package, media asset manifest, timeline sync plan, captions, voiceover, visual candidates, rights notes, and platform requirements. Use before or alongside multimodal critique to catch contract and provenance errors.
 ---
 
 # Artifact Consistency Audit
@@ -24,6 +24,8 @@ Use this to catch issues a visual model may miss.
 4. Visual provenance:
    - selected clip candidates or Remotion clip packages are traceable
    - stock, AI-generated, user-supplied, and Remotion-generated routes are correctly labeled
+   - source/output asset ids, local paths, and Remotion static-file paths exist where required
+   - review frames and subtitle sidecars are recorded in the media asset manifest when generated
 5. Rights and approvals:
    - paid generation, licensed media, voices, music, likeness, logos, and source screenshots have approval or blocker notes
 

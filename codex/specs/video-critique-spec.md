@@ -10,7 +10,7 @@ The Remotion Video Producer already owns assembly and render QA. A separate crit
 
 ## Multimodal Review Route
 
-Use sampled frames plus artifact text as the default model input:
+Use approved hybrid input as the preferred model route when the chosen provider supports it, the file fits provider limits, and the Director has approved API spend and media handling. Hybrid means direct video plus sampled frame stills, transcript/captions, and artifact text:
 
 - final video path
 - ffprobe metadata
@@ -18,9 +18,12 @@ Use sampled frames plus artifact text as the default model input:
 - scenario and timeline sync plan
 - captions/subtitles and voiceover package
 - render package and QA notes
+- media asset manifest with source/output asset provenance and review-frame ids
 - reference analysis and channel format when available
 
-Direct video-file input should only be used if the chosen provider explicitly supports it. For OpenAI, use Responses API image inputs with extracted frames unless newer approved docs and tooling are wired.
+For OpenRouter, `qwen/qwen3.6-plus` is the preferred hybrid critic route and is executed through `codex/agents/video-critic/scripts/run_openrouter_video_critique.py`. It should be treated as strong visual/video understanding, not proof of spoken audio content; use captions, transcript, voiceover artifacts, or an audio-capable provider for audio-content claims.
+
+For OpenAI, use Responses API image inputs with extracted frames through `codex/agents/video-critic/scripts/run_openai_multimodal_critique.py` unless direct video tooling is explicitly wired and approved.
 
 ## Required Output
 

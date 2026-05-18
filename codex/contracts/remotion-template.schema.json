@@ -1,0 +1,213 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "RemotionTemplate",
+  "type": "object",
+  "required": [
+    "template_id",
+    "name",
+    "version",
+    "status",
+    "category",
+    "owner_agent",
+    "component_paths",
+    "composition_id",
+    "props_contract",
+    "usage",
+    "qa"
+  ],
+  "properties": {
+    "template_id": { "type": "string" },
+    "name": { "type": "string" },
+    "version": { "type": "string" },
+    "status": {
+      "type": "string",
+      "enum": ["planned", "draft", "implemented", "previewed", "approved", "deprecated", "blocked"]
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "opener",
+        "title_card",
+        "lower_third",
+        "source_card",
+        "caption",
+        "transition",
+        "overlay",
+        "data_callout",
+        "product_mockup",
+        "phone_mockup",
+        "audio_visualizer",
+        "thumbnail",
+        "still",
+        "scene_shell",
+        "vfx",
+        "other"
+      ]
+    },
+    "owner_agent": { "type": "string", "enum": ["remotion-clip-builder"] },
+    "project_id": { "type": "string" },
+    "project_path": { "type": "string" },
+    "channel_profile_id": { "type": "string" },
+    "channel_slug": { "type": "string" },
+    "channel_profile_path": { "type": "string" },
+    "media_asset_manifest_path": { "type": "string" },
+    "remotion_project_contract_path": { "type": "string" },
+    "remotion_app_root_path": { "type": "string" },
+    "template_registry_path": { "type": "string" },
+    "composition_id": { "type": "string" },
+    "composition_type": { "type": "string", "enum": ["template", "short_clip", "transparent_overlay", "still"] },
+    "component_paths": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "registry_paths": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "props_schema_path": { "type": "string" },
+    "default_props_path": { "type": "string" },
+    "props_contract": {
+      "type": "object",
+      "required": ["required", "optional"],
+      "properties": {
+        "required": { "type": "array", "items": { "type": "string" } },
+        "optional": { "type": "array", "items": { "type": "string" } },
+        "notes": { "type": "string" }
+      }
+    },
+    "supported_aspect_ratios": { "type": "array", "items": { "type": "string" } },
+    "supported_dimensions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["width", "height"],
+        "properties": {
+          "width": { "type": "integer", "minimum": 1 },
+          "height": { "type": "integer", "minimum": 1 }
+        }
+      }
+    },
+    "duration": {
+      "type": "object",
+      "properties": {
+        "default_seconds": { "type": "number", "minimum": 0 },
+        "min_seconds": { "type": "number", "minimum": 0 },
+        "max_seconds": { "type": "number", "minimum": 0 },
+        "fps": { "type": "number", "minimum": 1 }
+      }
+    },
+    "alpha": {
+      "type": "object",
+      "properties": {
+        "supports_transparency": { "type": "boolean" },
+        "preferred_export": { "type": "string" },
+        "notes": { "type": "string" }
+      }
+    },
+    "safe_areas": {
+      "type": "object",
+      "properties": {
+        "caption_safe": { "type": "boolean" },
+        "cta_safe": { "type": "boolean" },
+        "reserved_zones": { "type": "array", "items": { "type": "string" } },
+        "notes": { "type": "string" }
+      }
+    },
+    "usage": {
+      "type": "object",
+      "required": ["when_to_use", "when_not_to_use", "instance_output_contract"],
+      "properties": {
+        "when_to_use": { "type": "array", "items": { "type": "string" } },
+        "when_not_to_use": { "type": "array", "items": { "type": "string" } },
+        "instance_output_contract": { "type": "string" },
+        "handoff_notes": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "dependencies": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "version"],
+        "properties": {
+          "name": { "type": "string" },
+          "version": { "type": "string" },
+          "purpose": { "type": "string" },
+          "license_summary": { "type": "string" },
+          "approval_required": { "type": "boolean" }
+        }
+      }
+    },
+    "source": {
+      "type": "object",
+      "properties": {
+        "created_from": {
+          "type": "string",
+          "enum": ["core_remotion", "existing_clip", "official_template", "approved_asset", "generated_component", "other"]
+        },
+        "source_clip_package_path": { "type": "string" },
+        "source_url": { "type": "string" },
+        "license_summary": { "type": "string" },
+        "approval_required": { "type": "boolean" },
+        "notes": { "type": "string" }
+      }
+    },
+    "preview_frames": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["frame", "path"],
+        "properties": {
+          "frame": { "type": "integer", "minimum": 0 },
+          "path": { "type": "string" },
+          "notes": { "type": "string" }
+        }
+      }
+    },
+    "render_commands": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["purpose", "command"],
+        "properties": {
+          "purpose": { "type": "string" },
+          "command": { "type": "string" },
+          "completed": { "type": "boolean" },
+          "notes": { "type": "string" }
+        }
+      }
+    },
+    "known_instances": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "clip_id": { "type": "string" },
+          "scene_id": { "type": "string" },
+          "remotion_clip_package_path": { "type": "string" },
+          "notes": { "type": "string" }
+        }
+      }
+    },
+    "qa": {
+      "type": "object",
+      "required": ["status", "summary"],
+      "properties": {
+        "status": { "type": "string", "enum": ["pass", "fail", "partial", "not_run"] },
+        "summary": { "type": "string" },
+        "checks": { "type": "array", "items": { "type": "string" } },
+        "findings": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["severity", "description"],
+            "properties": {
+              "severity": { "type": "string", "enum": ["blocker", "major", "minor", "note"] },
+              "description": { "type": "string" },
+              "fix_status": { "type": "string" }
+            }
+          }
+        }
+      }
+    }
+  }
+}
