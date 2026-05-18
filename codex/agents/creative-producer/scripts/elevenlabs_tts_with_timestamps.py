@@ -16,6 +16,13 @@ import urllib.parse
 import urllib.request
 from typing import Any
 
+from elevenlabs_model_policy import (
+    DEFAULT_MODEL_PROFILE,
+    estimate_credit_units,
+    model_metadata_dict,
+    resolve_model,
+)
+
 
 ENDPOINT = "https://api.elevenlabs.io/v1/text-to-speech/{voice_id}/with-timestamps"
 
@@ -92,14 +99,21 @@ def main() -> int:
     parser.add_argument("--output-dir", required=True)
     parser.add_argument("--voice-id")
     parser.add_argument("--voice-name")
-    parser.add_argument("--model-id", default="eleven_multilingual_v2")
+    parser.add_argument("--model-id")
+    parser.add_argument("--model-profile", help=f"default: {DEFAULT_MODEL_PROFILE}")
+    parser.add_argument("--allow-deprecated-model", action="store_true")
     parser.add_argument("--language-code")
+    parser.add_argument("--target-language")
+    parser.add_argument("--target-accent")
     parser.add_argument("--output-format", default="mp3_44100_128")
     parser.add_argument("--stability", type=float, default=0.5)
     parser.add_argument("--similarity-boost", type=float, default=0.75)
     parser.add_argument("--style", type=float, default=0.0)
     parser.add_argument("--speed", type=float, default=1.0)
     parser.add_argument("--use-speaker-boost", action="store_true")
+    parser.add_argument("--seed", type=int)
+    parser.add_argument("--apply-text-normalization", choices=("auto", "on", "off"))
+    parser.add_argument("--apply-language-text-normalization", action="store_true")
     parser.add_argument("--execute", action="store_true")
     parser.add_argument("--approved", action="store_true")
     args = parser.parse_args()
@@ -124,6 +138,22 @@ def main() -> int:
         print("No scenes with narration text found", file=sys.stderr)
         return 2
 
+    selected_model_id, model_metadata, model_notes = resolve_model(
+        model_id=args.model_id or voice_selection.get("model_id"),
+        profile=args.model_profile or voice_selection.get("model_profile"),
+        allow_deprecated=args.allow_deprecated_model,
+    )
+    target_language = args.target_language or voice_selection.get("target_language")
+    target_accent = args.target_accent or voice_selection.get("target_accent")
+    for scene in scenes:
+        if model_metadata.character_limit and len(scene["text"]) > model_metadata.character_limit:
+            print(
+                f"Scene {scene['scene_id']} has {len(scene['text'])} characters, "
+                f"above {selected_model_id} limit {model_metadata.character_limit}",
+                file=sys.stderr,
+            )
+            return 2
+
     if args.execute and not args.approved:
         print("Refusing paid generation without --approved", file=sys.stderr)
         return 2
@@ -147,7 +177,7 @@ def main() -> int:
         next_text = scenes[index + 1]["text"] if index + 1 < len(scenes) else None
         payload: dict[str, Any] = {
             "text": scene["text"],
-            "model_id": args.model_id,
+            "model_id": selected_model_id,
             "voice_settings": {
                 "stability": args.stability,
                 "similarity_boost": args.similarity_boost,
@@ -158,6 +188,12 @@ def main() -> int:
         }
         if args.language_code:
             payload["language_code"] = args.language_code
+        if args.seed is not None:
+            payload["seed"] = args.seed
+        if args.apply_text_normalization:
+            payload["apply_text_normalization"] = args.apply_text_normalization
+        if args.apply_language_text_normalization:
+            payload["apply_language_text_normalization"] = True
         if previous_text:
             payload["previous_text"] = previous_text
         if next_text:
@@ -201,7 +237,12 @@ def main() -> int:
             **voice_selection,
             "voice_id": voice_id,
             "voice_name": args.voice_name or voice_selection.get("voice_name"),
-            "model_id": args.model_id,
+            "model_id": selected_model_id,
+            "model_profile": model_metadata.profile,
+            "model_metadata": model_metadata_dict(model_metadata),
+            "model_policy_notes": model_notes,
+            "target_language": target_language,
+            "target_accent": target_accent,
             "language_code": args.language_code or voice_selection.get("language_code"),
             "settings": {
                 "stability": args.stability,
@@ -215,7 +256,18 @@ def main() -> int:
             "requires_user_approval": True,
             "approved": args.approved,
             "endpoint": "/v1/text-to-speech/:voice_id/with-timestamps",
-            "estimated_credits": f"{character_count} characters",
+            "model_id": selected_model_id,
+            "model_profile": model_metadata.profile,
+            "model_quality_score": model_metadata.quality_score,
+            "target_language": target_language,
+            "target_accent": target_accent,
+            "output_format": args.output_format,
+            "text_normalization": args.apply_text_normalization,
+            "character_count": character_count,
+            "estimated_credits": estimate_credit_units(character_count, selected_model_id),
+            "character_limit": model_metadata.character_limit,
+            "model_selection_reason": model_metadata.selection_note,
+            "model_policy_notes": model_notes,
             "notes": "Dry-run writes request payloads only." if not args.execute else "Executed with explicit approval flag.",
         },
         "scenes": scene_outputs,

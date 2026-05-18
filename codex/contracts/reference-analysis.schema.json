@@ -37,6 +37,24 @@
         }
       }
     },
+    "overall_summary": {
+      "type": "object",
+      "properties": {
+        "summary": { "type": "string" },
+        "source_ids": { "type": "array", "items": { "type": "string" } },
+        "reference_video_ids": { "type": "array", "items": { "type": "string" } },
+        "duration_seconds": { "type": "number" },
+        "scene_count": { "type": "integer" },
+        "reference_beat_count": { "type": "integer" },
+        "deterministic_evidence": { "type": "array", "items": { "type": "string" } },
+        "model_inferred_evidence": { "type": "array", "items": { "type": "string" } },
+        "reusable_patterns": { "type": "array", "items": { "type": "string" } },
+        "do_not_copy_risks": { "type": "array", "items": { "type": "string" } },
+        "evidence_gaps": { "type": "array", "items": { "type": "string" } },
+        "limitations": { "type": "array", "items": { "type": "string" } },
+        "confidence": { "type": "string", "enum": ["high", "medium", "low", "unknown"] }
+      }
+    },
     "sources": {
       "type": "array",
       "items": {
@@ -175,6 +193,33 @@
               }
             }
           }
+        }
+      }
+    },
+    "scene_decomposition": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["decomposition_id", "source_id", "start_seconds", "end_seconds", "evidence_refs", "confidence"],
+        "properties": {
+          "decomposition_id": { "type": "string" },
+          "source_id": { "type": "string" },
+          "video_id": { "type": "string" },
+          "reference_beat_id": { "type": "string" },
+          "start_seconds": { "type": "number" },
+          "end_seconds": { "type": "number" },
+          "purpose": { "type": "string" },
+          "visual_summary": { "type": "string" },
+          "audio_summary": { "type": "string" },
+          "caption_or_graphics_summary": { "type": "string" },
+          "transcript_summary": { "type": "string" },
+          "keyframe_paths": { "type": "array", "items": { "type": "string" } },
+          "reference_asset_ids": { "type": "array", "items": { "type": "string" } },
+          "reusable_patterns": { "type": "array", "items": { "type": "string" } },
+          "do_not_copy_risks": { "type": "array", "items": { "type": "string" } },
+          "evidence_refs": { "type": "array", "items": { "type": "object" } },
+          "model_limitations": { "type": "array", "items": { "type": "string" } },
+          "confidence": { "type": "string", "enum": ["high", "medium", "low", "unknown"] }
         }
       }
     },

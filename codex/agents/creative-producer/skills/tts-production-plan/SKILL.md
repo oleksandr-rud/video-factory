@@ -20,13 +20,15 @@ Treat TTS as an approval-gated production path. Planning and dry-run payloads ar
 1. Confirm the scenario is stable enough for audio. If scene ids or scripts are still volatile, return `needs_revision`.
 2. Split narration by scene and preserve exact `scene_id` in filenames and request payloads.
 3. Choose provider only from user-approved options and inherited channel provider preferences.
-4. Build provider request fields: text, voice, model, language, format, scene id, output filename, and generation settings.
+4. Build provider request fields: text, voice, model id, model profile, model quality score, target language, target accent, API language code when known, format, scene id, output filename, text-normalization setting, seed when used, and generation settings.
 5. Estimate duration per scene and compare against scene timing. Mark drift that could break timeline sync.
 6. Prepare dry-run payloads before any paid generation.
 7. Define QA checks before execution: clipping, pacing, pronunciation, loudness, silence trimming, channel voice continuity, and timestamp/caption alignment.
 8. For generated audio, record request ids, audio paths, audio asset ids, alignment paths, caption asset ids, caption JSON, SRT, and QA findings.
 
-For ElevenLabs, use `elevenlabs-voice-selection` and write a package matching `codex/contracts/voiceover-package.schema.json`. Use `../../scripts/elevenlabs_tts_with_timestamps.py` in dry-run mode before approval, then with `--execute --approved` only after the Director records the approval. Convert timestamp alignment to Remotion Caption JSON with `../../scripts/elevenlabs_alignment_to_captions.py`.
+For ElevenLabs, use `elevenlabs-voice-selection` and write a package matching `codex/contracts/voiceover-package.schema.json`. Pick models through `../../scripts/elevenlabs_model_policy.py`: quality is the main criterion, so default content narration to `eleven_v3`, use `eleven_flash_v2_5` only for explicit fast/budget-sensitive or long-chunk constraints, and use `eleven_multilingual_v2` for stable long-form narration or stronger text normalization. Use `../../scripts/fetch_elevenlabs_models.py` after approved provider access when the run needs account-visible model verification. Use `../../scripts/elevenlabs_tts_with_timestamps.py` in dry-run mode before approval, passing target language/accent, then with `--execute --approved` only after the Director records the approval. Convert timestamp alignment to Remotion Caption JSON with `../../scripts/elevenlabs_alignment_to_captions.py`.
+
+When the channel profile or channel format provides an exact provider voice, copy it into `voice_selection` with `selection_policy: "exact_required"` and `selection_source: "channel_profile"` or `"channel_format"`. Do not regenerate voice selection from generic ranking unless the Director explicitly overrides the channel voice or the exact voice is unavailable/blocked.
 
 Do not call paid generation unless the Director provides explicit approval.
 
@@ -58,6 +60,11 @@ Return this handoff summary:
   "approval_required": true,
   "approval_id": "string",
   "dry_run_payload_path": "string",
+  "model_id": "eleven_v3 | eleven_flash_v2_5 | eleven_multilingual_v2 | other",
+  "model_profile": "highest_quality | latest_expressive | fast_balanced | stable_content | other",
+  "model_selection_reason": "string",
+  "target_language": "string",
+  "target_accent": "string",
   "scene_requests": [
     {
       "scene_id": "string",
@@ -91,6 +98,8 @@ Return this handoff summary:
 - Paid/provider execution is impossible without explicit approval.
 - Scene ids are preserved in audio, alignment, caption, and SRT filenames.
 - Timestamp alignment and caption export are planned when supported by the provider.
+- ElevenLabs requests use current quality-first model policy, target language/accent are recorded, and legacy Turbo/v1 models are replaced or explicitly justified.
+- Exact channel voices are preserved as binding `voice_selection` values unless a higher-priority override or blocker is recorded.
 - QA criteria exist before generation and are filled after generation.
 
 ## Media Manifest Policy

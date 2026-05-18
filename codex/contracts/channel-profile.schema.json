@@ -137,8 +137,23 @@
                   "provider": { "type": "string" },
                   "voice_id": { "type": "string" },
                   "voice_name": { "type": "string" },
+                  "selection_policy": {
+                    "type": "string",
+                    "enum": ["exact_required", "preferred", "fallback", "blocked"]
+                  },
+                  "model_id": { "type": "string" },
+                  "model_profile": { "type": "string" },
+                  "target_language": { "type": "string" },
+                  "target_accent": { "type": "string" },
+                  "language_code": { "type": "string" },
                   "usage": { "type": "string" },
-                  "rights_notes": { "type": "array", "items": { "type": "string" } }
+                  "rights_state": {
+                    "type": "string",
+                    "enum": ["approved", "needs_approval", "blocked", "unknown"]
+                  },
+                  "rights_notes": { "type": "array", "items": { "type": "string" } },
+                  "last_inventory_check": { "type": "string" },
+                  "continuity_notes": { "type": "string" }
                 }
               }
             },

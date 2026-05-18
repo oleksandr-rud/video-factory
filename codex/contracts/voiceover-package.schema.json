@@ -27,7 +27,20 @@
       "properties": {
         "voice_id": { "type": "string" },
         "voice_name": { "type": "string" },
+        "selection_policy": {
+          "type": "string",
+          "enum": ["exact_required", "preferred", "fallback", "episode_selected", "manual_override"]
+        },
+        "selection_source": {
+          "type": "string",
+          "enum": ["channel_profile", "channel_format", "producer_criteria", "user_override", "provider_ranking", "manual"]
+        },
         "model_id": { "type": "string" },
+        "model_profile": { "type": "string" },
+        "model_metadata": { "type": "object" },
+        "model_policy_notes": { "type": "array", "items": { "type": "string" } },
+        "target_language": { "type": "string" },
+        "target_accent": { "type": "string" },
         "language_code": { "type": "string" },
         "labels": { "type": "object", "additionalProperties": { "type": "string" } },
         "settings": {
@@ -51,8 +64,21 @@
               "voice_id": { "type": "string" },
               "name": { "type": "string" },
               "score": { "type": "number" },
+              "score_breakdown": { "type": "object" },
+              "target_language": { "type": "string" },
+              "target_accent": { "type": "string" },
+              "target_language_match": { "type": ["boolean", "null"] },
+              "target_accent_match": { "type": ["boolean", "null"] },
+              "selected_model_id": { "type": "string" },
+              "provider_voice_ref_policy": { "type": "string" },
+              "provider_voice_ref_score": { "type": "number" },
+              "selection_source": { "type": "string" },
               "labels": { "type": "object", "additionalProperties": { "type": "string" } },
               "preview_url": { "type": "string" },
+              "category": { "type": "string" },
+              "recording_quality": { "type": "string" },
+              "high_quality_base_model_ids": { "type": "array", "items": { "type": "string" } },
+              "verified_languages": { "type": "array", "items": { "type": "object" } },
               "reasons": { "type": "array", "items": { "type": "string" } }
             }
           }
@@ -76,6 +102,9 @@
         "narrator_persona": { "type": "string" },
         "voice_traits": { "type": "array", "items": { "type": "string" } },
         "must_avoid_traits": { "type": "array", "items": { "type": "string" } },
+        "target_language": { "type": "string" },
+        "target_accent": { "type": "string" },
+        "language_code": { "type": "string" },
         "pace_wpm_range": { "type": "string" },
         "energy_profile": { "type": "string" },
         "accent_policy": { "type": "string" },
@@ -100,8 +129,19 @@
         "requires_user_approval": { "type": "boolean" },
         "approved": { "type": "boolean" },
         "endpoint": { "type": "string" },
+        "model_id": { "type": "string" },
+        "model_profile": { "type": "string" },
+        "model_quality_score": { "type": "number" },
+        "target_language": { "type": "string" },
+        "target_accent": { "type": "string" },
+        "output_format": { "type": "string" },
+        "character_count": { "type": "number" },
+        "character_limit": { "type": "number" },
         "estimated_credits": { "type": "string" },
         "approval_id": { "type": "string" },
+        "model_selection_reason": { "type": "string" },
+        "model_policy_notes": { "type": "array", "items": { "type": "string" } },
+        "text_normalization": { "type": "string" },
         "notes": { "type": "string" }
       }
     },

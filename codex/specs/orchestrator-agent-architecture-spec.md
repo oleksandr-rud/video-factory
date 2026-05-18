@@ -149,6 +149,8 @@ Local skills:
 Helpers:
 
 - `codex/agents/creative-producer/scripts/fetch_elevenlabs_voices.py`
+- `codex/agents/creative-producer/scripts/fetch_elevenlabs_models.py`
+- `codex/agents/creative-producer/scripts/elevenlabs_model_policy.py`
 - `codex/agents/creative-producer/scripts/rank_elevenlabs_voices.py`
 - `codex/agents/creative-producer/scripts/elevenlabs_tts_with_timestamps.py`
 - `codex/agents/creative-producer/scripts/elevenlabs_alignment_to_captions.py`

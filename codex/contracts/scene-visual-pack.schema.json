@@ -15,6 +15,21 @@
     "channel_format_id": { "type": "string" },
     "channel_format_path": { "type": "string" },
     "media_asset_manifest_path": { "type": "string" },
+    "overall_reference_summary": {
+      "type": "object",
+      "properties": {
+        "summary": { "type": "string" },
+        "reference_analysis_id": { "type": "string" },
+        "source_ids": { "type": "array", "items": { "type": "string" } },
+        "reference_video_ids": { "type": "array", "items": { "type": "string" } },
+        "reference_beat_count": { "type": "integer" },
+        "scene_decomposition_count": { "type": "integer" },
+        "reusable_patterns": { "type": "array", "items": { "type": "string" } },
+        "do_not_copy_risks": { "type": "array", "items": { "type": "string" } },
+        "evidence_gaps": { "type": "array", "items": { "type": "string" } },
+        "confidence": { "type": "string", "enum": ["high", "medium", "low", "unknown"] }
+      }
+    },
     "scene_packs": {
       "type": "array",
       "items": {
@@ -25,6 +40,40 @@
           "visual_goal": { "type": "string" },
           "source_ids": { "type": "array", "items": { "type": "string" } },
           "source_asset_ids": { "type": "array", "items": { "type": "string" } },
+          "reference_beat_ids": { "type": "array", "items": { "type": "string" } },
+          "reference_materials": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "material_id": { "type": "string" },
+                "kind": { "type": "string" },
+                "source_id": { "type": "string" },
+                "asset_id": { "type": "string" },
+                "reference_beat_id": { "type": "string" },
+                "path_or_url": { "type": "string" },
+                "start_seconds": { "type": "number" },
+                "end_seconds": { "type": "number" },
+                "usage": { "type": "string" },
+                "rights_state": { "type": "string" },
+                "evidence_refs": { "type": "array", "items": { "type": "object" } },
+                "confidence": { "type": "string", "enum": ["high", "medium", "low", "unknown"] }
+              }
+            }
+          },
+          "scene_decomposition": {
+            "type": "object",
+            "properties": {
+              "decomposition_refs": { "type": "array", "items": { "type": "string" } },
+              "reference_scene_summary": { "type": "string" },
+              "visual_patterns": { "type": "array", "items": { "type": "string" } },
+              "audio_or_pacing_patterns": { "type": "array", "items": { "type": "string" } },
+              "caption_or_graphics_patterns": { "type": "array", "items": { "type": "string" } },
+              "do_not_copy_risks": { "type": "array", "items": { "type": "string" } },
+              "evidence_refs": { "type": "array", "items": { "type": "object" } },
+              "confidence": { "type": "string", "enum": ["high", "medium", "low", "unknown"] }
+            }
+          },
           "evidence_refs": {
             "type": "array",
             "items": {

@@ -681,6 +681,40 @@ def main() -> int:
         }
         for beat in beats
     ]
+    scene_decomposition = [
+        drop_none({
+            "decomposition_id": f"decomp-{source_slug}-{index:03d}",
+            "source_id": source_id,
+            "video_id": video_id,
+            "reference_beat_id": beat.get("beat_id"),
+            "start_seconds": beat.get("start_seconds"),
+            "end_seconds": beat.get("end_seconds"),
+            "purpose": beat.get("purpose"),
+            "visual_summary": beat.get("visual_notes"),
+            "audio_summary": beat.get("audio_notes"),
+            "caption_or_graphics_summary": beat.get("caption_or_graphics_notes"),
+            "transcript_summary": "Transcript not supplied." if not args.transcript_path else "Transcript artifact supplied for downstream review.",
+            "keyframe_paths": beat.get("keyframe_paths", []),
+            "reference_asset_ids": [
+                f"asset-{source_slug}-reference-video",
+                *[
+                    f"asset-{source_slug}-frame-{int(frame.get('frame_index')):03d}"
+                    for frame in frame_samples
+                    if int(frame.get("scene_index", 0)) == index and frame.get("frame_index")
+                ],
+            ],
+            "reusable_patterns": beat.get("pattern_tags", []),
+            "do_not_copy_risks": [
+                "Reference video is pattern evidence only; do not copy footage or exact edit decisions without rights approval."
+            ],
+            "evidence_refs": beat.get("evidence_refs", []),
+            "model_limitations": [
+                "No approved direct-video model observation supplied."
+            ] if not args.model_observation_path else [],
+            "confidence": "medium" if beat.get("evidence_refs") else "low",
+        })
+        for index, beat in enumerate(beats, start=1)
+    ]
     invalidation_impact = []
     if evidence_gaps:
         invalidation_impact.append({
@@ -727,6 +761,32 @@ def main() -> int:
             "model_inferred_evidence": ["approved model observation"] if args.model_observation_path else [],
             "limitations": limitations,
         }],
+        "overall_summary": {
+            "summary": (
+                f"Prepared {len(scenes)} reference segments and {len(frame_samples)} keyframes for {source_id}. "
+                "Use this as scene-decomposition and style-pattern evidence, not as reuse permission."
+            ),
+            "source_ids": [source_id],
+            "reference_video_ids": [video_id],
+            "duration_seconds": technical.get("duration_seconds") if technical else None,
+            "scene_count": len(scenes),
+            "reference_beat_count": len(reference_beats),
+            "deterministic_evidence": [
+                "ffprobe metadata" if technical else None,
+                "scene or fallback segment timing",
+                "keyframe extraction" if frame_samples else None,
+                "OCR" if args.enable_ocr else None,
+                "transcript artifact" if args.transcript_path else None,
+            ],
+            "model_inferred_evidence": ["approved model observation"] if args.model_observation_path else [],
+            "reusable_patterns": sorted({tag for beat in beats for tag in beat.get("pattern_tags", [])}),
+            "do_not_copy_risks": [
+                "Reference analysis does not grant rights to reuse footage; treat reference as pattern evidence only."
+            ],
+            "evidence_gaps": evidence_gaps,
+            "limitations": limitations,
+            "confidence": "medium" if frame_samples else "low",
+        },
         "sources": [{
             "source_id": source_id,
             "asset_id": f"asset-{slugify(source_id)}-reference-video",
@@ -763,6 +823,7 @@ def main() -> int:
             "beats": beats,
         }],
         "claim_ledger": [],
+        "scene_decomposition": scene_decomposition,
         "reference_beats": reference_beats,
         "findings": {
             "narrative_patterns": [],

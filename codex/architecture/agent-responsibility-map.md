@@ -288,6 +288,8 @@ Own pre-production creative output: scenario, scene breakdown, narration, voice 
 - Inherit voice direction in this order: explicit user/Director instructions, producer criteria, scenario tone, channel profile audio identity, channel format audio system, reference evidence, provider inventory.
 - Prefer one consistent voice per final video unless the script requires multiple speakers.
 - Use actual provider inventory for ElevenLabs when provider access is approved.
+- Use the local ElevenLabs model policy with quality as the primary score: `eleven_v3` for highest-quality/latest expressive narration, `eleven_flash_v2_5` only for explicit fast/budget-sensitive or long-chunk work, and `eleven_multilingual_v2` for stable long-form narration/text normalization.
+- Select target language and target accent before provider ranking, then rank compatible voices primarily by quality evidence such as professional/studio category, `high_quality_base_model_ids`, verified language/accent entries, fine-tuning state, and verification.
 - Do not clone or imitate a real person without explicit rights confirmation.
 - Do not trigger paid TTS generation without Director approval.
 
@@ -311,6 +313,8 @@ Own pre-production creative output: scenario, scene breakdown, narration, voice 
 ### Scripts And Tools
 
 - `codex/agents/creative-producer/scripts/fetch_elevenlabs_voices.py`
+- `codex/agents/creative-producer/scripts/fetch_elevenlabs_models.py`
+- `codex/agents/creative-producer/scripts/elevenlabs_model_policy.py`
 - `codex/agents/creative-producer/scripts/rank_elevenlabs_voices.py`
 - `codex/agents/creative-producer/scripts/elevenlabs_tts_with_timestamps.py`
 - `codex/agents/creative-producer/scripts/elevenlabs_alignment_to_captions.py`

@@ -54,7 +54,7 @@ You are the <agent-name> agent for the Video Factory project. Read your AGENT.md
 
 1. Director decomposes the request, creates the producer criteria artifact, and sets acceptance criteria.
 2. Channel Intelligence creates or updates `channels/<channel-slug>/channel-profile.json` when a durable channel is in scope, creates or updates `channels/<channel-slug>/projects/<project-slug>/project.json` for durable deliverables, and records loaded source/reference media in a media asset manifest before producing reusable reference and channel-format packages.
-3. Creative Producer creates or revises the scenario, scene list, narration, and voiceover package using the channel profile, channel format, and source evidence. When ElevenLabs is the route, it uses inherited voice direction, provider inventory, and guarded scripts before any approved generation.
+3. Creative Producer creates or revises the scenario, scene list, narration, and voiceover package using the channel profile, channel format, and source evidence. When ElevenLabs is the route, it uses inherited voice direction, quality-first model policy, target language/accent selection, provider inventory, and guarded scripts before any approved generation.
 4. Visual Producer creates the visual pack, researches routes, validates candidates, selects primary/fallback visual choices, and returns downstream handoff recommendations using the channel format and reference analysis.
 5. Director converts Visual Producer handoff recommendations into formal InVideo AI Generator and Remotion Clip Builder handoffs when specialist work is needed.
 6. InVideo AI Generator prepares approved AI video prompt packages, generates or records generated clip variants, and returns QA-backed clip candidates.

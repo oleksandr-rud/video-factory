@@ -81,6 +81,9 @@ channels/<channel-slug>/
 4. Capture brand identity: promise, values, positioning, personality, approved/avoid vocabulary, logos, colors, typography, imagery, thumbnail, caption, and motion rules.
 5. Capture content strategy: content pillars, format registry paths, hero/hub/hygiene mix, upload schedule, anti-redundancy rules, and novelty requirements.
 6. Capture audio identity: narrator persona, voice traits, must-avoid traits, accent/language policy, pace range, energy profile, pronunciation defaults, provider voice refs, reference audio, continuity policy, and rights notes.
+   - If the channel has an exact recurring provider voice, record it under `audio_identity.voice_profile.provider_voice_refs[]` with `provider`, `voice_id`, `voice_name`, `selection_policy: "exact_required"`, usage such as `primary_narrator`, target language/accent or language code, model preference when known, rights state, and continuity notes.
+   - Use `selection_policy: "preferred"` only when the voice is a strong preference that can be replaced by a better or more available candidate.
+   - Use `selection_policy: "fallback"` for backup voices and `blocked` for deprecated or rights-blocked voices.
 7. Capture governance: approval rules, rights rules, sensitive topics, owner notes, last reviewed timestamp, and change log.
 8. When the user starts a durable video deliverable, create or update `channels/<channel-slug>/projects/<project-slug>/project.json` matching `codex/contracts/video-project.schema.json`.
 9. Create or update `channels/<channel-slug>/projects/<project-slug>/media-asset-manifest.json` matching `codex/contracts/media-asset-manifest.schema.json` when reference videos, user media, provider clips, generated clips, Remotion outputs, review frames, or evidence files are in scope.

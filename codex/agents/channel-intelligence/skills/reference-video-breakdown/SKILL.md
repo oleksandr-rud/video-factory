@@ -17,7 +17,21 @@ Read `../../references/reference-analysis-dimensions.md` before analyzing videos
 ## Workflow
 
 1. Prefer deterministic evidence before interpretation: local metadata, shot/segment boundaries, keyframes, transcript, OCR, and media manifest entries.
-2. For local files, run `../../scripts/analyze_reference_video.py` to prepare ffprobe metadata, scene/segment JSON, keyframes, optional OCR, and a contract-shaped reference analysis fragment:
+2. For YouTube or other video-platform URLs, download first after Director approval, then analyze the local file. Preserve the original URL, platform id, title/owner, thumbnail, subtitles, and info JSON as source artifacts and manifest actions. Use a bounded `yt-dlp` capture such as:
+   ```powershell
+   yt-dlp `
+     --write-info-json `
+     --write-thumbnail `
+     --write-subs `
+     --write-auto-subs `
+     --sub-langs "en.*,uk.*,ru.*" `
+     --merge-output-format mp4 `
+     --paths "channels/<channel-slug>/projects/<project-slug>/source-media/reference-videos/<source-id>" `
+     --output "%(id)s.%(ext)s" `
+     "<youtube-url>"
+   ```
+   If download approval is missing, return `needs_approval` with deferred manifest actions. If `yt-dlp` is missing or the platform blocks capture, return `partial` or `blocked` with the exact missing local evidence.
+3. For local files, run `../../scripts/analyze_reference_video.py` to prepare ffprobe metadata, scene/segment JSON, keyframes, optional OCR, and a contract-shaped reference analysis fragment:
    ```powershell
    python codex/agents/channel-intelligence/scripts/analyze_reference_video.py `
      --video <local-reference-video> `
@@ -25,15 +39,27 @@ Read `../../references/reference-analysis-dimensions.md` before analyzing videos
      --work-dir <project-or-channel-reference-work-dir> `
      --output <reference-analysis-json>
    ```
-3. If the local script returns `partial`, preserve the artifacts it did produce and list missing tools or evidence gaps instead of inventing observations.
-4. Segment the video into meaningful beats or shots with timestamps. Use PySceneDetect output when available; otherwise use fallback segments as provisional timing evidence.
-5. Interpret the deterministic evidence into production observations: hook, setup, proof, tension, payoff, CTA, recurring sections, shot grammar, caption/graphics usage, motion language, audio rhythm, and packaging conventions.
-6. Extract reusable patterns separately from one-off choices. Keep exact clip choices out of channel rules unless they are legitimate reusable assets.
-7. Flag content that should not be copied directly, including proprietary footage, likeness, exact phrasing, exact edit rhythm, or overly similar shots.
-8. Direct-video model analysis belongs here for upstream reference breakdowns, not in Visual Producer. Use it only after Director approval for API spend and media handling; keep transcript/caption evidence separate from model visual observations.
-9. Return manifest actions for every local reference file, transcript, thumbnail, keyframe, OCR output, scene JSON, probe JSON, model-observation artifact, or sampled frame that was created, consumed, validated, or deferred.
-10. Build `reference_beats[]` as the flattened evidence graph for downstream agents, with transcript, shot, audio, caption/graphics, reusable-pattern, and do-not-copy evidence per beat.
-11. Return `invalidation_impact[]` when missing or changed reference evidence could invalidate channel format rules, scenario assumptions, visual route choices, Remotion styling, render criteria, or critique gates.
+4. If OpenRouter direct-video observation is approved for the reference, run the generic helper on the downloaded/local file after deterministic sidecars exist. Save the prompt, request preview, raw response, and a short parsed `model-observation.json` in the same reference-analysis work directory, then pass that path through `--model-observation-path` or merge it into the reference analysis:
+   ```powershell
+   python codex/scripts/openrouter_video_request.py `
+     --prompt "Analyze this reference video scene by scene. Return JSON with overall_summary, scene_decomposition, reusable_patterns, do_not_copy_risks, model_limitations, and evidence timestamps." `
+     --video "<downloaded-reference-video.mp4>" `
+     --output "<work-dir>/openrouter-reference-observation.json" `
+     --response-format json_object `
+     --execute `
+     --approved
+   ```
+   Use local/base64 video upload by default for YouTube captures so provider-specific watch-URL support does not control the pipeline. Use `--video-url` only when the provider/model route explicitly supports that URL form and the Director approved external media handling.
+5. If the local script returns `partial`, preserve the artifacts it did produce and list missing tools or evidence gaps instead of inventing observations.
+6. Segment the video into meaningful beats or shots with timestamps. Use PySceneDetect output when available; otherwise use fallback segments as provisional timing evidence.
+7. Interpret deterministic and approved model evidence into production observations: hook, setup, proof, tension, payoff, CTA, recurring sections, shot grammar, caption/graphics usage, motion language, audio rhythm, and packaging conventions.
+8. Extract reusable patterns separately from one-off choices. Keep exact clip choices out of channel rules unless they are legitimate reusable assets.
+9. Flag content that should not be copied directly, including proprietary footage, likeness, exact phrasing, exact edit rhythm, or overly similar shots.
+10. Direct-video model analysis belongs here for upstream reference breakdowns, not in Visual Producer. Use it only after Director approval for API spend and media handling; keep transcript/caption evidence separate from model visual observations.
+11. Return manifest actions for every local reference file, transcript, thumbnail, keyframe, OCR output, scene JSON, probe JSON, model-observation artifact, or sampled frame that was created, consumed, validated, or deferred.
+12. Build `overall_summary` and `scene_decomposition[]` before downstream handoff. `overall_summary` combines deterministic metadata, transcript/OCR status, model limitations, reusable patterns, do-not-copy risks, and evidence gaps. `scene_decomposition[]` maps each beat/shot to source id, timestamps, evidence refs, keyframes, transcript/caption/visual/audio notes, reusable patterns, and confidence.
+13. Build `reference_beats[]` as the flattened evidence graph for downstream agents, with transcript, shot, audio, caption/graphics, reusable-pattern, and do-not-copy evidence per beat.
+14. Return `invalidation_impact[]` when missing or changed reference evidence could invalidate channel format rules, scenario assumptions, visual route choices, Remotion styling, render criteria, or critique gates.
 
 ## Required Output
 
@@ -43,6 +69,8 @@ Return or update `codex/contracts/reference-analysis.schema.json` with:
 - `sources[]` entries with source ids, rights notes, local paths, and captured artifacts
 - `source_ledger[]` entries with `kind`, rights state, reusable scope, missing assets, evidence refs, and confidence
 - `reference_videos[]` entries with technical metadata, artifact paths, timecoded beats, keyframe paths, transcript path, OCR path, and evidence refs
+- `overall_summary` with combined deterministic/model evidence, reusable patterns, do-not-copy risks, limitations, and evidence coverage
+- `scene_decomposition[]` with one object per analyzed beat/scene and the reference materials needed for scene-by-scene downstream analysis
 - `claim_ledger[]` as an empty array when the video breakdown does not extract factual script claims
 - `reference_beats[]` as the flattened downstream evidence graph
 - `findings` with narrative patterns, visual patterns, audio patterns, visual evidence opportunities, source claims, rights/policy risks, evidence gaps, and confidence notes

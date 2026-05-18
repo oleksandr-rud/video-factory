@@ -110,10 +110,13 @@ ElevenLabs should be a provider skill inside Creative Producer, not a separate a
 
 Current ElevenLabs docs support two concrete integration points:
 
+- The current ElevenLabs model guide says quality-first TTS should use `eleven_v3`, described as the flagship model with the highest fidelity, richest emotional expression, and broadest language support, and content creation/video narration should also use `eleven_v3`. Flash v2.5 is the low-latency/balanced route, while Multilingual v2 remains a stable professional narration route. Sources: https://elevenlabs.io/docs/eleven-api/choosing-the-right-model and https://elevenlabs.io/docs/overview/models
 - `GET /v2/voices` lists available voices with search, pagination, voice type, category, labels, preview URLs, and settings metadata. This enables real voice selection from the user's account instead of imaginary voice descriptions. Source: https://elevenlabs.io/docs/api-reference/voices/search
-- `POST /v1/text-to-speech/:voice_id/with-timestamps` generates speech and returns audio plus character-level original and normalized alignment data. That is the right route when Remotion subtitles and visual timing should sync to generated narration. Source: https://elevenlabs.io/docs/api-reference/text-to-speech/convert-with-timestamps
+- The voices response includes quality and localization signals such as `category`, `recording_quality`, `high_quality_base_model_ids`, `verified_languages[].language`, `verified_languages[].accent`, `verified_languages[].locale`, fine-tuning state, preview URLs, and verification fields. Local ranking should treat these as evidence for target language/accent fit and voice quality. Source: https://elevenlabs.io/docs/api-reference/voices/search
+- `POST /v1/text-to-speech/:voice_id/with-timestamps` generates speech and returns audio plus character-level original and normalized alignment data. It accepts `model_id`, `language_code`, request-level voice settings, seed, previous/next text, and text-normalization controls, so local scripts should set the model explicitly instead of relying on the endpoint default. Source: https://elevenlabs.io/docs/api-reference/text-to-speech/convert-with-timestamps
+- `POST /v1/text-to-dialogue/with-timestamps` defaults to `eleven_v3` and is the route to plan for true multi-speaker dialogue with voice segments and character-level alignment. Source: https://elevenlabs.io/docs/api-reference/text-to-dialogue/convert-with-timestamps
 
-The local design therefore adds `voiceover-package.schema.json`, guarded ElevenLabs scripts, and a Remotion `timeline-sync-plan` contract. Paid generation remains blocked until the Director records approval, but voice selection and dry-run payload preparation can happen before spend.
+The local design therefore adds `voiceover-package.schema.json`, guarded ElevenLabs scripts, a current model policy, and a Remotion `timeline-sync-plan` contract. Paid generation remains blocked until the Director records approval, but model verification, voice selection, and dry-run payload preparation can happen before spend.
 
 ## Multimodal Critique Findings
 

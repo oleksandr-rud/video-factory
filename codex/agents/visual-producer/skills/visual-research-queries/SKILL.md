@@ -12,27 +12,28 @@ Build search-query sets that preserve why each query exists, which evidence shap
 - Scenario scene ids, narration, on-screen text, duration, and visual intent
 - Visual pack draft or candidate requirements when available
 - Producer criteria, channel profile, channel format, and platform constraints
-- Reference analysis, especially `reference_videos[]`, `web_pages[].visual_evidence_candidates`, `claim_ledger[]`, and `evidence_refs[]`
+- Reference analysis, especially `overall_summary`, `scene_decomposition[]`, `reference_beats[]`, `reference_videos[]`, `web_pages[].visual_evidence_candidates`, `claim_ledger[]`, and `evidence_refs[]`
 - Media asset manifest with approved source/user/web assets and deferred image/screenshot candidates
 - Provider availability, language/locale, budget policy, and Director approval state
 
 ## Workflow
 
 1. Extract concrete nouns, actions, locations, mood, camera angle, motion, time period, audience context, and domain terms for each scene.
-2. Read source-backed visual evidence before inventing new terms. Prefer source ids, evidence refs, and approved media asset ids over unsupported imagery.
-3. Build query groups by route:
+2. Read source-backed visual evidence before inventing new terms. Prefer source ids, reference beat ids, scene-decomposition notes, evidence refs, and approved media asset ids over unsupported imagery.
+3. When reference videos were divided into beats/scenes, map query groups to the relevant `reference_beats[]` or `scene_decomposition[]` entries. Keep the top-level `overall_summary` in the query rationale so a query does not overfit one isolated reference beat.
+4. Build query groups by route:
    - `stock_clip`: concise provider-search terms, not full cinematic prompts
    - `ai_video_generation`: prompt-intent phrases and reference constraints, not provider-final prompts
    - `remotion_generated`: component/template keywords, data-card needs, UI/mockup needs, or VFX requirements
    - `approved_web_image`: only approved media-manifest assets
    - `source_card_recreation`: claim/source terms to redraw or cite without copying page material
    - `user_supplied_media`: asset ids, filenames, and selection notes
-4. For stock routes, create broad, narrow, and fallback queries. Record provider priority: Freepik/Magnific primary when account/licensing is available; Pexels secondary/free fallback unless the Director explicitly chooses it first.
-5. Add provider filters when useful: orientation, aspect ratio, resolution, duration, language/locale, people/no-people, and safe-area notes.
-6. Add negative criteria for unsuitable clips, including copyright, brand/celebrity, misleading endorsement, irrelevant geography, AI artifacts, watermarks, unreadable text, and unsafe likeness context.
-7. Avoid copyrighted characters, brand names, celebrity names, logos, and restricted locations unless supplied and authorized.
-8. Preserve rejected queries with reasons when they are too broad, too copyrighted, source-inaccurate, provider-hostile, redundant, or likely to retrieve unusable media.
-9. Define stop criteria per scene: enough high-fit candidates, no safe provider route, approval needed, fallback route preferred, or specialist handoff needed.
+5. For stock routes, create broad, narrow, and fallback queries. Record provider priority: Freepik/Magnific primary when account/licensing is available; Pexels secondary/free fallback unless the Director explicitly chooses it first.
+6. Add provider filters when useful: orientation, aspect ratio, resolution, duration, language/locale, people/no-people, and safe-area notes.
+7. Add negative criteria for unsuitable clips, including copyright, brand/celebrity, misleading endorsement, irrelevant geography, AI artifacts, watermarks, unreadable text, and unsafe likeness context.
+8. Avoid copyrighted characters, brand names, celebrity names, logos, and restricted locations unless supplied and authorized.
+9. Preserve rejected queries with reasons when they are too broad, too copyrighted, source-inaccurate, provider-hostile, redundant, or likely to retrieve unusable media.
+10. Define stop criteria per scene: enough high-fit candidates, no safe provider route, approval needed, fallback route preferred, or specialist handoff needed.
 
 ## Required Output
 
@@ -45,6 +46,9 @@ Return this structure or embed it in `scene-visual-pack.schema.json` fields:
     {
       "scene_id": "string",
       "route": "stock_clip | ai_video_generation | remotion_generated | user_supplied_media | approved_web_image | source_card_recreation",
+      "reference_beat_ids": ["string"],
+      "scene_decomposition_refs": ["string"],
+      "overall_reference_summary_ref": "string",
       "provider_priority": ["freepik", "pexels"],
       "queries": [
         {
@@ -72,7 +76,7 @@ Return this structure or embed it in `scene-visual-pack.schema.json` fields:
 
 ## Contract Fields Populated
 
-- `scene-visual-pack.schema.json`: `scene_packs[].search_queries`, `routes`, `candidate_requirements`, `evidence_refs`, `source_asset_ids`, and `handoff_recommendations[]` when a specialist route is needed
+- `scene-visual-pack.schema.json`: `scene_packs[].search_queries`, `routes`, `candidate_requirements`, `reference_beat_ids`, `scene_decomposition`, `reference_materials`, `evidence_refs`, `source_asset_ids`, and `handoff_recommendations[]` when a specialist route is needed
 - `clip-candidate.schema.json`: not created here; provider skills create candidate files after search
 - `media-asset-manifest.schema.json`: not changed unless this skill records deferred manifest actions for source/user/web assets
 
@@ -89,6 +93,7 @@ Each query group must cite at least one of:
 
 - scene id and scenario field
 - reference-analysis evidence id/source id
+- reference-analysis beat id or scene-decomposition reference when reference video parsing shaped the query
 - media asset id
 - channel-format rule
 - producer-criteria rule

@@ -22,6 +22,8 @@ Create a versioned, evidence-backed channel format. Preserve channel consistency
 2. Define the channel promise, audience, content pillars, video themes, platform targets, and content mix.
 3. Define reusable narrative rules: hook families, episode structure, pacing bands, proof style, transitions between ideas, CTA behavior, and payoff expectations.
 4. Define reusable visual/audio systems from style tokens and channel defaults, including caption, layout, source-card, thumbnail, motion, audio, and VFX rules.
+   - Copy exact channel voice refs from `channel-profile.audio_identity.voice_profile.provider_voice_refs[]` into `audio_system.provider_voice_refs[]` without weakening `selection_policy: "exact_required"`.
+   - Keep exact channel voice refs in `must_reuse` when they are identity-preserving and rights-approved; put fallback voices in format notes without making them primary.
 5. Populate `visual_system.reusable_assets`, `visual_system.reusable_template_ids`, and `visual_system.remotion_template_contract_paths` only when assets/templates are manifest-backed or explicitly deferred.
 6. Populate `visual_system.vfx_rules` as per-channel extensions to shared VFX hardening rules. Include base rule refs, allowed/preferred/avoided effects, quality/performance/determinism rules, alpha/export behavior, media decode rules, transition limits, safe-area constraints, hardening triggers, benchmark requirements, fallback requirements, and explicit overrides.
 7. Split rules into `must_reuse`, `must_vary`, and `experimental` groups:

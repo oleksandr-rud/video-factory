@@ -19,11 +19,15 @@ Create the source ledger before downstream agents depend on web pages, files, re
 
 1. Inventory every supplied source: user notes, scenario, local files, URLs, reference videos, transcripts, screenshots, channel data, brand assets, and best-practice specs.
 2. Classify each source as `reference_video`, `local_video`, `webpage`, `blog`, `channel_data`, `best_practice`, `brand_asset`, or `user_note`.
+   - Treat YouTube, Vimeo, or other watch-page URLs supplied as video references as `reference_video` sources, not generic web pages, when the requested use is visual, pacing, edit, or channel-format analysis.
+   - Preserve the original watch URL as `path_or_url`/`source_url`, but do not treat it as local analysis evidence until it has a downloaded local video, transcript, thumbnail, screenshots, or approved direct-video observation.
 3. Assign a stable `source_id` and record `kind`, `path_or_url`, local path, title, owner, date, rights state, confidence, and why the source matters.
 4. Mark `reusable_scope` as `global_channel`, `project_only`, `scene_only`, `critique_only`, `do_not_use`, or `unknown`.
 5. For each local media file or captured artifact, resolve or create a media asset id and decide the manifest action.
 6. For each reference video or local video, determine whether deeper reference analysis has enough local evidence: video file, transcript, screenshots, thumbnail, probe data, scene JSON, OCR, or approved direct-video observation.
 7. Identify missing assets needed for deeper analysis: transcript, screenshots, video file, thumbnail, channel analytics, brand tokens, product source material, technical metadata, or rights details.
+   - For YouTube reference videos, mark `video file`, `info json`, `thumbnail`, and `subtitles/transcript` as missing until an approved `yt-dlp` capture or user-supplied local file exists.
+   - Stop for Director approval before external video download, transcript download, thumbnail download, or upload/pass-through to a paid/cloud model.
 8. Mark unsupported, inaccessible, duplicate, stale, rights-blocked, or low-confidence sources instead of deleting them.
 9. For durable channel/project work, choose repo-relative artifact destinations before reference breakdown starts:
    - channel-level references: `channels/<channel-slug>/references/`
@@ -39,6 +43,7 @@ When the Director supplies several reference videos and 10-20 direct content lin
 
 - Create one stable `source_id` per URL or video before analysis starts; do not let downstream agents invent ids.
 - Treat reference videos and web content as different evidence modes that merge into the same `reference-analysis.schema.json` artifact.
+- For YouTube/video-platform reference URLs, download or otherwise capture the media into `source-media/reference-videos/` only after approval, then run local reference-video breakdown on the downloaded file. Do not pass raw watch-page URLs downstream as if they were manifest-backed media.
 - Process web links as one-page captures by default, not as open-ended crawls. Only follow extra links when the Director explicitly requests a crawl scope.
 - Store every web page under `source-media/web-content/<source-id>/` with raw HTML, extracted text/metadata, image manifest, annotations, and a source report.
 - Download page images or capture browser screenshots only after approval; otherwise catalog image URLs and mark the media manifest action as deferred.

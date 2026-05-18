@@ -111,7 +111,9 @@ Use this priority order:
 6. Reference analysis voice evidence.
 7. Provider inventory and practical availability.
 
-The selected voice should be scored against audience fit, domain authority, emotional tone, pace, language/accent, pronunciation risk, channel continuity, rights, and provider availability.
+When `channel_profile.audio_identity.voice_profile.provider_voice_refs[]` or `channel_format.audio_system.provider_voice_refs[]` contains `selection_policy: "exact_required"`, that provider `voice_id` is the binding channel narrator for the matching provider and usage. Creative Producer must preserve it unless a higher-priority override, rights blocker, language/accent mismatch, or provider inventory blocker is recorded.
+
+The selected voice should be scored against audience fit, domain authority, emotional tone, pace, language/accent, pronunciation risk, channel continuity, rights, and provider availability. For exact channel voices, scoring becomes validation evidence rather than permission to swap voices.
 
 ## Evidence Used
 
