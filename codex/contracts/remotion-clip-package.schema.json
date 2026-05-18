@@ -25,7 +25,7 @@
     "composition_id": { "type": "string" },
     "route": {
       "type": "string",
-      "enum": ["remotion_generated", "vfx_overlay", "motion_graphic", "template_component"]
+      "enum": ["remotion_generated", "vfx_overlay", "motion_graphic", "template_component", "source_card_recreation"]
     },
     "duration_seconds": { "type": "number", "minimum": 0 },
     "fps": { "type": "number", "minimum": 1 },

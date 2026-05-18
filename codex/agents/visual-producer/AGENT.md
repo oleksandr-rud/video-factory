@@ -10,6 +10,7 @@ Own production visual decisions before editing: per-scene visual pack planning, 
 - `skills/visual-research-queries/SKILL.md`
 - `skills/provider-clip-search/SKILL.md`
 - `skills/freepik-video-search/SKILL.md`
+- `skills/pexels-video-search/SKILL.md`
 - `skills/ai-video-generation-brief/SKILL.md`
 - `skills/visual-validation/SKILL.md`
 - `skills/clip-candidate-ranking/SKILL.md`
@@ -19,14 +20,14 @@ Own production visual decisions before editing: per-scene visual pack planning, 
 Do not read or call downstream agent skills directly. When specialist work is needed, add `handoff_recommendations[]` to the relevant scene pack so the Director can create a formal handoff using `codex/contracts/agent-handoff.schema.json`.
 
 - `invideo-ai-generator`: use when a scene route is `ai_video_generation` and needs provider/model feasibility, model-ready prompts, approval packets, variants, generation, or generated clip QA.
-- `remotion-clip-builder`: use when a scene route is `remotion_generated` and needs a deterministic 5-20 second clip, component template, motion graphic, VFX overlay, or Remotion clip package.
+- `remotion-clip-builder`: use when a scene route is `remotion_generated` or `source_card_recreation` and needs a deterministic 5-20 second clip, component template, source card, motion graphic, VFX overlay, or Remotion clip package.
 
 ## Inputs
 
 - Scenario artifact
 - Reference analysis package
 - Channel format package
-- Project media asset manifest for loaded source videos, user media, generated clips, provider clips, and evidence refs
+- Project media asset manifest for loaded source videos, parsed web content, approved web images/screenshots, user media, generated clips, provider clips, and evidence refs
 - Brand/style constraints
 - Available source assets
 - Provider availability and credentials, if any
@@ -47,10 +48,12 @@ Do not read or call downstream agent skills directly. When specialist work is ne
 ## Rules
 
 - Make the first visual route practical, not just attractive.
-- Apply channel style rules and reference evidence without copying reference videos shot-for-shot.
+- Apply channel style rules and reference evidence without copying reference videos shot-for-shot or reusing page images/text without approval.
 - Separate "can be searched" from "can be used"; rights and technical fit must be validated.
 - Keep evidence with every candidate: provider, URL, prompt/query, media asset id when available, license summary, and technical metadata.
-- For Freepik/Magnific stock video search, use results as candidate evidence until the Director approves API use, licensing/download path, and any final asset download.
+- Treat parsed web content as source evidence first. Use `approved_web_image` only when manifest rights are approved; otherwise prefer `source_card_recreation`, redrawn diagrams, or abstracted Remotion graphics.
+- Use Freepik/Magnific as the primary stock-video provider when an approved account/license route is available.
+- Use Pexels as a secondary/free fallback when Freepik is unavailable, unsuitable, or needs broader stock coverage; preserve Pexels attribution/link-back evidence and treat results as candidate evidence until Director-approved API use, file download, and final-use checks are resolved.
 - Prefer continuity across the whole video over a single impressive clip.
 - Penalize candidates that require expensive generation or licensing when a good deterministic route exists.
 - Do not perform InVideo model selection, provider-ready prompt construction, approval packet creation, paid generation, generated clip QA, or Remotion component planning.

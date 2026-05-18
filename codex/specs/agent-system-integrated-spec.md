@@ -21,7 +21,7 @@ The architecture should stay close to these external patterns:
 The system now has:
 
 - 8 agents
-- 47 local skills
+- 48 local skills
 - 19 contracts
 - 7 local specs
 - persistent channel/project state
@@ -66,13 +66,13 @@ Canonical media should live under the project. Remotion `public/` should be trea
 |---|---|---|---|
 | `agent-handoff.schema.json` | Director | Structured delegation, inputs, allowed paths, skills, output contract, budget policy | Strong. Canonical autonomous fields are required: `handoff_id`, `run_id`, `project_path`, `skills_to_read`, `output_contract`, `definition_of_done`, `stop_conditions`, and `budget_policy`. |
 | `video-project.schema.json` | Director / Channel Intelligence | Durable project index under a channel | Good. Scaffold helper exists; needs examples/templates and validation fixtures. |
-| `production-run.schema.json` | Director | Execution ledger, handoffs, approvals, review loops, blockers, context state, and resume snapshots | Stronger after `context_state` hardening. Could add explicit invalidation graph if reruns become complex. |
+| `production-run.schema.json` | Director | Execution ledger, handoffs, approvals, review loops, blockers, context state, and resume snapshots | Strong after `context_state` hardening. Minimal fixture exists at `codex/examples/production-run.template.json`; could add explicit invalidation graph if reruns become complex. |
 | `channel-profile.schema.json` | Channel Intelligence | Persistent channel identity, brand, content, voice, governance | Good. Needs examples/templates. |
 | `media-asset-manifest.schema.json` | Channel Intelligence / media-producing agents | Canonical source/generated/rendered/review asset ledger | Strong direction. Needs strict update rules in every media-producing skill. |
 | `remotion-project.schema.json` | Director / Remotion agents | Shared or project Remotion app metadata, commands, dependencies, public asset policy | Good. Shared app exists. Keep setup validation checklist-based before adding helpers. |
 | `remotion-template.schema.json` | Remotion Clip Builder | Reusable Remotion component/template contract, props, safe areas, previews, usage rules | Good. Template registry exists; keep template contracts and Remotion project registry aligned. |
 | `producer-criteria.schema.json` | Director | Binding acceptance criteria, hard gates, scene criteria, thresholds, revision policy | Strong. Needs every production handoff to receive the path. |
-| `reference-analysis.schema.json` | Channel Intelligence | Source/reference evidence and downstream guidance | Good. Needs stricter output in source/reference skills. |
+| `reference-analysis.schema.json` | Channel Intelligence | Source/reference evidence and downstream guidance | Stronger after evidence graph fields: `source_ledger[]`, `claim_ledger[]`, `reference_beats[]`, `downstream_guidance`, and `invalidation_impact[]`. |
 | `channel-format.schema.json` | Channel Intelligence | Reusable format rules derived from profile/references, including per-channel VFX rule extensions | Good. Needs freshness/version policy. |
 | `scenario.schema.json` | Creative Producer | Timed scenario and scene list | Good after scene-breakdown hardening. |
 | `voiceover-package.schema.json` | Creative Producer | Voice direction, provider payload, audio paths, captions, QA | Good after TTS hardening. |
@@ -157,7 +157,7 @@ Relations:
 
 Gaps:
 
-- `visual-validation`, `clip-candidate-ranking`, `provider-clip-search`, and `freepik-video-search` are now strong; remaining visual skills should catch up.
+- `visual-validation`, `clip-candidate-ranking`, `provider-clip-search`, `freepik-video-search`, and `pexels-video-search` are now strong; remaining visual skills should catch up.
 - Provider search now stores candidate records before download and separates remote preview evidence from downloaded production media.
 - `visual-research-queries` should define query sets by route and preserve rejected query logic.
 
@@ -271,6 +271,7 @@ Legend:
 | Visual Producer | `visual-research-queries` | Thin | Query generation lacks provenance and rejection logic. | Add query groups by route/provider, expected evidence, rejected queries, and search stop criteria. |
 | Visual Producer | `provider-clip-search` | Strong | Hardened with canonical candidate storage, pre-download checks, scoped approval model, manifest policy, and handoff summary shape. | Keep provider-specific skills aligned with this general policy. |
 | Visual Producer | `freepik-video-search` | Strong | Hardened with Freepik-specific command policy, candidate storage, pre-download checks, separate download-link/file-download approval gates, manifest policy, and handoff summary shape. | Keep helper script flags aligned with the skill. |
+| Visual Producer | `pexels-video-search` | Strong | Hardened with Pexels-specific command policy, secondary-provider guidance, attribution/rate-limit evidence, guarded file downloads, manifest policy, and handoff summary shape. | Keep helper script flags aligned with the skill and Pexels API guidelines. |
 | Visual Producer | `ai-video-generation-brief` | Medium | Has DoD and correct handoff boundary. | Add structured brief object with prompt intent, references, constraints, fallback, and cost risk. |
 | Visual Producer | `visual-validation` | Strong | Recently upgraded. | Use as validation template for generated clip QA. |
 | Visual Producer | `clip-candidate-ranking` | Strong | Hardened with required inputs, workflow, weighted scoring, evidence, primary/fallback/rejected decisions, manifest policy, stop conditions, and handoff summary. | Keep as the candidate-selection authority for timeline sync. |
@@ -474,7 +475,7 @@ Validation-style skills should additionally return:
 
 1. Keep the four critical judgment/QA skills hardened and regression-check their required sections: `clip-candidate-ranking`, `generated-clip-qa`, `render-qa`, and `artifact-consistency-audit`.
 2. Keep the Director handoff map complete for all existing local agent skills, and require canonical handoff fields: `handoff_id`, `run_id`, `project_path`, `skills_to_read`, `output_contract`, `definition_of_done`, `stop_conditions`, and `budget_policy`.
-3. Keep Director context compaction explicit: after phase boundaries, long handoffs, review-loop iterations, user changes, and resumes, update `production-run.context_state` with the compact working set, open decisions, blockers, stale artifacts, and files to reload next.
+3. Keep Director context compaction explicit: after phase boundaries, long handoffs, review-loop iterations, user changes, and resumes, update required `production-run.context_state` fields with the compact working set, open decisions, blockers, stale artifacts, and files to reload next.
 4. Require all media-producing skills to update or explicitly defer media asset manifest entries with asset id, canonical path, Remotion public/static path when relevant, rights state, technical metadata, and evidence refs.
 5. Maintain timeline helper authority: consume Visual Producer selections by default; any helper fallback must be explicit `repair_default` and require Director review.
 6. Keep Remotion template contracts, template registry, Remotion project contract, and clip package references aligned whenever reusable templates are selected, created, revised, or promoted.

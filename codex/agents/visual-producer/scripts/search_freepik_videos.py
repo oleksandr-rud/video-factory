@@ -41,6 +41,20 @@ def parse_extra_params(values: list[str]) -> dict[str, str]:
     return params
 
 
+def safe_slug(value: Any) -> str:
+    safe = []
+    for char in str(value):
+        lowered = char.lower()
+        if lowered in "abcdefghijklmnopqrstuvwxyz0123456789-_.":
+            safe.append(lowered)
+        else:
+            safe.append("-")
+    slug = "".join(safe).strip("-")
+    while "--" in slug:
+        slug = slug.replace("--", "-")
+    return slug or "item"
+
+
 def build_url(base_url: str, path: str, params: dict[str, Any] | None = None) -> str:
     url = base_url.rstrip("/") + path
     clean_params = {key: value for key, value in (params or {}).items() if value not in (None, "")}
@@ -110,7 +124,18 @@ def parse_duration_seconds(value: Any) -> float | None:
     return None
 
 
-def normalize_result(result: dict[str, Any], scene_id: str | None, term: str) -> dict[str, Any]:
+def context_fields(args: argparse.Namespace) -> dict[str, str]:
+    return {
+        "project_id": args.project_id,
+        "project_path": args.project_path,
+        "channel_profile_id": args.channel_profile_id,
+        "channel_slug": args.channel_slug,
+        "channel_profile_path": args.channel_profile_path,
+        "media_asset_manifest_path": args.media_asset_manifest_path,
+    }
+
+
+def normalize_result(result: dict[str, Any], scene_id: str | None, term: str, args: argparse.Namespace) -> dict[str, Any]:
     video_id = result.get("id") or result.get("video_id") or result.get("resource_id") or "unknown"
     source_url = result.get("url") or ""
     preview_url = first_media_url(result.get("previews")) or first_media_url(result.get("thumbnails"))
@@ -123,6 +148,7 @@ def normalize_result(result: dict[str, Any], scene_id: str | None, term: str) ->
     candidate = {
         "candidate_id": f"{scene_id + '-' if scene_id else ''}freepik-{video_id}",
         "scene_id": scene_id or "",
+        **context_fields(args),
         "route": "stock_clip",
         "provider": "freepik",
         "source_url": source_url,
@@ -165,6 +191,20 @@ def normalize_result(result: dict[str, Any], scene_id: str | None, term: str) ->
     return drop_none(candidate)
 
 
+def write_candidate_files(candidates: list[dict[str, Any]], candidate_dir: str | None) -> list[str]:
+    if not candidate_dir:
+        return []
+    output_dir = pathlib.Path(candidate_dir)
+    paths: list[str] = []
+    for candidate in candidates:
+        scene_dir = output_dir / safe_slug(candidate.get("scene_id") or "scene")
+        scene_dir.mkdir(parents=True, exist_ok=True)
+        path = scene_dir / f"{safe_slug(candidate.get('candidate_id'))}.json"
+        path.write_text(json.dumps(candidate, indent=2, ensure_ascii=False), encoding="utf-8")
+        paths.append(str(path))
+    return paths
+
+
 def download_link_for_video(base_url: str, key: str, language: str, video_id: Any, option_id: str | None = None) -> dict[str, Any]:
     path = f"/v1/videos/{video_id}/download"
     if option_id:
@@ -190,6 +230,13 @@ def main() -> int:
     parser.add_argument("--param", action="append", default=[], help="Extra query parameter as key=value. Repeatable.")
     parser.add_argument("--api-base-url", default=DEFAULT_API_BASE_URL)
     parser.add_argument("--output", required=True)
+    parser.add_argument("--candidate-dir")
+    parser.add_argument("--project-id")
+    parser.add_argument("--project-path")
+    parser.add_argument("--channel-profile-id")
+    parser.add_argument("--channel-slug")
+    parser.add_argument("--channel-profile-path")
+    parser.add_argument("--media-asset-manifest-path")
     parser.add_argument("--request-download-links", action="store_true")
     parser.add_argument("--download-option-id")
     parser.add_argument("--save-downloads", action="store_true")
@@ -252,6 +299,7 @@ def main() -> int:
         },
         "results": [],
         "candidates": [],
+        "candidate_paths": [],
         "limitations": [
             "Current Freepik stock video docs redirect to Magnific-branded API docs.",
             "Use --param for optional provider filters that are account- or query-specific.",
@@ -294,7 +342,7 @@ def main() -> int:
     results = response_items(response)
     if args.limit > 0:
         results = results[: args.limit]
-    candidates = [normalize_result(result, args.scene_id, args.term) for result in results]
+    candidates = [normalize_result(result, args.scene_id, args.term, args) for result in results]
 
     if args.request_download_links:
         download_dir = pathlib.Path(args.download_dir) if args.download_dir else None
@@ -324,12 +372,14 @@ def main() -> int:
             except Exception as exc:  # noqa: BLE001 - preserve partial results.
                 candidate["freepik"]["download_error"] = str(exc)
 
+    candidate_paths = write_candidate_files(candidates, args.candidate_dir)
     payload = {
         **base_payload,
         "status": "searched",
         "raw_response": response,
         "results": results,
         "candidates": candidates,
+        "candidate_paths": candidate_paths,
     }
     output_path.write_text(json.dumps(drop_none(payload), indent=2, ensure_ascii=False), encoding="utf-8")
     print(output_path)

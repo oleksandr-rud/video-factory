@@ -41,11 +41,15 @@ Return or update `codex/contracts/reference-analysis.schema.json` with:
 
 - `processing_runs[]` for local extraction tools, model observations, status, outputs, and limitations
 - `sources[]` entries with source ids, rights notes, local paths, and captured artifacts
+- `source_ledger[]` entries with `kind`, rights state, reusable scope, missing assets, evidence refs, and confidence
 - `reference_videos[]` entries with technical metadata, artifact paths, timecoded beats, keyframe paths, transcript path, OCR path, and evidence refs
+- `claim_ledger[]` as an empty array when the video breakdown does not extract factual script claims
+- `reference_beats[]` as the flattened downstream evidence graph
 - `findings` with narrative patterns, visual patterns, audio patterns, visual evidence opportunities, source claims, rights/policy risks, evidence gaps, and confidence notes
 - `downstream_guidance` for Creative Producer, Visual Producer, InVideo AI Generator, Remotion Clip Builder, Remotion Video Producer, and Video Critic
+- `invalidation_impact[]` entries or an empty array when no downstream invalidation risk is found
 
-Also return flattened `reference_beats[]` for direct downstream consumption:
+Use this shape for flattened beat and invalidation details:
 
 ```json
 {
@@ -87,10 +91,13 @@ Also return flattened `reference_beats[]` for direct downstream consumption:
   ],
   "invalidation_impact": [
     {
-      "change_type": "reference_added | reference_removed | transcript_changed | beat_changed | rights_changed | model_observation_changed",
-      "invalidates": ["channel_format | scenario | visual_pack | ai_prompt | remotion_template | timeline | render | critique"],
-      "rerun_agents": ["channel-intelligence | creative-producer | visual-producer | invideo-ai-generator | remotion-clip-builder | remotion-video-producer | video-critic"],
-      "reason": "string"
+      "impact_id": "string",
+      "change_or_gap": "reference_added | reference_removed | transcript_changed | beat_changed | rights_changed | model_observation_changed",
+      "affected_artifacts": ["channel_format | scenario | visual_pack | ai_generation | remotion_template | remotion_clip | timeline_sync | render | critique"],
+      "reason": "string",
+      "owner_agent": "channel-intelligence | creative-producer | visual-producer | invideo-ai-generator | remotion-clip-builder | remotion-video-producer | video-critic",
+      "severity": "blocker | major | minor | note",
+      "recommended_action": "string"
     }
   ]
 }
@@ -166,9 +173,9 @@ Return this additional top-level action list:
 
 ## Contract Fields Populated
 
-- `reference-analysis.schema.json`: `analysis_id`, `status`, `media_asset_manifest_path`, `processing_runs[]`, `sources[]`, `reference_videos[]`, `findings`, `evidence_refs`, and `downstream_guidance`
+- `reference-analysis.schema.json`: required fields `analysis_id`, `status`, `sources[]`, `source_ledger[]`, `claim_ledger[]`, `reference_beats[]`, `findings`, `downstream_guidance`, and `invalidation_impact[]`, plus `media_asset_manifest_path`, `processing_runs[]`, `reference_videos[]`, and `evidence_refs`
 - `reference-analysis.schema.json` reference video objects: `video_id`, `source_id`, `media_asset_id`, `technical`, `artifacts`, transcript/thumbnail paths, `beats[]`, timecoded evidence refs, limitations, and confidence notes
-- Additional reference-analysis fields allowed by the contract: `reference_beats[]`, `invalidation_impact[]`, beat-level transcript/shot/audio/caption evidence, `do_not_copy_risks`, `model_limitations`, and confidence values
+- Additional reference-analysis fields allowed by the contract: beat-level transcript/shot/audio/caption evidence, `do_not_copy_risks`, `model_limitations`, and confidence values
 - `media-asset-manifest.schema.json`: entries or deferred actions for local reference videos, thumbnails, keyframes, frame samples, transcripts, OCR, probes, scene JSON, model observations, and embedding indexes
 
 ## Status Policy

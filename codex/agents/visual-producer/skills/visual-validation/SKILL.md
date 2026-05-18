@@ -10,7 +10,7 @@ Visual validation is a safety gate, not a taste pass. Unknown rights, missing me
 ## Inputs
 
 - Scene visual pack and candidate requirements
-- Clip candidates from stock, user media, Remotion, or AI generation
+- Clip candidates from stock, user media, Remotion, AI generation, approved web images, screenshots, or source-card recreation
 - Scenario scene list and neighboring scene context
 - Channel format, brand rules, platform specs, rights policy, and budget policy
 - Local file paths, source URLs, provider metadata, media asset manifest entries, or generation package paths
@@ -20,10 +20,12 @@ Visual validation is a safety gate, not a taste pass. Unknown rights, missing me
 1. Verify candidate identity: `candidate_id`, `scene_id`, route, provider/source, local path or URL, media asset id when available, and provenance.
 2. Check semantic fit against the scene purpose, narration, visual intent, and channel format.
 3. Check technical fit: resolution, aspect ratio, crop risk, duration, fps, audio presence, start/end usability, Remotion `staticFile()` readiness when needed, and overlay safe areas.
-4. Check rights fit: license summary, attribution, paid approval, likeness/logo concerns, watermark risk, and provider restrictions.
+4. Check rights fit: license summary, attribution, paid approval, web image/screenshot approval, copied text risk, likeness/logo concerns, watermark risk, and provider restrictions.
 5. Check continuity with adjacent scenes and overall video visual language.
 6. Check brand safety, sensitive content, factual/source alignment, and editability.
-7. Update `clip-candidate` scores and status. Do not rank an item as primary unless rights and technical fit are pass or explicitly approved.
+7. For `approved_web_image`, require a manifest-backed local path/static path and approved rights before `approved` status.
+8. For `source_card_recreation`, require claim ids/source ids/evidence refs and reject copied page imagery unless it is separately approved.
+9. Update `clip-candidate` scores and status. Do not rank an item as primary unless rights and technical fit are pass or explicitly approved.
 
 ## Required Output
 
@@ -86,3 +88,11 @@ Return this validation summary:
 - No candidate with unknown rights is silently promoted.
 - Technical metadata is present or the candidate is marked unknown/blocked.
 - Selected and fallback candidates are usable by Remotion Video Producer without redoing validation.
+
+## Media Manifest Policy
+
+If this skill consumes, validates, rejects, approves, or defers a local media file, provider preview, downloaded clip, generated clip, Remotion output, screenshot, thumbnail, or source evidence asset, update the media asset manifest or return `manifest_actions[]`.
+
+Each manifest action must include `action`, `asset_id`, `canonical_path`, `remotion_public_path` and `static_file_path` when relevant, `rights_state`, `technical_metadata_state`, and `reason`.
+
+Use `deferred` when validation depends on a media file, license, download, metadata probe, or Remotion public projection that is missing or awaiting approval. A candidate cannot become primary solely from validation prose without manifest-backed identity or an explicit deferred/blocking action.

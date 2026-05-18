@@ -13,7 +13,7 @@ This is a technical QA gate only. It does not approve final viewer-facing releas
 - Rendered video, preview video, subtitle files, caption JSON, audio outputs, thumbnails, metadata, and QA reports
 - Scenario, voiceover package, timeline sync plan, selected visual candidates, Remotion clip packages, and Remotion template contracts
 - Remotion project contract, channel format, producer criteria, platform/export requirements, rights notes, and approval records
-- Media asset manifest with source, generated, Remotion public projection, render, subtitle, thumbnail, and review assets
+- Media asset manifest with source, parsed web, approved web image/screenshot, generated, Remotion public projection, render, subtitle, thumbnail, and review assets
 - Render logs, ffprobe/metadata output, screenshot/frame evidence, or Remotion preview evidence when available
 
 ## Workflow
@@ -26,8 +26,8 @@ This is a technical QA gate only. It does not approve final viewer-facing releas
 6. Check caption sync, caption artifact presence, safe area, burned-in/separate subtitle requirements, and text legibility.
 7. Check VFX, transitions, alpha/export behavior, template contracts, template props, safe areas, deterministic motion, and VFX hardening evidence.
 8. Check export settings: platform, aspect ratio, width, height, fps, codec, alpha codec when relevant, delivery variants, and metadata.
-9. Check rights and approvals for stock media, generated clips, music, voices, logos, likeness, paid templates, and external provider use.
-10. Check media manifest coverage for every source, local Remotion projection, render output, subtitle/caption output, thumbnail, metadata file, and review-prep artifact.
+9. Check rights and approvals for stock media, approved web images/screenshots, source-card recreated page material, generated clips, music, voices, logos, likeness, paid templates, and external provider use.
+10. Check media manifest coverage for every source, web snapshot/source report/web image/screenshot, local Remotion projection, render output, subtitle/caption output, thumbnail, metadata file, and review-prep artifact.
 11. Update render package `qa` and `known_blockers`; do not set release approval.
 
 ## Required Output
@@ -112,6 +112,7 @@ Each QA result must cite at least one of:
 - voiceover/audio path
 - clip candidate or Remotion clip package path
 - template contract path
+- web source report path, claim id, or evidence ref for source-card recreations
 - media asset id
 - approval/right note
 
@@ -129,12 +130,13 @@ For every real media artifact touched by render QA, verify or update `media-asse
 - metadata/probe output
 - review-prep frame or package when already created
 - Remotion public projection used by the render
+- web snapshots, source reports, approved web images, or screenshots used by selected visuals
 
 Return `manifest_actions[]` with `updated`, `created`, `deferred`, or `not_applicable`. Missing manifest entries that affect render reproducibility are technical QA findings.
 
 ## Approval And Stop Conditions
 
-Stop and return `needs_approval` when QA discovers unapproved paid media, licensed downloads, paid templates, generated media, voice/likeness risk, or release-waiver needs.
+Stop and return `needs_approval` when QA discovers unapproved paid media, licensed downloads, paid templates, generated media, web image/screenshot reuse, voice/likeness risk, or release-waiver needs.
 
 Stop and return `blocked` when:
 

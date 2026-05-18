@@ -36,7 +36,7 @@ Use this before creating bespoke Remotion code when a reusable pattern might fit
 ## Reusable Template Categories
 
 - `lower_third`: names, source labels, chapter labels, speaker IDs
-- `source_card`: evidence cards, claim receipts, article/video/source citations
+- `source_card`: evidence cards, claim receipts, article/video/source citations, and redrawn web-source visuals that cite `claim_ledger[]` / `web_pages[]` evidence
 - `caption`: reusable caption blocks, emphasis captions, word-safe caption styles
 - `transition`: deterministic wipes, flashes, light leaks, section breaks
 - `overlay`: vignettes, grain, glows, focus masks, transparent VFX
@@ -51,6 +51,7 @@ Use this before creating bespoke Remotion code when a reusable pattern might fit
 - Prefer bespoke Remotion code when the visual request is a complex VFX sequence, shader-like effect, custom 3D shot, or unique art direction that does not map cleanly to a reusable template.
 - Do not mutate a reusable template in a way that breaks existing clip packages; create a new version or scene-specific instance instead.
 - Keep reusable copy and media as props, not hardcoded component internals.
+- For parsed web content, keep exact source claim text, source title, URL, date, and evidence refs in props or clip package metadata; use copied page images only when the media manifest records approved reuse.
 - Record template ids in the clip package, project index, and run ledger when used.
 - Mark paid/pro templates, unclear licenses, remote render-time assets, or new external services as approval blockers.
 - Video Producer may consume template-backed clip packages but must not edit this skill's outputs directly; it should request a Director handoff back to Remotion Clip Builder for new or revised templates.
@@ -93,3 +94,11 @@ Return either a selected-template decision or a new/updated template contract:
 - The shared Remotion app registry and Remotion project contract point to it.
 - A scene instance has a Remotion clip package referencing the template contract.
 - The Video Producer can consume the resulting clip package without reading Clip Builder-only skills.
+
+## Media Manifest Policy
+
+If this skill consumes, creates, validates, previews, renders, mirrors, or defers template media dependencies, local assets, preview stills, rendered template instances, thumbnails, transparent overlays, or reusable Remotion outputs, update the media asset manifest or return `manifest_actions[]`.
+
+Each manifest action must include `action`, `asset_id`, `canonical_path`, `remotion_public_path` and `static_file_path` when relevant, `rights_state`, `technical_metadata_state`, and `reason`.
+
+Use `deferred` for templates that declare future assets, missing public projections, preview renders not yet generated, or template instances that will be rendered later. Template contracts and registry entries must not replace manifest provenance for real media files.

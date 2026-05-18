@@ -28,14 +28,16 @@ Use this to catch contract and provenance failures before release review. This s
    - pronunciation/timing blockers are recorded
 5. Check visual provenance:
    - selected clip candidates or Remotion clip packages are traceable
-   - stock, AI-generated, user-supplied, and Remotion-generated routes are correctly labeled
+   - stock, AI-generated, user-supplied, approved web image, source-card recreation, and Remotion-generated routes are correctly labeled
    - helper-selected visuals are flagged unless Director-approved
    - source/output asset ids, local paths, and Remotion static paths exist where required
+   - `approved_web_image` routes have manifest-backed rights approval and local/render-visible paths
+   - `source_card_recreation` routes preserve source ids, claim ids, and evidence refs instead of copying article/page material without approval
 6. Check Remotion template and VFX provenance:
    - template ids and contract paths exist
    - template-backed instances respect safe-area/props contracts
    - VFX rule refs and hardening evidence are traceable when required
-7. Check media asset manifest coverage for loaded media, generated clips, renders, subtitles, thumbnails, review frames, and metadata files.
+7. Check media asset manifest coverage for loaded media, web snapshots, source reports, web images, screenshots, generated clips, renders, subtitles, thumbnails, review frames, and metadata files.
 8. Check rights and approvals for paid generation, licensed media, voices, music, likeness, logos, screenshots, paid templates, and external critique.
 9. Return critique-report-shaped findings with owner mapping and blocks-delivery flags.
 

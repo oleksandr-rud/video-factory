@@ -45,6 +45,7 @@ channels/<channel-slug>/
       source-media/
         reference-videos/
         reference-analysis/
+        web-content/
         loaded-videos/
         provider-clips/
         generated-clips/
@@ -94,3 +95,11 @@ Use lowercase hyphen-case for `<channel-slug>`. Do not create separate channel f
 - Keep canonical source media under the project folder; mirror into the Remotion `public/` tree only when a render needs a `staticFile()` path, and record canonical, Remotion public, and `staticFile()` paths in the media asset manifest.
 - Store evidence for inferred rules and confidence level.
 - When voice is in scope, expose `audio_identity.voice_profile` so Creative Producer can inherit voice direction before provider voice selection.
+
+## Media Manifest Policy
+
+If this skill creates, consumes, validates, copies, mirrors, or defers any brand image, logo, typography file, reference media, audio asset, Remotion asset, project media folder, or evidence sidecar, update the project media asset manifest or return `manifest_actions[]`.
+
+Each manifest action must include `action`, `asset_id`, `canonical_path`, `remotion_public_path` and `static_file_path` when relevant, `rights_state`, `technical_metadata_state`, and `reason`.
+
+Use `deferred` when an expected brand or media asset is missing, pending approval, or intentionally left outside the manifest. Do not let downstream agents infer media rights or canonical paths from the channel profile alone.

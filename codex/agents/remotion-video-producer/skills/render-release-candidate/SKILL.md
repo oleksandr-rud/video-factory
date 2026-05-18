@@ -14,7 +14,7 @@ Use this after the Remotion composition is assembled and before Video Critic rev
 - Timeline source path and timeline sync plan path
 - Input props path and props hash when props are externalized
 - Voiceover package, caption JSON/SRT, music/SFX, source clip packages, source template contracts, and media asset manifest
-- Source/output asset ids, rights approvals, budget approvals, and known waivers
+- Source/output asset ids, web source report paths, approved web image/screenshot ids, rights approvals, budget approvals, and known waivers
 - Existing RC packages when creating `rc2`, `rc3`, or later revisions
 - Render logs, metadata probes, thumbnails, QA report paths, and critique report paths when already created
 
@@ -30,6 +30,7 @@ Use this after the Remotion composition is assembled and before Video Critic rev
    - media asset manifest path/hash
    - source clip package paths/hashes
    - template contract paths/hashes
+   - web source reports, claim/evidence refs, and approved web image/screenshot asset ids when source-card or web-image routes are used
    - dependency versions and render environment
 3. Run the lightest meaningful validation first:
    - representative still frame checks
@@ -43,7 +44,7 @@ Use this after the Remotion composition is assembled and before Video Critic rev
 8. For VFX-heavy renders, record render time, slowest frames, benchmark commands, VFX rule refs, alpha/export behavior, decode risk, and optimization notes in `performance_summary`.
 9. Run `../render-qa/SKILL.md`; attach the technical QA report path and status.
 10. Write a render package matching `codex/contracts/render-package.schema.json`, including the RC attestation fields even when they are stored as additional JSON properties.
-11. Update or request updates to the media asset manifest for rendered video, subtitle sidecars, thumbnails, metadata, render logs, QA reports, and review-prep outputs.
+11. Update or request updates to the media asset manifest for rendered video, subtitle sidecars, thumbnails, metadata, render logs, QA reports, review-prep outputs, and any consumed web snapshots/source reports/approved web images/screenshots.
 
 ## Required Output
 
@@ -132,6 +133,7 @@ Every RC must preserve:
 - subtitle/caption paths and hashes when present
 - thumbnail paths when generated
 - technical QA report path and summary
+- source-card claim ids/evidence refs or approved web image/screenshot asset ids when those routes appear in the timeline sync plan
 - rights notes, waiver ids, and known blockers
 
 Missing evidence must appear in `known_blockers` or `qa.findings`; do not treat it as implied by the render command.
@@ -160,8 +162,9 @@ Use `created` for new RC video, subtitles, captions, thumbnails, metadata probes
 Stop and return `blocked` before full render when:
 
 - paid rendering, cloud rendering, licensed media, provider download, or external generation lacks Director approval
-- required local source assets, `staticFile()` projections, or audio/caption files are missing
+- required local source assets, source reports, `staticFile()` projections, or audio/caption files are missing
 - timeline sync has failed QA or includes `helper_selected: true` without Director review
+- timeline sync uses `approved_web_image` without manifest-backed rights approval, or `source_card_recreation` without claim/source evidence refs
 - rights notes block delivery
 - exact render command, output path, or reproducibility envelope cannot be recorded
 - a previous RC would need mutation instead of creating a new version

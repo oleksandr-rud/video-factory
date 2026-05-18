@@ -21,6 +21,7 @@ Own self-contained Remotion clips, component templates, motion graphics, and VFX
 - Brand, aspect ratio, platform, and source assets
 - Project path, media asset manifest path, and Remotion project contract path
 - Candidate requirements and fallback route notes
+- Source-card recreation briefs with claim ids, source ids, evidence refs, and approved web image/screenshot asset ids when supplied
 - Budget and license policy from the Director
 
 ## Outputs
@@ -38,6 +39,7 @@ Own self-contained Remotion clips, component templates, motion graphics, and VFX
 
 - Build standalone clips and overlays; do not own full-video assembly.
 - Consider the template library before creating bespoke clip code when the brief names a reusable pattern or `template_hint`; do not force templates when bespoke Remotion code better satisfies the scene.
+- For `source_card_recreation`, preserve claim/source evidence in props and clip package metadata; do not hardcode copied article text or unapproved web images into components.
 - Keep each clip deterministic: fixed fps, fixed duration, typed props, stable seeds, and local assets via `staticFile()` or repo paths.
 - Work inside the shared `remotion/` app unless the Director explicitly provides a project-specific Remotion app contract.
 - Use Remotion-native templates and packages before generic React/web component libraries.

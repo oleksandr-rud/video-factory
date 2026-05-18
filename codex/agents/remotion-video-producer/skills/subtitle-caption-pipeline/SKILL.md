@@ -30,3 +30,11 @@ Rules:
 - Use text fitting logic for long words or translated text.
 - Do not rely on remote caption files during render.
 - Mark cloud transcription as paid/external unless the Director approved it.
+
+## Media Manifest Policy
+
+If this skill consumes, creates, validates, transcribes, aligns, exports, mirrors, or defers audio files, Caption JSON, SRT/VTT files, burned-in caption previews, transcript sidecars, or subtitle QA evidence, update the media asset manifest or return `manifest_actions[]`.
+
+Each manifest action must include `action`, `asset_id`, `canonical_path`, `remotion_public_path` and `static_file_path` when relevant, `rights_state`, `technical_metadata_state`, and `reason`.
+
+Use `deferred` for cloud transcription awaiting approval, captions that depend on missing audio, exports not yet written, or files not yet mirrored for Remotion. Timeline sync must consume caption/audio paths from the manifest or an explicit deferred action.

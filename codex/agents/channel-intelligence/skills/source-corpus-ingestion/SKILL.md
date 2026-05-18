@@ -19,8 +19,8 @@ Create the source ledger before downstream agents depend on web pages, files, re
 
 1. Inventory every supplied source: user notes, scenario, local files, URLs, reference videos, transcripts, screenshots, channel data, brand assets, and best-practice specs.
 2. Classify each source as `reference_video`, `local_video`, `webpage`, `blog`, `channel_data`, `best_practice`, `brand_asset`, or `user_note`.
-3. Assign a stable `source_id` and record `source_type`, `path_or_url`, local path, title, owner, date, rights state, confidence, and why the source matters.
-4. Mark `reusable_scope` as `channel_reusable`, `project_only`, `scene_only`, or `do_not_reuse`.
+3. Assign a stable `source_id` and record `kind`, `path_or_url`, local path, title, owner, date, rights state, confidence, and why the source matters.
+4. Mark `reusable_scope` as `global_channel`, `project_only`, `scene_only`, `critique_only`, `do_not_use`, or `unknown`.
 5. For each local media file or captured artifact, resolve or create a media asset id and decide the manifest action.
 6. For each reference video or local video, determine whether deeper reference analysis has enough local evidence: video file, transcript, screenshots, thumbnail, probe data, scene JSON, OCR, or approved direct-video observation.
 7. Identify missing assets needed for deeper analysis: transcript, screenshots, video file, thumbnail, channel analytics, brand tokens, product source material, technical metadata, or rights details.
@@ -59,12 +59,12 @@ Return or update a source ledger compatible with `codex/contracts/reference-anal
   "source_ledger": [
     {
       "source_id": "string",
-      "source_type": "reference_video | local_video | webpage | blog | channel_data | best_practice | brand_asset | user_note | other",
+      "kind": "reference_video | local_video | webpage | blog | channel_data | best_practice | brand_asset | user_note | other",
       "path_or_url": "string",
       "local_path": "string",
       "owner": "string",
       "rights_state": "approved | needs_approval | blocked | unknown",
-      "reusable_scope": "channel_reusable | project_only | scene_only | do_not_reuse",
+      "reusable_scope": "global_channel | project_only | scene_only | critique_only | do_not_use | unknown",
       "why_it_matters": "string",
       "missing_assets": ["string"],
       "evidence_refs": [],
@@ -85,7 +85,6 @@ Return or update a source ledger compatible with `codex/contracts/reference-anal
   "sources": [
     {
       "source_id": "string",
-      "source_type": "reference_video | local_video | webpage | blog | channel_data | best_practice | brand_asset | user_note | other",
       "kind": "reference_video | local_video | webpage | blog | channel_data | best_practice | brand_asset | user_note | other",
       "path_or_url": "string",
       "local_path": "string",
@@ -98,7 +97,7 @@ Return or update a source ledger compatible with `codex/contracts/reference-anal
         "usage_allowed": false,
         "approval_required": true
       },
-      "reusable_scope": "channel_reusable | project_only | scene_only | do_not_reuse",
+      "reusable_scope": "global_channel | project_only | scene_only | critique_only | do_not_use | unknown",
       "why_it_matters": "string",
       "asset_id": "string",
       "captured_artifacts": [],
@@ -114,6 +113,8 @@ Return or update a source ledger compatible with `codex/contracts/reference-anal
     "evidence_gaps": [],
     "confidence_notes": []
   },
+  "reference_beats": [],
+  "evidence_refs": [],
   "downstream_guidance": {
     "creative_producer": ["string"],
     "visual_producer": ["string"],
@@ -124,10 +125,13 @@ Return or update a source ledger compatible with `codex/contracts/reference-anal
   },
   "invalidation_impact": [
     {
-      "change_type": "source_added | source_removed | rights_changed | evidence_added | claim_changed | reusable_scope_changed",
-      "invalidates": ["reference_analysis | channel_format | scenario | visual_pack | voiceover | timeline | render | critique"],
-      "rerun_agents": ["channel-intelligence | creative-producer | visual-producer | remotion-video-producer | video-critic"],
-      "reason": "string"
+      "impact_id": "string",
+      "change_or_gap": "source_added | source_removed | rights_changed | evidence_added | claim_changed | reusable_scope_changed",
+      "affected_artifacts": ["channel_profile | channel_format | producer_criteria | scenario | voiceover | visual_pack | clip_candidates | ai_generation | remotion_template | remotion_clip | timeline_sync | render | critique | delivery_metadata"],
+      "reason": "string",
+      "owner_agent": "channel-intelligence | creative-producer | visual-producer | invideo-ai-generator | remotion-clip-builder | remotion-video-producer | video-critic",
+      "severity": "blocker | major | minor | note",
+      "recommended_action": "string"
     }
   ],
   "manifest_actions": []
@@ -137,7 +141,7 @@ Return or update a source ledger compatible with `codex/contracts/reference-anal
 Each source must include:
 
 - stable `source_id`
-- `kind` and `source_type`
+- `kind`
 - `path_or_url` and local path when available
 - title, owner, date, rights state, reusable scope, and confidence
 - `asset_id` or deferred manifest note for local media
@@ -149,8 +153,8 @@ Every source-backed claim or candidate fact must either enter `claim_ledger[]` o
 
 ## Contract Fields Populated
 
-- `reference-analysis.schema.json`: `analysis_id`, `project_id`, `project_path`, `channel_profile_path`, `media_asset_manifest_path`, `status`, `sources[]`, `findings`, `evidence_refs`, and `downstream_guidance`
-- Additional reference-analysis fields allowed by the contract: `source_ledger[]`, `claim_ledger[]`, `invalidation_impact[]`, source-level `rights`, `reusable_scope`, `why_it_matters`, and `missing_assets`
+- `reference-analysis.schema.json`: required fields `analysis_id`, `status`, `sources[]`, `source_ledger[]`, `claim_ledger[]`, `reference_beats[]`, `findings`, `downstream_guidance`, and `invalidation_impact[]`, plus `project_id`, `project_path`, `channel_profile_path`, `media_asset_manifest_path`, and `evidence_refs`
+- Additional reference-analysis fields allowed by the contract: source-level `rights`, `reusable_scope`, `why_it_matters`, and `missing_assets`
 - `media-asset-manifest.schema.json`: asset entries or deferred actions for local videos, images, transcripts, thumbnails, screenshots, probes, keyframes, OCR outputs, and other captured artifacts
 - `channel-profile.schema.json` or project index only when the Director explicitly asks this skill to attach source ledger paths
 
@@ -208,7 +212,7 @@ Stop and return `blocked` when:
 
 - Every supplied source is represented once with a stable id.
 - Every source has owner/path, rights state, reusable scope, missing evidence, and confidence.
-- `source_ledger[]`, `claim_ledger[]`, `downstream_guidance`, and `invalidation_impact[]` are populated or explicitly deferred.
+- `source_ledger[]`, `claim_ledger[]`, `reference_beats[]`, `downstream_guidance`, and `invalidation_impact[]` are populated or explicitly deferred.
 - Local media and captured artifacts are either entered in the media asset manifest or explicitly deferred with a reason.
 - The reference-video breakdown step can run without inventing paths, ids, rights state, or project folders.
 

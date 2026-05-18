@@ -5,11 +5,12 @@ This is the per-agent inventory and analysis for the current Video Factory archi
 Local scan summary:
 
 - Agents: 8
-- Local agent skills: 47
+- Local agent skills: 48
 - Contract schemas: 19
 - Specs: 7
 - Agent reference docs: 4
 - Shared Remotion template contracts: 4
+- Example fixtures: `codex/examples/production-run.template.json`
 - Channel project artifacts currently present: none beyond `channels/.gitkeep`
 
 ## Architecture Rule
@@ -37,7 +38,7 @@ Agent-local reference docs:
 - `codex/agents/channel-intelligence/references/reference-analysis-dimensions.md`: dimensions for reference video, web/blog source, and channel format analysis.
 - `codex/agents/invideo-ai-generator/references/invideo-ai-generation.md`: InVideo routes, model notes, positive prompt structure, negative prompt policy, and generation checklist.
 - `codex/agents/remotion-clip-builder/references/remotion-component-stack.md`: Remotion-native stack, official templates, packages, dependency guardrails, and local template rules.
-- `codex/agents/visual-producer/references/video-search-providers.md`: provider search notes for Freepik/Magnific and related visual search routes.
+- `codex/agents/visual-producer/references/video-search-providers.md`: provider search notes for Freepik/Magnific, Pexels, and related visual search routes.
 - `codex/agents/video-critic/references/video-critique-rubric.md`: final critique rubric for viewer outcome, story/source fit, visuals, audio/captions, platform/delivery, and finding severity.
 
 Shared Remotion runtime artifacts:
@@ -358,6 +359,7 @@ Own scene-level visual decisions before editing: visual pack planning, research 
 - `codex/agents/visual-producer/skills/visual-research-queries/SKILL.md`
 - `codex/agents/visual-producer/skills/provider-clip-search/SKILL.md`
 - `codex/agents/visual-producer/skills/freepik-video-search/SKILL.md`
+- `codex/agents/visual-producer/skills/pexels-video-search/SKILL.md`
 - `codex/agents/visual-producer/skills/ai-video-generation-brief/SKILL.md`
 - `codex/agents/visual-producer/skills/visual-validation/SKILL.md`
 - `codex/agents/visual-producer/skills/clip-candidate-ranking/SKILL.md`
@@ -413,7 +415,7 @@ Own scene-level visual decisions before editing: visual pack planning, research 
 
 ### Analysis Notes
 
-Visual Producer owns the critical route-selection boundary. `visual-validation`, `clip-candidate-ranking`, `provider-clip-search`, and `freepik-video-search` are now strong. Remaining visual hardening should focus on query provenance in `visual-research-queries`, richer route evidence in `visual-pack-plan`, and strict media manifest propagation.
+Visual Producer owns the critical route-selection boundary. `visual-validation`, `clip-candidate-ranking`, `provider-clip-search`, `freepik-video-search`, and `pexels-video-search` are now strong. Remaining visual hardening should focus on query provenance in `visual-research-queries` and richer route evidence in `visual-pack-plan`; media manifest policy is now present in the visual media-touching skills.
 
 ## InVideo AI Generator
 
@@ -656,7 +658,7 @@ Own full Remotion video assembly: timeline sync, scene sequencing, captions/subt
 
 ### Analysis Notes
 
-Remotion Video Producer's boundary is clean: it assembles and validates the full timeline but does not judge final viewer-facing quality. `timeline-sync-plan` now preserves Visual Producer selection authority, and `render-release-candidate` now requires immutable RC versioning and reproducibility evidence. The remaining hardening needs are caption/subtitle output shape, post-production deliverable shape, and broader media manifest propagation.
+Remotion Video Producer's boundary is clean: it assembles and validates the full timeline but does not judge final viewer-facing quality. `timeline-sync-plan` now preserves Visual Producer selection authority, and `render-release-candidate` now requires immutable RC versioning and reproducibility evidence. The remaining hardening needs are caption/subtitle output shape, post-production deliverable shape, and fuller handoff-summary shapes for thin skills.
 
 ## Video Critic
 
@@ -792,7 +794,7 @@ Every artifact that affects delivery should preserve at least one trace:
 
 ## Current Gaps And Recommended Hardening
 
-1. Manual inventory counts remain fragile; current scan is 46 local skills and 19 contracts.
+1. Manual inventory counts remain fragile; current scan is 48 local skills and 19 contracts.
 2. The first four critical judgment/QA skills are now hardened: `clip-candidate-ranking`, `generated-clip-qa`, `render-qa`, and `artifact-consistency-audit`.
 3. Next thin skills before reliable autonomous runs: `subtitle-caption-pipeline`, `remotion-post-production`, and the thinner Channel Intelligence skills.
 4. Deterministic handoff validation should stay optional until real runs show repeated drift; prompt/spec hardening is the current priority.

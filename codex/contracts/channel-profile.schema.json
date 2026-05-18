@@ -179,8 +179,10 @@
       "properties": {
         "source_ledger_path": { "type": "string" },
         "reference_videos_path": { "type": "string" },
+        "web_content_path": { "type": "string" },
         "evidence_path": { "type": "string" },
         "media_asset_manifest_paths": { "type": "array", "items": { "type": "string" } },
+        "web_content_source_report_paths": { "type": "array", "items": { "type": "string" } },
         "reference_analysis_paths": { "type": "array", "items": { "type": "string" } },
         "rules": { "type": "array", "items": { "type": "string" } }
       }

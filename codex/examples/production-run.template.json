@@ -1,0 +1,66 @@
+{
+  "run_id": "run_<project-slug>_001",
+  "request_id": "request_<id>",
+  "project_id": "project_<project-slug>",
+  "project_slug": "<project-slug>",
+  "project_path": "channels/<channel-slug>/projects/<project-slug>/project.json",
+  "objective": "Produce the requested video package or stop at an explicit approval/blocker.",
+  "status": "planned",
+  "current_phase": "decomposition",
+  "artifact_root": "channels/<channel-slug>/projects/<project-slug>",
+  "channel_profile_id": "channel_<channel-slug>",
+  "channel_slug": "<channel-slug>",
+  "channel_profile_path": "channels/<channel-slug>/channel-profile.json",
+  "producer_criteria_path": "channels/<channel-slug>/projects/<project-slug>/producer-criteria.json",
+  "media_asset_manifest_path": "channels/<channel-slug>/projects/<project-slug>/media-asset-manifest.json",
+  "remotion_project_contract_path": "remotion/remotion-project.json",
+  "remotion_app_root_path": "remotion",
+  "context_state": {
+    "status": "fresh",
+    "working_set_summary": "Initial run ledger created. No production handoffs have completed yet.",
+    "current_phase_summary": "Director is decomposing the request, resolving project paths, and preparing producer criteria.",
+    "last_resume_summary": "Resume by reading AGENTS.md, Director AGENT.md, this production-run ledger, and the files listed in artifacts_to_reload_next.",
+    "context_snapshot_path": "",
+    "important_open_decisions": [],
+    "active_blockers": [],
+    "recent_user_requests": [],
+    "recent_changes": [],
+    "stale_or_invalidated_artifacts": [],
+    "artifacts_to_reload_next": [
+      {
+        "kind": "contract",
+        "path": "channels/<channel-slug>/projects/<project-slug>/production-run.json",
+        "reason": "Authoritative execution ledger for current phase, blockers, approvals, and next actions."
+      },
+      {
+        "kind": "skill",
+        "path": "codex/agents/director/skills/autonomous-production-run/SKILL.md",
+        "reason": "Director autonomous execution rules."
+      },
+      {
+        "kind": "skill",
+        "path": "codex/agents/director/skills/context-compaction/SKILL.md",
+        "reason": "Rules for keeping the active working set compact and resumable."
+      }
+    ],
+    "next_actions": [
+      "Resolve or create producer criteria.",
+      "Create the first required agent handoff."
+    ],
+    "context_budget_policy": "Keep only the current phase, next handoff, approvals, blockers, and artifacts_to_reload_next in active context.",
+    "compaction_reason": "initial_template",
+    "last_compacted_at": "not_compacted_yet"
+  },
+  "context_snapshots": [],
+  "artifacts": [],
+  "handoffs": [],
+  "approvals": [],
+  "change_requests": [],
+  "review_loops": [],
+  "blockers": [],
+  "qa": {
+    "status": "not_run",
+    "summary": "No production QA has run yet.",
+    "residual_risks": []
+  }
+}

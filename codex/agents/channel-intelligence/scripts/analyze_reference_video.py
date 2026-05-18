@@ -602,6 +602,7 @@ def main() -> int:
 
     evidence_refs = build_evidence_refs(source_id, frame_samples, ocr_results)
     beats = build_beats(source_id, scenes, frame_samples, ocr_results)
+    source_slug = slugify(source_id)
 
     captured_artifacts = [
         {"kind": "metadata", "path": probe_path, "notes": "ffprobe JSON metadata."},
@@ -633,6 +634,64 @@ def main() -> int:
     status = "complete" if technical and frame_samples and not limitations else "partial"
     if not video_path.exists() and not args.transcript_path and not args.model_observation_path:
         status = "blocked"
+
+    source_ledger_entry = {
+        "source_id": source_id,
+        "asset_id": f"asset-{source_slug}-reference-video",
+        "kind": "reference_video",
+        "path_or_url": args.source_url or relpath(video_path, repo_root),
+        "local_path": relpath(video_path, repo_root),
+        "title": args.title,
+        "owner": args.owner,
+        "rights_state": "needs_approval",
+        "reusable_scope": "project_only",
+        "why_it_matters": "Reference video prepared for pattern analysis; footage reuse rights are not implied.",
+        "missing_assets": evidence_gaps,
+        "evidence_refs": evidence_refs,
+        "confidence": "high" if video_path.exists() else "unknown",
+    }
+    reference_beats = [
+        {
+            "beat_id": beat.get("beat_id"),
+            "source_id": source_id,
+            "video_id": video_id,
+            "start_seconds": beat.get("start_seconds"),
+            "end_seconds": beat.get("end_seconds"),
+            "purpose": beat.get("purpose"),
+            "shot_evidence": [{
+                "shot_size": beat.get("shot_size"),
+                "camera_motion": beat.get("camera_motion"),
+                "visual_notes": beat.get("visual_notes"),
+                "keyframe_paths": beat.get("keyframe_paths", []),
+                "confidence": "medium" if beat.get("keyframe_paths") else "low",
+            }],
+            "audio_evidence": [{
+                "notes": beat.get("audio_notes"),
+                "confidence": "low",
+            }],
+            "caption_or_graphics_evidence": [{
+                "notes": beat.get("caption_or_graphics_notes"),
+                "confidence": "medium" if "OCR detected:" in str(beat.get("caption_or_graphics_notes")) else "low",
+            }],
+            "reusable_patterns": beat.get("pattern_tags", []),
+            "do_not_copy_risks": ["Reference video is pattern evidence only; do not copy footage or exact edit decisions without rights approval."],
+            "keyframe_paths": beat.get("keyframe_paths", []),
+            "evidence_refs": beat.get("evidence_refs", []),
+            "confidence": "medium" if beat.get("evidence_refs") else "low",
+        }
+        for beat in beats
+    ]
+    invalidation_impact = []
+    if evidence_gaps:
+        invalidation_impact.append({
+            "impact_id": f"impact-{source_slug}-evidence-gaps",
+            "change_or_gap": "reference_video_evidence_partial",
+            "affected_artifacts": ["channel_format", "scenario", "visual_pack", "timeline_sync", "critique"],
+            "reason": "Missing transcript, OCR, model observation, or frame evidence can weaken downstream style, script, visual, and critique decisions.",
+            "owner_agent": "channel-intelligence",
+            "severity": "minor" if status != "blocked" else "blocker",
+            "recommended_action": "Preserve limitations and rerun affected downstream work if missing evidence is later added.",
+        })
 
     analysis = drop_none({
         "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -681,6 +740,7 @@ def main() -> int:
             "confidence": "high" if video_path.exists() else "unknown",
             "captured_artifacts": captured_artifacts,
         }],
+        "source_ledger": [source_ledger_entry],
         "reference_videos": [{
             "video_id": video_id,
             "source_id": source_id,
@@ -702,6 +762,8 @@ def main() -> int:
             "shot_breakdown_path": relpath(scenes_path, repo_root),
             "beats": beats,
         }],
+        "claim_ledger": [],
+        "reference_beats": reference_beats,
         "findings": {
             "narrative_patterns": [],
             "visual_patterns": [
@@ -740,7 +802,11 @@ def main() -> int:
             "remotion_video_producer": [
                 "Do not treat reference keyframes as production media unless rights are separately approved."
             ],
+            "video_critic": [
+                "Check final render provenance against reference limitations and do-not-copy risks."
+            ],
         },
+        "invalidation_impact": invalidation_impact,
     })
 
     if args.update_media_asset_manifest:

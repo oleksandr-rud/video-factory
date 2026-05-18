@@ -20,9 +20,10 @@ Treat scene breakdown as a production contract. Ambiguity here amplifies downstr
 1. Assign deterministic `scene_id` values. Reuse existing ids when revising unless scene order or boundaries genuinely change.
 2. Create contiguous scene timing. Do not overlap scenes or leave unexplained gaps.
 3. Keep each scene short enough for the platform and explicit enough for Visual Producer, voiceover, timeline sync, and critique.
-4. Link factual claims and source-derived statements with `source_ids`; mark unsupported claims in `source_alignment_notes` or scene notes.
-5. Preserve channel format without copying reference videos shot-for-shot.
-6. Record downstream invalidation risk whenever a scene id, timing, script, or visual intent changes after downstream work exists.
+4. Link factual claims and source-derived statements with `source_ids`; prefer `reference-analysis.claim_ledger[]` claim ids/evidence refs when available.
+5. Mark unsupported, contradicted, needs-review, or low-confidence web claims in `source_alignment_notes` or scene notes instead of smoothing them into narration.
+6. Preserve channel format without copying reference videos shot-for-shot or copying supplied article/page images without approval.
+7. Record downstream invalidation risk whenever a scene id, timing, script, source claim, or visual intent changes after downstream work exists.
 
 ## Required Output
 

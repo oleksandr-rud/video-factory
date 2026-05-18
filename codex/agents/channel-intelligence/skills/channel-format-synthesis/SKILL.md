@@ -32,3 +32,11 @@ VFX rule extension routing:
 - Do not require templates for every VFX moment. A format can allow no template, one template, multiple layered templates, or bespoke VFX depending on scene needs.
 
 Return a channel format package matching `codex/contracts/channel-format.schema.json`, with `channel_profile_id`, `channel_slug`, and `channel_root_path` when a persistent channel exists. For durable channels, write the per-channel format spec under `channels/<channel-slug>/formats/<format-slug>.json` and pass that path downstream as `channel_format_path`.
+
+## Media Manifest Policy
+
+If this skill references, promotes, validates, or defers reusable media assets, brand assets, audio identity assets, Remotion template media, source cards, overlays, thumbnail assets, or reference-derived examples, update the media asset manifest or return `manifest_actions[]`.
+
+Each manifest action must include `action`, `asset_id`, `canonical_path`, `remotion_public_path` and `static_file_path` when relevant, `rights_state`, `technical_metadata_state`, and `reason`.
+
+Use `deferred` for format rules that need a future asset, template, public projection, rights approval, or metadata probe. Channel format must not become the only record of a media asset's identity, rights, or render-visible path.

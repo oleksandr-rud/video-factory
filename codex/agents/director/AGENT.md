@@ -33,6 +33,7 @@ Use these paths when composing `agent-handoff.skills_to_read` for the target age
 - `../visual-producer/skills/visual-research-queries/SKILL.md`
 - `../visual-producer/skills/provider-clip-search/SKILL.md`
 - `../visual-producer/skills/freepik-video-search/SKILL.md`
+- `../visual-producer/skills/pexels-video-search/SKILL.md`
 - `../visual-producer/skills/ai-video-generation-brief/SKILL.md`
 - `../visual-producer/skills/visual-validation/SKILL.md`
 - `../visual-producer/skills/clip-candidate-ranking/SKILL.md`

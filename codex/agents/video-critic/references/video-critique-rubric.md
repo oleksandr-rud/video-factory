@@ -12,7 +12,7 @@ Use this rubric to make final video critique concrete, not aesthetic hand-waving
 ## Story And Source Fit
 
 - Scenario scenes appear in order unless an intentional edit improves the result.
-- Claims match supplied source evidence or are clearly framed as interpretation.
+- Claims match supplied source evidence, `claim_ledger[]`, source reports, or are clearly framed as interpretation.
 - On-screen text and narration do not contradict each other.
 - The video avoids unsupported hype, misleading simplification, and stale repetition.
 
@@ -35,7 +35,7 @@ Use this rubric to make final video critique concrete, not aesthetic hand-waving
 
 - Duration, aspect ratio, fps, resolution, and codec match the requested platform.
 - The opening frame, thumbnail candidate, title/text hooks, and CTA fit the channel format.
-- Rights notes cover stock, AI generation, voices, music, likeness, logos, and source screenshots.
+- Rights notes cover stock, AI generation, voices, music, likeness, logos, source screenshots, approved web images, and copied page/article material.
 
 ## Finding Severity
 

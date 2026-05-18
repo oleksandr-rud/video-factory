@@ -7,7 +7,7 @@ description: Search, normalize, store, and pre-validate stock/provider video cli
 
 Provider search is candidate discovery. A remote preview or search result is not a production asset until rights, technical fit, approval state, local storage, and manifest coverage are resolved.
 
-Read `../../references/video-search-providers.md` when using Freepik/Magnific or another provider with documented API/search behavior.
+Read `../../references/video-search-providers.md` when using Freepik/Magnific, Pexels, or another provider with documented API/search behavior.
 
 ## Inputs
 
@@ -21,6 +21,8 @@ Read `../../references/video-search-providers.md` when using Freepik/Magnific or
 ## Workflow
 
 1. Select providers based on scene need, route fit, rights policy, budget, account availability, and expected download quality.
+   - Prefer Freepik/Magnific as the primary stock-video provider when an approved account/license route exists.
+   - Use Pexels as a secondary/free fallback when Freepik is unavailable, unsuitable, or needs broader B-roll coverage.
 2. Prepare exact dry-run search terms before any API call. Dry-run planning does not need provider approval.
 3. Run provider API search only when the Director has approved the provider/search scope.
 4. Normalize raw results into candidate records shaped like `codex/contracts/clip-candidate.schema.json`.

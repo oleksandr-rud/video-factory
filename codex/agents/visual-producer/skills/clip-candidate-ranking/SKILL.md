@@ -1,6 +1,6 @@
 ---
 name: clip-candidate-ranking
-description: Score and rank scene visual candidates from stock providers, Remotion-generated visuals, AI video generation, and user-supplied media with evidence-backed primary/fallback/rejected decisions. Use when choosing primary and fallback clips per scene before timeline sync or downstream handoff.
+description: Score and rank scene visual candidates from stock providers, Remotion-generated visuals, AI video generation, user-supplied media, approved web images, screenshots, and source-card recreations with evidence-backed primary/fallback/rejected decisions. Use when choosing primary and fallback clips per scene before timeline sync or downstream handoff.
 ---
 
 # Clip Candidate Ranking
@@ -36,6 +36,7 @@ Rank candidates as a production decision, not a taste note. Do not select a prim
    - rights blocker: unknown, unapproved, or incompatible license for intended use
    - technical blocker: missing required local path, unusable aspect ratio, duration mismatch, missing Remotion `staticFile()` path when needed, severe quality issue
    - continuity blocker: violates scenario meaning, breaks adjacent scene continuity, or conflicts with channel format
+   - web-source blocker: `approved_web_image` lacks manifest approval or `source_card_recreation` lacks claim/evidence refs
 6. Select one primary and at least one fallback per scene when possible.
 7. If no primary can be selected, set the scene result to `blocked` or `needs_approval` and return a `no_primary_selected` blocker.
 8. Preserve rejected candidates with rejection reasons; do not delete useful evidence.
@@ -150,6 +151,7 @@ Stop and return `blocked` when:
 - all candidates have unresolved rights blockers
 - all candidates fail required technical constraints
 - source provenance is missing for a candidate that would be used in the render
+- a web image/screenshot candidate is not approved for reuse and no source-card recreation fallback exists
 - specialist feasibility is required before any fair ranking can be made
 
 ## Definition Of Done

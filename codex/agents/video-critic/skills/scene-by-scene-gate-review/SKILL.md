@@ -31,11 +31,12 @@ Read all supplied criteria, not just the rendered video:
    - scenario purpose and narration
    - visual relevance and visible artifacts
    - audio/caption timing and readability
-   - source/factual alignment
+   - source/factual alignment against `claim_ledger[]`, `web_pages[]`, source reports, and evidence refs when supplied
    - brand/channel style and anti-redundancy rules
    - channel-format VFX rule extensions, hardening evidence, and fallback requirements when the scene uses VFX
    - platform and safe-area rules
    - any scene-specific production restrictions
+   - unapproved page images, screenshots, or copied article text are not present in the render
 3. Add a scene review for every scene id. Missing evidence is a finding, not a reason to silently pass.
 4. Convert failures into findings with timestamp, scene id, evidence, recommendation, owner agent, and fix status.
 5. Produce gate results:

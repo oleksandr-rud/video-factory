@@ -64,7 +64,7 @@ Return a timeline sync plan with:
       "narration_text": "string",
       "visual_source": {
         "candidate_id": "string",
-        "route": "remotion_generated | ai_video_generation | stock_clip | user_supplied_media | unassigned",
+        "route": "remotion_generated | ai_video_generation | stock_clip | user_supplied_media | approved_web_image | source_card_recreation | unassigned",
         "media_asset_id": "string",
         "remotion_static_file_path": "string",
         "remotion_clip_package_path": "string",
@@ -134,6 +134,8 @@ For every scene, cite or preserve:
 - audio path, duration source, caption path, and timestamp source
 - selected `candidate_id` plus Visual Producer decision evidence
 - media asset id, local path, Remotion `staticFile()` path, or Remotion clip package path when media is used
+- for `approved_web_image`, the manifest entry must show rights approval and a local/render-visible path before final render
+- for `source_card_recreation`, preserve source ids, claim/evidence refs, and source-card/template contract paths
 - template contract paths and VFX hardening evidence for template-backed or VFX-heavy clips
 - timing drift reason when scene duration changes from scenario estimates
 - safe-area notes for captions, lower thirds, UI details, logos, and CTAs

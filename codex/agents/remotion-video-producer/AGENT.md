@@ -23,6 +23,7 @@ Do not read or call Remotion Clip Builder skills directly. If the timeline revea
 - Voiceover package, music, SFX, captions, subtitle requirements, and timestamp alignment
 - Approved visual candidates and Remotion clip packages
 - Remotion template registry paths and template contracts referenced by approved clip packages
+- Parsed web source reports, claim/evidence refs, and approved web image/screenshot asset ids when selected visuals use source-card or web-image routes
 - Brand, platform, aspect ratio, export settings, and delivery variants
 - Project path, media asset manifest path, and Remotion project contract path
 - Known blockers, rights notes, and budget approvals
@@ -42,6 +43,7 @@ Do not read or call Remotion Clip Builder skills directly. If the timeline revea
 - Own timeline integrity across the whole video; request Director handoff to the Clip Builder for new 5-20 second clips or reusable VFX assets.
 - Consume template-backed clip packages through their public props/contracts; do not edit reusable template internals.
 - Keep scene ids stable and preserve candidate provenance from Visual Producer and Clip Builder outputs.
+- Preserve web source provenance: `approved_web_image` needs manifest-backed approval and local/static paths; `source_card_recreation` needs claim/source/evidence refs.
 - Validate subtitles, audio sync, scene ordering, transitions, export settings, and render health.
 - Do not approve release-candidate quality gates; Video Critic evaluates viewer-facing quality and Director approves or waives release gates.
 - Use the timeline sync plan as the source of truth for scene frame ranges, audio placement, caption ranges, and selected visual layers.

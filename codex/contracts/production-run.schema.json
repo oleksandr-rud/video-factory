@@ -27,7 +27,7 @@
     "remotion_app_root_path": { "type": "string" },
     "context_state": {
       "type": "object",
-      "required": ["status", "working_set_summary", "current_phase_summary", "artifacts_to_reload_next", "next_actions", "last_compacted_at"],
+      "required": ["status", "working_set_summary", "current_phase_summary", "last_resume_summary", "important_open_decisions", "active_blockers", "stale_or_invalidated_artifacts", "artifacts_to_reload_next", "next_actions", "context_budget_policy", "last_compacted_at"],
       "properties": {
         "status": {
           "type": "string",

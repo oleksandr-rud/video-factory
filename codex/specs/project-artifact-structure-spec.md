@@ -63,6 +63,8 @@ channels/<channel-slug>/projects/<project-slug>/runs/<run-id>/context/context-sn
 
 The production run ledger remains the entry point. Snapshot files are optional detailed sidecars; `production-run.context_state` must contain the compact working set and reload list needed to continue the next phase.
 
+Use `codex/examples/production-run.template.json` as the minimal fixture for new run ledgers. Replace placeholder channel/project/request ids and paths before writing it into `channels/<channel-slug>/projects/<project-slug>/production-run.json`.
+
 ## Remotion Public Projection
 
 The shared Remotion app lives at `remotion/`. Its `public/` folder is the render-visible projection, not the source of truth for media ownership.
@@ -138,7 +140,7 @@ For 10-20 supplied links, process each URL as an independent one-page source wit
 ## Contract Map
 
 - `video-project.schema.json`: durable project index, folder layout, deliverables, artifact paths, Remotion setup, current run/render state.
-- `production-run.schema.json`: one execution attempt, handoffs, approvals, blockers, review loops, invalidation/rerun state, and compact context/resume state.
+- `production-run.schema.json`: one execution attempt, handoffs, approvals, blockers, review loops, invalidation/rerun state, and compact context/resume state. Minimal fixture: `codex/examples/production-run.template.json`.
 - `media-asset-manifest.schema.json`: loaded videos, provider clips, generated clips, rendered clips, subtitles, review frames, technical metadata, rights state, and evidence refs.
 - `remotion-project.schema.json`: Remotion app root, package manager, composition registry, commands, dependency policy, and public asset policy.
 - `reference-analysis.schema.json`: source ledger and timecoded evidence distilled for production.

@@ -35,3 +35,11 @@ Use this skill with `voice-casting` and `tts-production-plan`. The output is a v
 - Pronunciation notes cover names, acronyms, numbers, and technical terms.
 - Generated audio has no clipping, long leading/trailing silence, major mispronunciation, or scene-order mismatch.
 - Caption timings come from provider timestamps, forced alignment, or approved transcription, not guessed timing when audio exists.
+
+## Media Manifest Policy
+
+If this skill consumes voice previews or creates, validates, downloads, aligns, transcribes, or defers generated audio, timestamp alignment files, caption JSON, SRT files, or provider evidence sidecars, update the media asset manifest or return `manifest_actions[]`.
+
+Each manifest action must include `action`, `asset_id`, `canonical_path`, `rights_state`, `technical_metadata_state`, and `reason`; include `remotion_public_path` and `static_file_path` when audio or captions are mirrored for Remotion.
+
+Use `deferred` for dry-run payloads, pending voice-generation approvals, provider previews that are not downloaded, or audio/caption outputs that will be created only after approval. Do not let the voiceover package be the only record of generated audio provenance.

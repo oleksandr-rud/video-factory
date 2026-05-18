@@ -47,6 +47,7 @@ channels/<channel-slug>/
       source-media/
         reference-videos/
         reference-analysis/
+        web-content/
         loaded-videos/
         provider-clips/
         generated-clips/

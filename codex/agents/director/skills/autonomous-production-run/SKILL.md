@@ -11,7 +11,7 @@ Use this after `decompose-video-request` when the user wants a full run, `/goal`
 
 1. Create or resolve the channel profile under `channels/<channel-slug>/channel-profile.json` when a durable channel is in scope; store its repo-relative POSIX path in `channel_profile_path`.
 2. Create or update the video project under `channels/<channel-slug>/projects/<project-slug>/project.json` when a durable deliverable is in scope; store its path in `project_path`.
-3. Create or update the media asset manifest under the project folder when source videos, reference videos, generated clips, rendered clips, subtitles, review frames, or other media assets are in scope; store its path in `media_asset_manifest_path`.
+3. Create or update the media asset manifest under the project folder when source videos, reference videos, web content captures, generated clips, rendered clips, subtitles, review frames, or other media assets are in scope; store its path in `media_asset_manifest_path`.
 4. Create or resolve the Remotion app contract matching `codex/contracts/remotion-project.schema.json`; default to the shared `remotion/` app and store the repo-relative contract path in `remotion_project_contract_path`. When reusable Remotion components are in scope, also resolve the app template registry path and any project template contract paths matching `codex/contracts/remotion-template.schema.json`.
 5. Create or update a run ledger matching `codex/contracts/production-run.schema.json` inside the project folder. Initialize `context_state` so the run can resume from files after context compaction.
 6. Create or update the producer criteria artifact matching `codex/contracts/producer-criteria.schema.json`; store its path in `producer_criteria_path`.
@@ -26,7 +26,7 @@ Use this after `decompose-video-request` when the user wants a full run, `/goal`
    - Include the producer criteria path in downstream handoff inputs once it exists.
 9. Execute phases in dependency order:
    - Channel profile management before channel format synthesis when a durable channel exists.
-   - Media asset manifest creation before reference-video analysis, visual candidate selection, Remotion clip building, render packaging, or final critique when media files are in scope.
+   - Media asset manifest creation before reference-video analysis, web content synthesis, visual candidate selection, Remotion clip building, render packaging, or final critique when media files are in scope.
    - Channel Intelligence before scenario and visual planning when references, channel data, web sources, or redundancy concerns exist.
    - Creative Producer before Visual Producer; if voiceover is in scope, produce the voiceover package before final timeline assembly.
    - Visual Producer before InVideo AI Generator and Remotion Clip Builder.

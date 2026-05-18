@@ -40,3 +40,11 @@ Definition of done:
 - It does not depend on generic web UI component libraries.
 - VFX quality/performance risks and fallback plan are recorded for complex effects.
 - It can be consumed by the Remotion Video Producer without hidden assumptions.
+
+## Media Manifest Policy
+
+If this skill consumes, creates, validates, renders, mirrors, or defers local media, Remotion public assets, generated clip outputs, transparent overlays, still previews, thumbnails, template assets, or QA evidence media, update the media asset manifest or return `manifest_actions[]`.
+
+Each manifest action must include `action`, `asset_id`, `canonical_path`, `remotion_public_path` and `static_file_path` when relevant, `rights_state`, `technical_metadata_state`, and `reason`.
+
+Use `deferred` for planned renders, missing media probes, public projection work that has not happened yet, or outputs blocked by render failures. Clip packages must cite manifest-backed `source_asset_ids` and `output_asset_ids` when files exist.

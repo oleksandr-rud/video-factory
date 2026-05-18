@@ -47,3 +47,45 @@ Default normalized candidate notes:
 - `preview_url`: first video preview URL when present, otherwise first thumbnail URL
 - `license_summary`: "Freepik/Magnific stock video candidate; final use requires Director-approved license/download path and preserved download metadata."
 - `status`: `needs_approval` unless the Director has approved the provider, license path, and download/use route
+
+## Pexels Video API
+
+Secondary use: search free stock videos when Freepik/Magnific is unavailable, returns weak matches, or needs fallback coverage. Pexels is useful for broad B-roll, but the API terms and final-use restrictions still need explicit evidence.
+
+Official docs:
+
+- API documentation: https://www.pexels.com/api/documentation/
+- Pexels license: https://www.pexels.com/license/
+- License help article: https://help.pexels.com/hc/en-us/articles/360042295174-What-is-the-license-of-the-photos-and-videos-on-Pexels
+- Rate-limit help article: https://help.pexels.com/hc/en-us/articles/900006470063-What-steps-can-I-take-to-avoid-hitting-the-rate-limit
+- Unlimited requests help article: https://help.pexels.com/hc/en-us/articles/900005852323-How-do-I-get-unlimited-requests
+
+Capabilities verified from current docs:
+
+- Base URL is documented as `https://api.pexels.com`.
+- Video search is `GET /v1/videos/search`.
+- Authentication uses the `Authorization` header with a Pexels API key.
+- Search supports `query`, `orientation`, `size`, `locale`, `page`, and `per_page`; `per_page` is capped at 80.
+- Video responses include `id`, `width`, `height`, `url`, `image`, `duration`, `user`, `video_files[]`, and `video_pictures[]`.
+- `video_files[]` includes direct file links, so there is no separate download-link endpoint in the normal search workflow.
+- Successful API responses include rate-limit headers such as `X-Ratelimit-Limit`, `X-Ratelimit-Remaining`, and `X-Ratelimit-Reset`.
+
+Visual Producer policy:
+
+- Use Freepik/Magnific before Pexels when a primary provider route is approved and suitable.
+- Use Pexels as a secondary/free fallback for broad stock B-roll or when Freepik results are weak.
+- Use `PEXELS_API_KEY` as the local env name.
+- Search/listing may be performed only after Director approval for provider API use.
+- File downloads require explicit Director approval even though direct file links are present in search responses.
+- Preserve Pexels page URL, video id, creator name, creator URL, image/preview URL, video file metadata, request URL, and rate-limit headers.
+- Preserve attribution/link-back notes because Pexels API guidelines require a prominent Pexels link and ask for photographer/creator credit when possible.
+- Do not use Pexels clips in contexts that imply endorsement, put identifiable people in an offensive or bad-light context, redistribute stock/wallpaper libraries, sell unmodified copies, or create trademark/service-mark assets.
+
+Default normalized candidate notes:
+
+- `route`: `stock_clip`
+- `provider`: `pexels`
+- `source_url`: Pexels video page URL
+- `preview_url`: `image` URL when present, otherwise first `video_pictures[].picture`
+- `license_summary`: "Pexels License stock video candidate; free personal/commercial use is generally allowed, API attribution/link-back is required by Pexels guidelines, and final use must avoid restricted likeness, endorsement, trademark, or unmodified resale contexts."
+- `status`: `proposed` after search unless final-use rights, attribution, or context checks require approval

@@ -5,11 +5,12 @@ This plan turns the current architecture gaps into concrete implementation work.
 Current repo inventory from local scan:
 
 - Agents: 8
-- Local `SKILL.md` files: 47
-- Non-Director skills: 42
-- Director handoff map entries: 42
+- Local `SKILL.md` files: 48
+- Non-Director skills: 43
+- Director handoff map entries: 43
 - Contract schemas: 19
 - Specs: 7
+- Example fixtures: `codex/examples/production-run.template.json`
 - Duplicate skill names: 0
 - Missing Director handoff map entries: 0
 - Durable channel/project examples in `channels/`: none beyond `channels/.gitkeep`
@@ -123,7 +124,7 @@ Do not add a validation helper yet. Revisit a helper only if persisted handoffs 
 
 ### 2a. Keep Director Context Compaction Explicit
 
-Current status: Director has a dedicated `context-compaction` skill and `production-run.context_state` contract fields.
+Current status: Director has a dedicated `context-compaction` skill, required `production-run.context_state` contract fields, and a minimal `codex/examples/production-run.template.json` fixture.
 
 Required rule:
 
@@ -137,6 +138,7 @@ Acceptance criteria:
 - The run ledger can explain current phase, next actions, blockers, open decisions, stale artifacts, and files to reload without relying on conversation memory.
 - Snapshot files live under `channels/<channel-slug>/projects/<project-slug>/runs/<run-id>/context/` when detailed sidecars are needed.
 - Compaction never marks production work complete without the owning artifact contract and validation evidence.
+- New runs can start from `codex/examples/production-run.template.json` after replacing placeholders.
 
 ### 3. Add Media Manifest Policy To Media-Producing Skills
 
@@ -150,7 +152,7 @@ Skills that must report manifest actions:
 
 - Channel Intelligence: `source-corpus-ingestion`, `channel-profile-management`, `reference-video-breakdown`, `web-content-synthesis`, `style-system-extraction`, `channel-format-synthesis`
 - Creative Producer: `elevenlabs-voice-selection`, `tts-production-plan`
-- Visual Producer: `provider-clip-search`, `freepik-video-search`, `visual-validation`, `visual-pack-plan` when source asset ids or template/media requirements are set
+- Visual Producer: `provider-clip-search`, `freepik-video-search`, `pexels-video-search`, `visual-validation`, `visual-pack-plan` when source asset ids or template/media requirements are set
 - InVideo AI Generator: `generation-approval-package`, `generation-iteration-plan`, `generated-clip-qa`
 - Remotion Clip Builder: `remotion-scene-plan`, `remotion-template-library`, `remotion-vfx-clip`
 - Remotion Video Producer: `subtitle-caption-pipeline`, `timeline-sync-plan`, `remotion-post-production`, `render-release-candidate`, `render-qa`
@@ -161,6 +163,8 @@ Acceptance criteria:
 - Media-producing skills include `Media Manifest Policy`.
 - Handoff summaries include `manifest_actions[]`.
 - Render QA and artifact consistency audit can fail missing manifest coverage explicitly.
+
+Current status: every listed media-producing skill now has local manifest policy or existing `manifest_actions[]` guidance. Some thin skills still need fuller handoff summary shapes as part of later skill hardening.
 
 ### 4. Clarify Timeline Helper Authority
 
@@ -219,6 +223,7 @@ Acceptance criteria:
 | `visual-research-queries` | Query provenance and stop criteria are loose. | Add query groups by route/provider, positive/negative criteria, rejected query terms, expected evidence, provider priority, and search stop conditions. |
 | `provider-clip-search` | Strong after hardening. | Keep as the general provider-search policy: canonical candidate storage, pre-download checks, scoped approvals, manifest policy, and handoff summary shape. |
 | `freepik-video-search` | Strong after hardening. | Keep script flags and provider reference aligned with separate API-search, download-link, and file-download approvals. |
+| `pexels-video-search` | Strong after hardening. | Keep script flags and provider reference aligned with secondary-provider policy, API attribution/rate-limit evidence, and separate file-download approval. |
 | `ai-video-generation-brief` | Route brief needs exact shape. | Add `scene_id`, `visual_goal`, `prompt_intent`, `references`, `constraints`, `risk_estimate`, `fallback_route`, and `handoff_recommendation`. |
 | `visual-validation` | Strong. | Keep as reference pattern for generated clip QA and artifact audit. |
 
@@ -304,6 +309,7 @@ Started after provider-candidate storage review:
 2. [x] Harden `freepik-video-search`.
 3. [x] Tighten `search_freepik_videos.py` approval flags so API search, download-link retrieval, and file download cannot be authorized accidentally by one broad flag.
 4. [x] Document durable candidate storage under `visuals/candidates/` and downloaded provider media under `source-media/provider-clips/`.
+5. [x] Add `pexels-video-search` as a secondary/free provider route with API-search approval, attribution/rate-limit evidence, and separate file-download approval.
 
 After the batch:
 

@@ -23,7 +23,7 @@ Treat generated clips as candidates until QA proves they are usable. Do not prom
 3. Review prompt adherence against the scene brief:
    - subject/action/location/mood
    - camera and motion intent
-   - reference asset use
+   - reference asset use, including whether any parsed web image/screenshot references were approved
    - required exclusions or converted negative constraints
 4. Check technical fit:
    - duration, aspect ratio, resolution, fps, codec/probe data when available
@@ -32,7 +32,7 @@ Treat generated clips as candidates until QA proves they are usable. Do not prom
 5. Check generated artifact risk:
    - flicker, morphing, hands/faces, text/logo errors, physics, temporal consistency, unwanted subtitles/watermarks
 6. Check rights and approval state:
-   - provider terms, credit/cost record, likeness/logo risk, reference asset rights, download approval
+   - provider terms, credit/cost record, likeness/logo risk, reference asset rights, parsed web image/screenshot approval, download approval
 7. Check continuity and brand fit against adjacent scenes and channel format.
 8. Decide recommendation: accept as candidate, accept as fallback only, reroll, switch model, fallback to stock, fallback to Remotion, or block.
 9. Update the generation package QA and create/update the matching clip candidate.

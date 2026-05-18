@@ -17,7 +17,7 @@ Read `../../references/reference-analysis-dimensions.md` when source evidence ne
 
 ## Workflow
 
-1. Confirm every page has a stable `source_id`, `source_type`, rights state, reusable scope, and destination:
+1. Confirm every page has a stable `source_id`, `kind`, rights state, reusable scope, and destination:
    `channels/<channel-slug>/projects/<project-slug>/source-media/web-content/<source-id>/`.
 2. Process direct content URLs as one-page captures by default. Do not crawl internal links, feeds, or related posts unless the Director explicitly expands the scope.
 3. Use local deterministic capture first:
@@ -84,6 +84,20 @@ Return or update `codex/contracts/reference-analysis.schema.json` with:
   "project_path": "string",
   "media_asset_manifest_path": "string",
   "sources": [],
+  "source_ledger": [
+    {
+      "source_id": "string",
+      "kind": "webpage | blog | best_practice | channel_data | other",
+      "path_or_url": "string",
+      "local_path": "string",
+      "rights_state": "approved | needs_approval | blocked | unknown",
+      "reusable_scope": "global_channel | project_only | scene_only | critique_only | do_not_use | unknown",
+      "why_it_matters": "string",
+      "missing_assets": ["string"],
+      "evidence_refs": [],
+      "confidence": "high | medium | low | unknown"
+    }
+  ],
   "web_pages": [
     {
       "page_id": "string",
@@ -130,6 +144,7 @@ Return or update `codex/contracts/reference-analysis.schema.json` with:
       "evidence_refs": []
     }
   ],
+  "reference_beats": [],
   "findings": {
     "source_claims": [],
     "visual_evidence_opportunities": [],
@@ -140,13 +155,14 @@ Return or update `codex/contracts/reference-analysis.schema.json` with:
   },
   "evidence_refs": [],
   "downstream_guidance": {},
+  "invalidation_impact": [],
   "manifest_actions": []
 }
 ```
 
 ## Contract Fields Populated
 
-- `reference-analysis.schema.json`: `processing_runs[]`, `sources[]`, `web_pages[]`, `claim_ledger[]`, `findings`, `evidence_refs`, and `downstream_guidance`
+- `reference-analysis.schema.json`: required fields `analysis_id`, `status`, `sources[]`, `source_ledger[]`, `claim_ledger[]`, `reference_beats[]`, `findings`, `downstream_guidance`, and `invalidation_impact[]`, plus `processing_runs[]`, `web_pages[]`, and `evidence_refs`
 - `media-asset-manifest.schema.json`: `web_snapshot`, `source_report`, `web_image`, `screenshot`, and `metadata` entries when files are created or consumed
 - `producer-criteria.schema.json`: no direct writes, but return source-use restrictions or acceptance criteria candidates when page evidence creates hard factual/rights gates
 
@@ -210,7 +226,7 @@ Stop and return `blocked` when:
 
 - Every supplied direct page has one source folder, stable ids, and repo-relative artifact paths.
 - Raw HTML, extracted text/metadata, image manifest, annotations, and source report are captured or explicitly blocked.
-- `claim_ledger[]`, visual evidence candidates, source risks, and downstream guidance are populated or explicitly deferred.
+- `source_ledger[]`, `claim_ledger[]`, `reference_beats[]`, `invalidation_impact[]`, visual evidence candidates, source risks, and downstream guidance are populated or explicitly deferred.
 - Image downloads/screenshots are either covered by approval and manifest entries or listed as deferred.
 - Downstream agents can cite claims and visuals without re-parsing the original page.
 

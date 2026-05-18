@@ -19,8 +19,17 @@ description: Create a per-scene visual pack plan that lists visual goals, routes
 12. For any route that needs downstream specialist execution, add `handoff_recommendations[]` instead of reading another agent's skills:
    - `invideo-ai-generator` for AI video model feasibility, provider-ready prompts, generation approval, variants, generation, or generated clip QA.
    - `remotion-clip-builder` for deterministic 5-20 second Remotion clips, reusable template selection/creation, component templates, motion graphics, or VFX overlays.
+   - `remotion-clip-builder` for `source_card_recreation` when a page claim, quote, chart, or image candidate should be redrawn or cited instead of copied.
 13. For template-backed Remotion recommendations, include the template id/contract path or arrays of template ids/contract paths when known. Otherwise include category and constraints such as lower third, source card, caption, transition, overlay, data callout, mockup, safe areas, alpha, dimensions, and duration.
 14. Do not force template reuse. If a scene needs complex VFX, a custom procedural component, or a one-off art direction, set `allow_bespoke_vfx` in `reusable_template_requirements` and request Remotion Clip Builder implementation.
 15. Keep handoff recommendations implementation-neutral: state the scene need, required inputs, constraints, output contract, approval notes, and definition of done. Let the Director create the actual `agent-handoff`.
 
 Return a visual pack matching `codex/contracts/scene-visual-pack.schema.json`, including project/channel fields, source asset ids, and evidence refs when available.
+
+## Media Manifest Policy
+
+If this skill consumes, references, requires, validates, or defers source media, approved web images, screenshots, provider clips, generated clips, Remotion assets, reusable template media, or public-projection needs, update the media asset manifest or return `manifest_actions[]`.
+
+Each manifest action must include `action`, `asset_id`, `canonical_path`, `remotion_public_path` and `static_file_path` when relevant, `rights_state`, `technical_metadata_state`, and `reason`.
+
+Use `deferred` for planned-but-not-yet-created media, assets awaiting approval, source visuals that should be recreated instead of copied, or media that must later be mirrored into Remotion `public/`. Visual plans should pass asset ids and manifest status downstream, not just descriptive clip ideas.

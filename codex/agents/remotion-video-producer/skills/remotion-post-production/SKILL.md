@@ -14,6 +14,7 @@ Workflow:
    - scene ids
    - frame start/end
    - selected visual candidate or Remotion clip package
+   - approved web image/screenshot asset id or source-card claim/evidence refs when those routes are selected
    - narration/audio segment
    - captions/subtitles
    - VFX clip packages and transitions
@@ -22,6 +23,8 @@ Workflow:
 2. Normalize media:
    - verify local paths
    - confirm required assets have media asset ids and Remotion `staticFile()` paths when rendered by Remotion
+   - reject `approved_web_image` routes that lack manifest-backed rights approval, local paths, or render-visible `staticFile()` paths
+   - reject `source_card_recreation` inputs that lack claim ids, source ids, evidence refs, or source report paths
    - check duration, resolution, fps, and decode support
    - trim or loop clips deterministically
    - avoid live network assets during render
@@ -47,8 +50,17 @@ Definition of done:
 - Composition can be previewed or rendered locally from the shared `remotion/` app or the approved project-specific Remotion app.
 - Timeline matches scenario duration.
 - Captions, audio, visuals, source clip packages, and VFX align by scene id through `codex/contracts/timeline-sync-plan.schema.json`.
+- Web-derived visuals remain provenance-safe: approved page images/screenshots are manifest-backed, and source-card recreations cite claim/source/evidence refs without copying unapproved page material.
 - Any template or package used is Remotion-native or explicitly approved as an exception.
 - Template-backed clips reference `codex/contracts/remotion-template.schema.json` artifacts and are consumed through their public props/contracts.
 - Complex VFX package risks and channel-format VFX extensions are surfaced into timeline/render QA, especially GPU-heavy effects, transparent overlays, media-heavy layers, and bespoke procedural effects.
 - Render command and output path are written into the render package.
 - Rendered outputs and sidecar artifacts are written back into the media asset manifest.
+
+## Media Manifest Policy
+
+If this skill consumes, creates, validates, normalizes, trims, mixes, renders, mirrors, or defers media files, parsed web source reports, approved web images/screenshots, captions, audio, SFX/music, Remotion public assets, timeline sidecars, thumbnails, previews, render outputs, or QA evidence, update the media asset manifest or return `manifest_actions[]`.
+
+Each manifest action must include `action`, `asset_id`, `canonical_path`, `remotion_public_path` and `static_file_path` when relevant, `rights_state`, `technical_metadata_state`, and `reason`.
+
+Use `deferred` for missing probes, unmapped `staticFile()` paths, render outputs not yet produced, or media waiting on rights/approval. A post-production package is not render-ready when required timeline media has no manifest-backed identity or explicit blocker.

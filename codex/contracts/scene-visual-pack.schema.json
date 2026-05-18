@@ -111,7 +111,7 @@
                 },
                 "route": {
                   "type": "string",
-                  "enum": ["remotion_generated", "ai_video_generation"]
+                  "enum": ["remotion_generated", "ai_video_generation", "source_card_recreation"]
                 },
                 "priority": {
                   "type": "string",

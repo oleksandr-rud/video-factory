@@ -92,3 +92,11 @@ Return this handoff summary:
 - Scene ids are preserved in audio, alignment, caption, and SRT filenames.
 - Timestamp alignment and caption export are planned when supported by the provider.
 - QA criteria exist before generation and are filled after generation.
+
+## Media Manifest Policy
+
+If this skill creates, consumes, validates, aligns, transcribes, exports, or defers narration audio, provider payload sidecars, timestamp alignment files, caption JSON, SRT files, or human narration files, update the media asset manifest or return `manifest_actions[]`.
+
+Each manifest action must include `action`, `asset_id`, `canonical_path`, `rights_state`, `technical_metadata_state`, and `reason`; include `remotion_public_path` and `static_file_path` when audio or captions are mirrored for Remotion.
+
+Use `deferred` when planned TTS, forced alignment, transcription, or caption files require approval or have not been generated yet. Timeline sync must receive manifest-backed audio/caption paths or explicit deferred actions.

@@ -62,13 +62,9 @@ def clean_text(value: str) -> str:
 
 def drop_none(value: Any) -> Any:
     if isinstance(value, dict):
-        return {
-            key: drop_none(item)
-            for key, item in value.items()
-            if item is not None and item != [] and item != {}
-        }
+        return {key: drop_none(item) for key, item in value.items() if item is not None}
     if isinstance(value, list):
-        return [drop_none(item) for item in value if item is not None and item != {}]
+        return [drop_none(item) for item in value if item is not None]
     return value
 
 
@@ -883,11 +879,39 @@ def main() -> int:
                         "rights_notes": args.rights_notes,
                         "confidence": "unknown",
                     }],
+                    "source_ledger": [{
+                        "source_id": source_id,
+                        "kind": args.kind,
+                        "path_or_url": args.url,
+                        "title": args.title,
+                        "owner": args.owner,
+                        "rights_state": "blocked",
+                        "reusable_scope": "do_not_use",
+                        "why_it_matters": "Robots rules disallow this URL for the configured user agent.",
+                        "missing_assets": ["Page was not fetched."],
+                        "confidence": "unknown",
+                    }],
+                    "claim_ledger": [],
+                    "reference_beats": [],
                     "findings": {
                         "rights_or_policy_risks": ["Robots rules disallow this URL for the configured user agent."],
                         "evidence_gaps": ["Page was not fetched."],
                         "confidence_notes": [json.dumps(robots)],
                     },
+                    "downstream_guidance": {
+                        "creative_producer": ["Do not use this source for script claims."],
+                        "visual_producer": ["Do not use page media or visual references from this source."],
+                        "video_critic": ["Treat any dependency on this blocked source as a provenance failure."],
+                    },
+                    "invalidation_impact": [{
+                        "impact_id": f"impact-{source_slug}-robots-blocked",
+                        "change_or_gap": "robots_disallow",
+                        "affected_artifacts": ["scenario", "visual_pack", "render", "critique"],
+                        "reason": "Source capture was blocked by robots rules.",
+                        "owner_agent": "channel-intelligence",
+                        "severity": "blocker",
+                        "recommended_action": "Use another approved source or obtain explicit user-provided content.",
+                    }],
                 }
                 write_json(output_path, analysis)
                 print(output_path)
@@ -1019,6 +1043,42 @@ def main() -> int:
             "notes": "Externally captured page screenshot.",
         })
 
+    source_ledger_entry = {
+        "source_id": source_id,
+        "asset_id": f"asset-{source_slug}-web-raw-html",
+        "kind": args.kind,
+        "path_or_url": args.url,
+        "local_path": relpath(raw_html_path, repo_root),
+        "title": metadata.get("title") or args.title,
+        "owner": metadata.get("publisher") or args.owner,
+        "rights_state": "needs_approval",
+        "reusable_scope": "project_only",
+        "why_it_matters": "Direct web source parsed for script claims, visual evidence candidates, and critique provenance.",
+        "missing_assets": limitations,
+        "confidence": "medium" if blocks else "low",
+    }
+    invalidation_impact = []
+    if claim_candidates:
+        invalidation_impact.append({
+            "impact_id": f"impact-{source_slug}-claims",
+            "change_or_gap": "web_claim_candidates_added",
+            "affected_artifacts": ["scenario", "producer_criteria", "visual_pack", "critique"],
+            "reason": "New parsed claim candidates can affect script wording, source cards, visual evidence choices, and factual review gates.",
+            "owner_agent": "channel-intelligence",
+            "severity": "minor",
+            "recommended_action": "Creative Producer should use claim_ledger entries only after source-support review.",
+        })
+    if images and not downloaded_images:
+        invalidation_impact.append({
+            "impact_id": f"impact-{source_slug}-image-approval",
+            "change_or_gap": "web_image_candidates_unapproved",
+            "affected_artifacts": ["visual_pack", "timeline_sync", "render", "critique"],
+            "reason": "Page image URLs were cataloged but not approved as local render media.",
+            "owner_agent": "visual-producer",
+            "severity": "minor",
+            "recommended_action": "Use source-card recreation or request approval before rendering page images.",
+        })
+
     analysis = drop_none({
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "analysis_id": analysis_id,
@@ -1068,6 +1128,7 @@ def main() -> int:
             "confidence": "medium" if blocks else "low",
             "captured_artifacts": captured_artifacts,
         }],
+        "source_ledger": [source_ledger_entry],
         "web_pages": [{
             "page_id": page_id,
             "source_id": source_id,
@@ -1110,6 +1171,7 @@ def main() -> int:
             }
             for item in claim_candidates
         ],
+        "reference_beats": [],
         "findings": {
             "source_claims": [
                 {
@@ -1157,6 +1219,7 @@ def main() -> int:
                 "Check that script claims trace back to claim_ledger/evidence_refs and that unapproved page images are not reused."
             ],
         },
+        "invalidation_impact": invalidation_impact,
     })
 
     paths = {
