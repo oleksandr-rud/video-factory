@@ -22,6 +22,7 @@ The system now has:
 
 - 8 agents
 - 48 local skills
+- 21 skills matching the full local hardening section template
 - 19 contracts
 - 7 local specs
 - persistent channel/project state
@@ -29,6 +30,8 @@ The system now has:
 - media asset manifests
 - Remotion project contracts
 - independent critic/review loop
+- skill-local scripts for one-skill Visual Producer provider helpers
+- repo-level agent audit script for script refs, Director handoff coverage, frontmatter, approval gates, and hardening status
 
 This is no longer just a prompt collection. It is a typed production workflow where agents exchange file-backed contracts and the Director owns the run ledger.
 
@@ -103,6 +106,7 @@ Relations:
 
 Gaps:
 
+- `decompose-video-request` is now hardened with production brief, path map, agent plan, approval gates, and handoff summary.
 - The Director has enough rules, but the autonomous run should eventually write a machine-readable invalidation graph, not only prose.
 - The Director handoff map must stay complete for every current agent-owned skill; missing map entries are a P0 routing issue.
 - Handoff creation should first be hardened in prompts/specs. Add a deterministic helper only later if real runs still miss required fields.
@@ -157,9 +161,9 @@ Relations:
 
 Gaps:
 
-- `visual-validation`, `clip-candidate-ranking`, `provider-clip-search`, `freepik-video-search`, and `pexels-video-search` are now strong; remaining visual skills should catch up.
+- `visual-validation`, `clip-candidate-ranking`, `provider-clip-search`, `freepik-video-search`, `pexels-video-search`, `visual-research-queries`, `visual-pack-plan`, and `ai-video-generation-brief` are now strong.
 - Provider search now stores candidate records before download and separates remote preview evidence from downloaded production media.
-- `visual-research-queries` should define query sets by route and preserve rejected query logic.
+- Freepik and Pexels one-skill helper scripts now live inside their skill bundles.
 
 ### InVideo AI Generator
 
@@ -175,10 +179,10 @@ Relations:
 
 Gaps:
 
-- Most skills lack explicit `Required Output` and `Definition Of Done` sections.
-- Model selection should write a structured route decision, not only a recommendation.
-- Prompt builder should require prompt versioning, reference asset ids, duration/aspect ratio constraints, and failure guardrails.
-- Generation iteration should define max variants, one-variable-change discipline, and stop conditions.
+- All InVideo AI Generator skills now include the local hardening sections.
+- Model selection writes a structured route decision, not only a recommendation.
+- Prompt builder requires scene/model/settings/reference/constraint fields and approval-aware reproducibility.
+- Generation iteration defines max variants, one-variable-change discipline, budget ceiling, fallback triggers, and stop conditions.
 - Generated clip QA should mirror Visual Validation's pass/fail evidence format.
 
 ### Remotion Clip Builder
@@ -262,24 +266,24 @@ Legend:
 | Creative Producer | `voice-casting` | Thin | Voice direction is qualitative and not contract-shaped. | Add voice direction object, scoring rubric, inherited channel rules, rejected styles, rights constraints, and selection rationale. |
 | Creative Producer | `elevenlabs-voice-selection` | Medium | Has workflow/scripts but not a compact output schema. | Add provider inventory snapshot path, ranked candidates, selected voice, approval state, continuity/risk notes, and dry-run evidence. |
 | Creative Producer | `tts-production-plan` | Strong | Recently upgraded. | Keep provider execution guarded; ensure human narration also uses the contract. |
-| Director | `decompose-video-request` | Medium | Good stage planning but should emit a standard production brief object. | Add structured brief, artifact paths, agent dependencies, initial handoffs, approvals, and project/channel state. |
+| Director | `decompose-video-request` | Strong | Hardened with structured production brief, artifact path map, agent plan, initial handoffs, approvals, media manifest policy, stop conditions, and handoff summary. | Keep as the Director's first planning gate before autonomous runs. |
 | Director | `producer-criteria-prompt` | Medium | Contract exists, but skill needs a stricter example return shape. | Add exact producer criteria summary, scene criteria coverage, hard gate ids, threshold defaults, and revision policy. |
 | Director | `autonomous-production-run` | Strong | Good run loop. | Add deterministic invalidation graph and handoff validation helper later. |
 | Director | `context-compaction` | Strong | New Director skill for durable resume summaries and reload lists. | Keep run-ledger context state authoritative; do not replace artifact contracts with prose summaries. |
 | Director | `quality-gated-review-loop` | Medium | Good policy, but rerun dependency graph should be more formal. | Add owner-to-rerun matrix and explicit stale artifact marking rules. |
-| Visual Producer | `visual-pack-plan` | Medium | Has done criteria but no JSON return shape. | Add scene pack summary, route decision evidence, fallback coverage, and handoff recommendations. |
-| Visual Producer | `visual-research-queries` | Thin | Query generation lacks provenance and rejection logic. | Add query groups by route/provider, expected evidence, rejected queries, and search stop criteria. |
+| Visual Producer | `visual-pack-plan` | Strong | Hardened with scene pack summary, route decision evidence, fallback coverage, approval needs, manifest policy, and handoff recommendations. | Keep as the visual routing contract before provider search or specialist handoffs. |
+| Visual Producer | `visual-research-queries` | Strong | Hardened with query groups by route/provider, expected evidence, rejected queries, provider priority, and search stop criteria. | Keep search provenance visible to provider skills and candidate ranking. |
 | Visual Producer | `provider-clip-search` | Strong | Hardened with canonical candidate storage, pre-download checks, scoped approval model, manifest policy, and handoff summary shape. | Keep provider-specific skills aligned with this general policy. |
 | Visual Producer | `freepik-video-search` | Strong | Hardened with Freepik-specific command policy, candidate storage, pre-download checks, separate download-link/file-download approval gates, manifest policy, and handoff summary shape. | Keep helper script flags aligned with the skill. |
 | Visual Producer | `pexels-video-search` | Strong | Hardened with Pexels-specific command policy, secondary-provider guidance, attribution/rate-limit evidence, guarded file downloads, manifest policy, and handoff summary shape. | Keep helper script flags aligned with the skill and Pexels API guidelines. |
-| Visual Producer | `ai-video-generation-brief` | Medium | Has DoD and correct handoff boundary. | Add structured brief object with prompt intent, references, constraints, fallback, and cost risk. |
+| Visual Producer | `ai-video-generation-brief` | Strong | Hardened with structured route brief, prompt intent, references, constraints, target settings, risk, fallback, and Director-routable handoff recommendation. | Keep provider-final prompt and generation package ownership in InVideo AI Generator. |
 | Visual Producer | `visual-validation` | Strong | Recently upgraded. | Use as validation template for generated clip QA. |
 | Visual Producer | `clip-candidate-ranking` | Strong | Hardened with required inputs, workflow, weighted scoring, evidence, primary/fallback/rejected decisions, manifest policy, stop conditions, and handoff summary. | Keep as the candidate-selection authority for timeline sync. |
-| InVideo AI Generator | `invideo-model-selection` | Thin | No structured model decision or approval risk object. | Add route decision, model limits, duration/aspect ratio, quality mode, cost risk, fallback model, and assumptions. |
-| InVideo AI Generator | `ai-video-prompt-builder` | Thin | Prompt shape is underspecified for reproducibility. | Add positive prompt, negative constraints, prompt guide notes, references, model settings, version, and blocked terms. |
-| InVideo AI Generator | `negative-prompt-guardrails` | Thin | Good heuristic but no output object. | Add unsupported negatives, converted positive constraints, artifact prevention checklist, and model-specific notes. |
-| InVideo AI Generator | `generation-approval-package` | Thin | Approval packet needs exact fields. | Add prompt, model, duration, aspect ratio, resolution, variant count, credit estimate, approval state, and expiry. |
-| InVideo AI Generator | `generation-iteration-plan` | Thin | Variants and rerolls are not bounded enough. | Add max variants, one-variable-change plan, QA target, retry stop conditions, and cost ceiling. |
+| InVideo AI Generator | `invideo-model-selection` | Strong | Hardened with route decision, model limits, duration/aspect ratio, quality mode, cost risk, fallback model, assumptions, approval need, and manifest deferrals. | Keep model/provider limits marked unknown rather than guessed. |
+| InVideo AI Generator | `ai-video-prompt-builder` | Strong | Hardened with positive prompt, negative constraints, prompt guide notes, references, model settings, residual risks, approval gates, and reproducibility fields. | Keep provider submission blocked until approval package is approved. |
+| InVideo AI Generator | `negative-prompt-guardrails` | Strong | Hardened with `negative_prompt_mode`, positive rewrites, prompt-guide constraints, unsupported constraints, contradiction check, and residual risks. | Keep negative prompts compatible with provider support and do not use them as rights/safety bypasses. |
+| InVideo AI Generator | `generation-approval-package` | Strong | Hardened with exact generation dialog fields, credit/cost estimate, approval state/scope, expiry/staleness notes, reference rights checks, and blocked state. | Any field change after approval requires re-approval. |
+| InVideo AI Generator | `generation-iteration-plan` | Strong | Hardened with max variants, one-variable-change plan, QA target per variant, budget ceiling, retry stop conditions, fallback triggers, and version lineage. | Keep rerolls bounded by approved scope and QA evidence. |
 | InVideo AI Generator | `generated-clip-qa` | Strong | Hardened with pass/fail dimensions, candidate/package updates, generated output ids, rights state, manifest policy, reroll recommendation, and stop conditions. | Keep aligned with `visual-validation` evidence style. |
 | Remotion Clip Builder | `remotion-scene-plan` | Thin | Needs more implementation-ready details. | Add component plan, props schema, asset needs, composition id, timing map, stack decision, and preview plan. |
 | Remotion Clip Builder | `remotion-template-library` | Medium | New template authority exists and has a solid shape, but it must stay aligned with registry/project contract updates. | Require selected/new template decision, template contract path, registry update evidence, instance clip package path, and versioning rules. |

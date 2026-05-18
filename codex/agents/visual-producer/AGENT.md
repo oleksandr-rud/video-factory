@@ -22,6 +22,15 @@ Do not read or call downstream agent skills directly. When specialist work is ne
 - `invideo-ai-generator`: use when a scene route is `ai_video_generation` and needs provider/model feasibility, model-ready prompts, approval packets, variants, generation, or generated clip QA.
 - `remotion-clip-builder`: use when a scene route is `remotion_generated` or `source_card_recreation` and needs a deterministic 5-20 second clip, component template, source card, motion graphic, VFX overlay, or Remotion clip package.
 
+## Local Script Resources
+
+Provider search helpers are skill-bundled because each helper belongs to one provider skill:
+
+- `skills/freepik-video-search/scripts/search_freepik_videos.py`
+- `skills/pexels-video-search/scripts/search_pexels_videos.py`
+
+Do not add a new provider helper under an agent-level `scripts/` folder unless more than one Visual Producer skill uses it.
+
 ## Inputs
 
 - Scenario artifact

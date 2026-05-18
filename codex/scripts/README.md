@@ -29,6 +29,18 @@ python codex/scripts/openrouter_video_request.py `
 
 Use `codex/agents/video-critic/scripts/run_openrouter_video_critique.py` for production critique reports because it loads review assets, production artifacts, sampled frames, and writes `critique-report.schema.json`.
 
+## Agent System Audit
+
+`codex/scripts/audit_agent_system.py` checks the project-internal skill inventory, Director handoff coverage, skill script references, approval-gate wording for API/paid-looking skills, and the local hardening section template.
+
+Run:
+
+```powershell
+python codex/scripts/audit_agent_system.py
+```
+
+Use `--json` for a machine-readable report and `--strict` in CI-style checks when missing script references, handoff drift, missing frontmatter, or missing approval-gate wording should fail the command.
+
 ## Reference Video Analysis
 
 `codex/agents/channel-intelligence/scripts/analyze_reference_video.py` prepares deterministic reference-video evidence for Channel Intelligence. It writes `reference-analysis.schema.json`-shaped output plus sidecars such as `probe.json`, `scenes.json`, `frame-samples.json`, and `keyframes/`. It does not call paid or cloud models by default.

@@ -22,10 +22,10 @@ Read `../../references/video-search-providers.md` before using Pexels.
 
 1. Select Pexels as a secondary stock route when Freepik/Magnific is unavailable, returns weak matches, or a free stock fallback is preferable.
 2. Convert each scene query into a concise search term plus optional `orientation`, `size`, and `locale` notes.
-3. Dry-run first: run `../../scripts/search_pexels_videos.py` without `--execute` to write the request plan. This does not call the API.
+3. Dry-run first: run `scripts/search_pexels_videos.py` from this skill bundle without `--execute` to write the request plan. This does not call the API.
 4. Execute search only when Pexels API search is approved:
    ```powershell
-   python codex/agents/visual-producer/scripts/search_pexels_videos.py --term "<query>" --scene-id "<scene-id>" --output "<search-results-path>" --candidate-dir "<project>/visuals/candidates" --execute --approved-api-search
+   python codex/agents/visual-producer/skills/pexels-video-search/scripts/search_pexels_videos.py --term "<query>" --scene-id "<scene-id>" --output "<search-results-path>" --candidate-dir "<project>/visuals/candidates" --execute --approved-api-search
    ```
    `--approved` is accepted as a legacy alias for API search only.
 5. Store normalized search artifacts:
@@ -46,7 +46,7 @@ Read `../../references/video-search-providers.md` before using Pexels.
    - continuity and safe-area risk
 9. Save downloaded files only when file download/storage is approved:
    ```powershell
-   python codex/agents/visual-producer/scripts/search_pexels_videos.py --term "<query>" --scene-id "<scene-id>" --output "<search-results-path>" --candidate-dir "<project>/visuals/candidates" --execute --approved-api-search --save-downloads --approved-file-download --download-video-id "<pexels-video-id>" --download-dir "<project>/source-media/provider-clips/pexels/<candidate-id>"
+   python codex/agents/visual-producer/skills/pexels-video-search/scripts/search_pexels_videos.py --term "<query>" --scene-id "<scene-id>" --output "<search-results-path>" --candidate-dir "<project>/visuals/candidates" --execute --approved-api-search --save-downloads --approved-file-download --download-video-id "<pexels-video-id>" --download-dir "<project>/source-media/provider-clips/pexels/<candidate-id>"
    ```
    The Pexels API search response already contains `video_files[].link`; there is no separate download-link retrieval endpoint. API-search approval must account for these direct file URLs being present in search output.
 10. After download, update the candidate `local_path`, `status: downloaded`, and media manifest entry before ranking or timeline use.

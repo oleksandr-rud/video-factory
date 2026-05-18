@@ -13,6 +13,9 @@ Current repo inventory from local scan:
 - Example fixtures: `codex/examples/production-run.template.json`
 - Duplicate skill names: 0
 - Missing Director handoff map entries: 0
+- Strong skills by hardening template: 21
+- Missing skill script references: 0
+- API/paid-looking skills missing approval terms: 0
 - Durable channel/project examples in `channels/`: none beyond `channels/.gitkeep`
 
 ## Hardening Standard
@@ -71,7 +74,7 @@ Validation-style skills should additionally return item findings shaped like thi
 
 ## Current Decision
 
-Do not add new helper scripts as the first fix. Harden prompts, skill specs, and contract usage first. Add deterministic validators only after real autonomous runs show repeated drift.
+Harden prompts, skill specs, and contract usage before adding production helpers. A repo-level maintenance audit now exists at `codex/scripts/audit_agent_system.py`; it checks skill script references, Director handoff coverage, approval-gate wording, frontmatter, and section-hardening status without changing production artifacts.
 
 The integrated architecture already has the right direction:
 
@@ -219,23 +222,23 @@ Acceptance criteria:
 
 | Skill | Current problem | Required hardening |
 |---|---|---|
-| `visual-pack-plan` | Output shape is still prose-oriented. | Add scene-pack summary shape with route rationale, primary/fallback route, `needs_specialist_feasibility`, template hints, approval notes, and handoff recommendation fields. |
-| `visual-research-queries` | Query provenance and stop criteria are loose. | Add query groups by route/provider, positive/negative criteria, rejected query terms, expected evidence, provider priority, and search stop conditions. |
+| `visual-pack-plan` | Strong after route/manifest/handoff hardening. | Keep scene-pack summary shape with route rationale, primary/fallback route, specialist handoff recommendations, template hints, approval notes, and manifest actions. |
+| `visual-research-queries` | Strong after query provenance hardening. | Keep query groups by route/provider, positive/negative criteria, rejected query terms, expected evidence, provider priority, and search stop conditions. |
 | `provider-clip-search` | Strong after hardening. | Keep as the general provider-search policy: canonical candidate storage, pre-download checks, scoped approvals, manifest policy, and handoff summary shape. |
 | `freepik-video-search` | Strong after hardening. | Keep script flags and provider reference aligned with separate API-search, download-link, and file-download approvals. |
 | `pexels-video-search` | Strong after hardening. | Keep script flags and provider reference aligned with secondary-provider policy, API attribution/rate-limit evidence, and separate file-download approval. |
-| `ai-video-generation-brief` | Route brief needs exact shape. | Add `scene_id`, `visual_goal`, `prompt_intent`, `references`, `constraints`, `risk_estimate`, `fallback_route`, and `handoff_recommendation`. |
+| `ai-video-generation-brief` | Strong after route-brief hardening. | Keep `scene_id`, prompt intent, references, constraints, risk estimate, fallback route, and Director-routable handoff recommendation explicit. |
 | `visual-validation` | Strong. | Keep as reference pattern for generated clip QA and artifact audit. |
 
 ### InVideo AI Generator
 
 | Skill | Current problem | Required hardening |
 |---|---|---|
-| `invideo-model-selection` | Model decision is recommendation-shaped. | Add route decision object with quality mode, model, duration/aspect/resolution limits, input types, cost risk, cheaper fallback, non-AI fallback, assumptions, and approval requirement. |
-| `ai-video-prompt-builder` | Prompt output lacks reproducibility fields. | Add prompt version id, scene id, model route, positive prompt, prompt guide notes, reference asset ids, settings, constraints, blocked terms, and known failure modes. |
-| `negative-prompt-guardrails` | Heuristic exists but output object is thin. | Add `negative_prompt_mode`, separate field or positive rewrite, unsupported constraints, contradiction check, and residual risk list. |
-| `generation-approval-package` | Approval packet fields need stricter shape. | Require exact generation dialog fields, credit/cost estimate, approval id/status, expiry/staleness notes, and blocked state when missing approval. |
-| `generation-iteration-plan` | Variant strategy is not bounded enough. | Add max variants, one-variable-change table, QA target per variant, budget ceiling, retry stop conditions, fallback triggers, and version lineage. |
+| `invideo-model-selection` | Strong after route-decision hardening. | Keep quality mode, model, duration/aspect/resolution limits, input types, cost risk, cheaper fallback, non-AI fallback, assumptions, and approval requirement explicit. |
+| `ai-video-prompt-builder` | Strong after prompt package hardening. | Keep scene id, model route, positive prompt, negative constraints, prompt guide notes, reference asset ids, settings, blocked terms, and residual risks reproducible. |
+| `negative-prompt-guardrails` | Strong after output-shape hardening. | Keep `negative_prompt_mode`, separate field or positive rewrite, unsupported constraints, contradiction check, and residual risk list explicit. |
+| `generation-approval-package` | Strong after approval-packet hardening. | Require exact generation dialog fields, credit/cost estimate, approval id/status, expiry/staleness notes, and blocked state when missing approval. |
+| `generation-iteration-plan` | Strong after bounded-variant hardening. | Keep max variants, one-variable-change table, QA target per variant, budget ceiling, retry stop conditions, fallback triggers, and version lineage. |
 
 ### Remotion Clip Builder
 
@@ -283,7 +286,7 @@ Add these only after prompt/spec hardening, or when real runs show repeated drif
 
 - Optional `validate_artifact.py`: validate JSON against schemas, check required paths, no API calls, no destructive writes, no creative judgment.
 - Optional handoff validator: check persisted `agent-handoff` files for existing skills, allowed paths, output contracts, budget policy, and stop conditions.
-- Optional inventory script: generate counts and catch stale docs if manual counts keep drifting.
+- Completed inventory/audit script: `codex/scripts/audit_agent_system.py` generates counts and catches stale script refs, Director handoff drift, approval-gate wording gaps, and section-hardening status.
 - Optional Remotion app setup checker: only if checklist-based Remotion setup fails repeatedly.
 - Golden prompts and fixture artifacts for each contract.
 - Remotion template override examples for project > channel > shared resolution.
@@ -345,6 +348,18 @@ Started for Channel Intelligence evidence-graph hardening:
 2. [x] Add explicit `reference_beats[]`, beat-level evidence categories, do-not-copy risks, confidence, and invalidation impact requirements to `reference-video-breakdown`.
 3. [x] Keep both skills contract-compatible without adding schemas by using additive fields in `reference-analysis` artifacts.
 
+## Sixth Implementation Batch
+
+Started for skill-bundle layout and high-risk routing hardening:
+
+1. [x] Move one-skill Visual Producer provider scripts into skill-local `scripts/` folders.
+2. [x] Document script placement rules in `AGENTS.md` and `agent-responsibility-map.md`.
+3. [x] Add `codex/scripts/audit_agent_system.py` for skill script refs, Director handoff coverage, frontmatter, approval gates, and hardening status.
+4. [x] Harden `visual-research-queries`, `visual-pack-plan`, and `ai-video-generation-brief`.
+5. [x] Harden all InVideo AI Generator skills to the local hardening template.
+6. [x] Harden `decompose-video-request` with production brief, path map, agent plan, approval gates, and handoff summary.
+7. [x] Add missing approval stop language to `redundancy-risk-audit`, `voice-casting`, and `remotion-vfx-clip`.
+
 ## Validation Commands
 
 Use local scans before adding new scripts:
@@ -352,6 +367,7 @@ Use local scans before adding new scripts:
 ```powershell
 Get-ChildItem -Path codex\agents -Recurse -Filter SKILL.md
 rg -n "## Inputs|## Workflow|## Required Output|## Contract Fields Populated|## Status Policy|## Evidence Required|## Media Manifest Policy|## Approval And Stop Conditions|## Definition Of Done|## Handoff Summary Shape" codex\agents
+python codex/scripts/audit_agent_system.py --strict
 ```
 
 Existing Remotion validation to keep using when Remotion code changes:

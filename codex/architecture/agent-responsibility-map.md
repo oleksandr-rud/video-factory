@@ -19,6 +19,19 @@ The architecture is a Director-managed production system. Production agents own 
 
 Paid APIs, credit usage, licensed downloads, voice generation, cloud transcription/alignment, paid critique, paid Remotion templates, likeness-sensitive work, and release-gate waivers require explicit user approval before execution.
 
+## Skill Resource Layout
+
+Video Factory skills are project-internal production playbooks, but they should still use the Codex skill-bundle convention where possible:
+
+| Resource type | Location policy |
+|---|---|
+| One-skill deterministic helper | `codex/agents/<agent>/skills/<skill-name>/scripts/` |
+| Multiple skills in one agent | `codex/agents/<agent>/scripts/` or `codex/agents/<agent>/tools/`, documented as agent-shared |
+| Cross-agent reusable helper | repo-level `codex/scripts/` or `codex/tools/` |
+| User-facing repeatable command | stable CLI plus a companion skill that documents inputs, approvals, outputs, and validation |
+
+This keeps portable skill resources close to the skill while preserving the production-agent boundary: agents do not execute another production agent's skill scripts. Cross-agent helpers should be promoted to repo-level tooling instead of being hidden under one agent folder.
+
 ## Local Reference And Spec Inventory
 
 Architecture and global specs:
@@ -374,6 +387,11 @@ Own scene-level visual decisions before editing: visual pack planning, research 
 - `codex/contracts/producer-criteria.schema.json`
 - Brand/style constraints, source assets, provider availability, credentials, budget policy, and license policy.
 
+### Skill-Bundled Scripts
+
+- `codex/agents/visual-producer/skills/freepik-video-search/scripts/search_freepik_videos.py`
+- `codex/agents/visual-producer/skills/pexels-video-search/scripts/search_pexels_videos.py`
+
 ### Owns Or Writes
 
 - `codex/contracts/scene-visual-pack.schema.json`
@@ -415,7 +433,7 @@ Own scene-level visual decisions before editing: visual pack planning, research 
 
 ### Analysis Notes
 
-Visual Producer owns the critical route-selection boundary. `visual-validation`, `clip-candidate-ranking`, `provider-clip-search`, `freepik-video-search`, and `pexels-video-search` are now strong. Remaining visual hardening should focus on query provenance in `visual-research-queries` and richer route evidence in `visual-pack-plan`; media manifest policy is now present in the visual media-touching skills.
+Visual Producer owns the critical route-selection boundary. `visual-validation`, `clip-candidate-ranking`, `provider-clip-search`, `freepik-video-search`, `pexels-video-search`, `visual-research-queries`, `visual-pack-plan`, and `ai-video-generation-brief` are now strong by the local hardening template. Freepik and Pexels one-skill helper scripts now live inside their provider skill bundles; shared provider policy stays in `provider-clip-search`.
 
 ## InVideo AI Generator
 
@@ -483,7 +501,7 @@ Own InVideo AI and model-backed AI video clip generation packages. It turns appr
 
 ### Analysis Notes
 
-This agent exists because AI generation is credit-sensitive and provider-specific. The reference doc is clear, but most skills should still be hardened with explicit required outputs: model decision object, prompt version object, negative prompt mode, cost estimate, approval state, variant plan, generated output ids, and pass/fail QA evidence aligned with Visual Producer validation.
+This agent exists because AI generation is credit-sensitive and provider-specific. All InVideo AI Generator skills are now strong by the local hardening template: model decision, prompt package, negative prompt mode, approval packet, bounded iteration plan, generated output ids, and pass/fail QA evidence are contract-shaped and approval-gated.
 
 ## Remotion Clip Builder
 
@@ -794,10 +812,10 @@ Every artifact that affects delivery should preserve at least one trace:
 
 ## Current Gaps And Recommended Hardening
 
-1. Manual inventory counts remain fragile; current scan is 48 local skills and 19 contracts.
+1. Manual inventory counts are now supported by `codex/scripts/audit_agent_system.py`; current scan is 48 local skills, 43 non-Director skills, 43 Director handoff refs, 21 strong skills, and 19 contracts.
 2. The first four critical judgment/QA skills are now hardened: `clip-candidate-ranking`, `generated-clip-qa`, `render-qa`, and `artifact-consistency-audit`.
-3. Next thin skills before reliable autonomous runs: `subtitle-caption-pipeline`, `remotion-post-production`, and the thinner Channel Intelligence skills.
-4. Deterministic handoff validation should stay optional until real runs show repeated drift; prompt/spec hardening is the current priority.
+3. Next thin skills before reliable autonomous runs: `subtitle-caption-pipeline`, `remotion-post-production`, Remotion Clip Builder planning/VFX skills, Creative `write-scenario`/`voice-casting`, and the thinner Channel Intelligence skills.
+4. Deterministic handoff validation should stay optional until real runs show repeated drift; the current audit script covers static handoff map drift and script-reference drift.
 5. Every media-producing skill should either update the media asset manifest or explicitly state why no media manifest update was possible.
 6. Timeline helpers now default to consuming Visual Producer selections and can only choose repair fallback visuals through explicit Director-reviewed repair mode.
 7. Review assets and paid model critique need reproducibility fields: prompt path, request preview path, raw response path, model, review mode, frame list, and limitations.

@@ -32,3 +32,7 @@ description: Select voice direction for a video scenario, including tone, gender
 5. Flag rights or consent issues for cloned, branded, celebrity-like, or real-person voices.
 
 Return a voice direction brief, inherited source notes, suitability rubric, provider constraints, and pronunciation requirements. If ElevenLabs is the chosen provider, pass the brief to `elevenlabs-voice-selection` so it can rank actual available voices instead of inventing a voice profile.
+
+## Approval And Stop Conditions
+
+Stop and return `needs_approval` before voice cloning, celebrity-like imitation, branded/person-specific voice matching, paid provider generation, or use of a real person's voice without explicit rights confirmation. Voice direction may be planned before approval; provider generation and rights-sensitive matching may not.

@@ -16,3 +16,7 @@ Workflow:
 5. Flag platform/policy risk when the plan looks mass-produced, repetitive, or insufficiently transformed from borrowed content.
 
 Return risk level, evidence, and concrete changes needed before downstream production.
+
+## Approval And Stop Conditions
+
+Return `needs_approval` when the only viable fix depends on licensed source reuse, copied reference material, paid provider work, or a user waiver of platform/reused-content risk. Stop and route to the Director when the audit finds material that may be too repetitive, insufficiently transformed, or rights-sensitive for the intended channel.

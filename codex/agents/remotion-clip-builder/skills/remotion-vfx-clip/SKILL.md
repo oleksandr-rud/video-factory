@@ -48,3 +48,7 @@ If this skill consumes, creates, validates, renders, mirrors, or defers local me
 Each manifest action must include `action`, `asset_id`, `canonical_path`, `remotion_public_path` and `static_file_path` when relevant, `rights_state`, `technical_metadata_state`, and `reason`.
 
 Use `deferred` for planned renders, missing media probes, public projection work that has not happened yet, or outputs blocked by render failures. Clip packages must cite manifest-backed `source_asset_ids` and `output_asset_ids` when files exist.
+
+## Approval And Stop Conditions
+
+Stop and return `needs_approval` before using paid Remotion Pro templates, paid VFX assets, licensed stock, unapproved source images/screenshots, external generation tools, or remote render-time media. Stop and return `blocked` when required VFX cannot render locally, cannot meet alpha/export requirements, or would obscure required captions, source disclosures, or platform-safe areas.

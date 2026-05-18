@@ -22,10 +22,10 @@ Read `../../references/video-search-providers.md` before using Freepik/Magnific.
 
 1. Select Freepik only when stock footage is a practical route for the scene.
 2. Convert each scene query into a concise search term plus filter/order/language notes.
-3. Dry-run first: run `../../scripts/search_freepik_videos.py` without `--execute` to write the request plan. This does not call the API.
+3. Dry-run first: run `scripts/search_freepik_videos.py` from this skill bundle without `--execute` to write the request plan. This does not call the API.
 4. Execute search only when provider API search is approved:
    ```powershell
-   python codex/agents/visual-producer/scripts/search_freepik_videos.py --term "<query>" --scene-id "<scene-id>" --output "<search-results-path>" --candidate-dir "<project>/visuals/candidates" --execute --approved-api-search
+   python codex/agents/visual-producer/skills/freepik-video-search/scripts/search_freepik_videos.py --term "<query>" --scene-id "<scene-id>" --output "<search-results-path>" --candidate-dir "<project>/visuals/candidates" --execute --approved-api-search
    ```
    `--approved` is accepted as a legacy alias for API search only.
 5. Normalize search results into candidate files:
@@ -45,11 +45,11 @@ Read `../../references/video-search-providers.md` before using Freepik/Magnific.
    - safe-area/crop risk
 9. Request download links only when approved:
    ```powershell
-   python codex/agents/visual-producer/scripts/search_freepik_videos.py --term "<query>" --scene-id "<scene-id>" --output "<search-results-path>" --candidate-dir "<project>/visuals/candidates" --execute --approved-api-search --request-download-links --approved-download-links
+   python codex/agents/visual-producer/skills/freepik-video-search/scripts/search_freepik_videos.py --term "<query>" --scene-id "<scene-id>" --output "<search-results-path>" --candidate-dir "<project>/visuals/candidates" --execute --approved-api-search --request-download-links --approved-download-links
    ```
 10. Save downloaded files only when file download/storage is approved:
    ```powershell
-   python codex/agents/visual-producer/scripts/search_freepik_videos.py --term "<query>" --scene-id "<scene-id>" --output "<search-results-path>" --candidate-dir "<project>/visuals/candidates" --execute --approved-api-search --request-download-links --approved-download-links --save-downloads --approved-file-download --download-dir "<project>/source-media/provider-clips/freepik/<candidate-id>"
+   python codex/agents/visual-producer/skills/freepik-video-search/scripts/search_freepik_videos.py --term "<query>" --scene-id "<scene-id>" --output "<search-results-path>" --candidate-dir "<project>/visuals/candidates" --execute --approved-api-search --request-download-links --approved-download-links --save-downloads --approved-file-download --download-dir "<project>/source-media/provider-clips/freepik/<candidate-id>"
    ```
 11. After download, update the candidate `local_path`, `status: downloaded`, and media manifest entry before ranking or timeline use.
 
