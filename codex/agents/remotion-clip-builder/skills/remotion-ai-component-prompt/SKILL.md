@@ -8,6 +8,7 @@ description: Design prompts and guardrails for generating Remotion-only motion g
 Use this for text-to-motion-graphics work. It borrows workflow ideas from Remotion's Prompt to Motion Graphics SaaS template, but this repo uses Codex with filesystem access, so generated components should be written into the project and validated with local preview/render checks.
 
 Before generating a new component, use `../remotion-template-library/SKILL.md` when an existing reusable template might satisfy the brief. Generated code that is meant to be reused must also produce a template contract matching `codex/contracts/remotion-template.schema.json`.
+For generated components with complex VFX, media layers, transparency, WebGL/Three/Skia/Canvas, large text effects, particles, blur, shadows, or repeated use, run `../vfx-quality-performance-hardening/SKILL.md` before accepting the code.
 
 ## Prompt Contract
 
@@ -45,6 +46,7 @@ Ask for a Remotion component package, not a website component:
    - `code`
    - `props_schema`
    - `preview_frames`
+   - `vfx_profile` when quality/performance hardening is required
    - `notes`
 4. Sanitize output before writing:
    - strip markdown fences

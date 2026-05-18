@@ -19,6 +19,7 @@ channels/<channel-slug>/
     typography/
     imagery/
   formats/
+    <format-slug>.json
   references/
     source-ledger.json
     reference-videos/
@@ -41,6 +42,8 @@ channels/<channel-slug>/
       voiceover/
       visuals/
         candidates/
+          search-results/
+          <scene-id>/
       source-media/
         loaded-videos/
         provider-clips/
@@ -78,6 +81,7 @@ Use projects, not top-level runs, under a channel.
 - A project can contain multiple runs when revisions, regenerations, or review-loop attempts happen.
 - Render candidates live under `renders/`; historical execution ledgers live under `runs/`.
 - Source media and rendered clips live under the project, then are copied or mirrored into the Remotion app `public/` tree only when Remotion must load them through `staticFile()`.
+- Clip candidate records live under `visuals/candidates/`; downloaded provider media lives under `source-media/provider-clips/`. Do not treat provider search result JSON or preview URLs as downloaded production media.
 - The project index should track both the project-local staging folder `remotion/public-projection/` and the actual Remotion-visible folder `remotion/public/channels/<channel-slug>/projects/<project-slug>/`.
 
 ## Production Linkage
@@ -87,9 +91,10 @@ Use projects, not top-level runs, under a channel.
 - `media-asset-manifest.schema.json` is the project-local ledger for loaded media, generated/rendered assets, rights state, technical metadata, and evidence refs.
 - `remotion-project.schema.json` describes the shared or project-specific Remotion app, composition registry, commands, dependencies, and public asset policy.
 - `channel-format.schema.json` is a production-ready format package derived from the channel profile plus current references.
+- Per-channel format files under `formats/` may extend shared VFX hardening rules through `visual_system.vfx_rules`; these extensions should be passed downstream by `channel_format_path` and copied into producer criteria or VFX rule refs when they affect a scene.
 - `scenario.schema.json`, `voiceover-package.schema.json`, `producer-criteria.schema.json`, and `production-run.schema.json` carry channel profile ids/paths so every video can trace its inherited rules.
 - Creative Producer inherits voice direction from `channel_profile.audio_identity.voice_profile` before choosing a provider voice.
-- Visual Producer and Remotion agents inherit colors, typography, caption style, motion rules, thumbnail rules, and asset paths from the channel profile through the channel format.
+- Visual Producer and Remotion agents inherit colors, typography, caption style, motion rules, thumbnail rules, VFX rule extensions, and asset paths from the channel profile through the channel format.
 
 ## Voice Inheritance
 

@@ -5,10 +5,10 @@ This is the per-agent inventory and analysis for the current Video Factory archi
 Local scan summary:
 
 - Agents: 8
-- Local agent skills: 44
+- Local agent skills: 46
 - Contract schemas: 19
 - Specs: 7
-- Agent reference docs: 3
+- Agent reference docs: 4
 - Shared Remotion template contracts: 4
 - Channel project artifacts currently present: none beyond `channels/.gitkeep`
 
@@ -37,6 +37,7 @@ Agent-local reference docs:
 - `codex/agents/channel-intelligence/references/reference-analysis-dimensions.md`: dimensions for reference video, web/blog source, and channel format analysis.
 - `codex/agents/invideo-ai-generator/references/invideo-ai-generation.md`: InVideo routes, model notes, positive prompt structure, negative prompt policy, and generation checklist.
 - `codex/agents/remotion-clip-builder/references/remotion-component-stack.md`: Remotion-native stack, official templates, packages, dependency guardrails, and local template rules.
+- `codex/agents/visual-producer/references/video-search-providers.md`: provider search notes for Freepik/Magnific and related visual search routes.
 - `codex/agents/video-critic/references/video-critique-rubric.md`: final critique rubric for viewer outcome, story/source fit, visuals, audio/captions, platform/delivery, and finding severity.
 
 Shared Remotion runtime artifacts:
@@ -340,7 +341,7 @@ Own scene-level visual decisions before editing: visual pack planning, research 
 - Decide practical scene routes: `remotion_generated`, `ai_video_generation`, `stock_clip`, or `user_supplied_media`.
 - Apply channel style rules and reference evidence without copying references shot-for-shot.
 - Separate "can be searched" from "can be used"; rights and technical fit must be validated.
-- Keep provider, URL, prompt/query, media asset id, license summary, and technical metadata with every candidate when available.
+- Keep provider, URL, prompt/query, candidate path, media asset id, license summary, and technical metadata with every candidate when available.
 - Prefer continuity across the whole video over a single impressive clip.
 - Penalize expensive generation/licensing when a good deterministic route exists.
 - Do not perform InVideo model selection, provider-ready prompt construction, generation approval, generated clip QA, Remotion component planning, or Remotion implementation.
@@ -352,6 +353,7 @@ Own scene-level visual decisions before editing: visual pack planning, research 
 - `codex/agents/visual-producer/skills/visual-pack-plan/SKILL.md`
 - `codex/agents/visual-producer/skills/visual-research-queries/SKILL.md`
 - `codex/agents/visual-producer/skills/provider-clip-search/SKILL.md`
+- `codex/agents/visual-producer/skills/freepik-video-search/SKILL.md`
 - `codex/agents/visual-producer/skills/ai-video-generation-brief/SKILL.md`
 - `codex/agents/visual-producer/skills/visual-validation/SKILL.md`
 - `codex/agents/visual-producer/skills/clip-candidate-ranking/SKILL.md`
@@ -407,7 +409,7 @@ Own scene-level visual decisions before editing: visual pack planning, research 
 
 ### Analysis Notes
 
-Visual Producer owns the critical route-selection boundary. `visual-validation` is strong and should be the model for other validation skills. Search, ranking, and provider candidate normalization remain thin; they need structured output, query provenance, tie-breakers, fallback coverage, and explicit rights/technical evidence before high-autonomy runs.
+Visual Producer owns the critical route-selection boundary. `visual-validation`, `clip-candidate-ranking`, `provider-clip-search`, and `freepik-video-search` are now strong. Remaining visual hardening should focus on query provenance in `visual-research-queries`, richer route evidence in `visual-pack-plan`, and strict media manifest propagation.
 
 ## InVideo AI Generator
 
@@ -786,10 +788,12 @@ Every artifact that affects delivery should preserve at least one trace:
 
 ## Current Gaps And Recommended Hardening
 
-1. Count drift exists in the docs: the integrated spec says 41 local skills and 18 contracts, but the current repo scan found 44 local skills and 19 contracts.
-2. Several thin skills should be upgraded before reliable autonomous runs: `clip-candidate-ranking`, `provider-clip-search`, `render-qa`, `render-release-candidate`, `generated-clip-qa`, `artifact-consistency-audit`, and the thinner Channel Intelligence skills.
-3. A deterministic handoff validation helper would reduce Director errors in paths, target skills, output contracts, and approval policy.
-4. Every media-producing skill should either update the media asset manifest or explicitly state why no media manifest update was possible.
-5. Review assets and paid model critique need reproducibility fields: prompt path, request preview path, raw response path, model, review mode, frame list, and limitations.
-6. Remotion template governance is now present, but project/channel template override examples are still needed.
-7. Current `channels/` has no durable project artifacts yet, so the next real production run should generate example channel profile, project, manifest, run ledger, and criteria artifacts.
+1. Manual inventory counts remain fragile; current scan is 46 local skills and 19 contracts.
+2. The first four critical judgment/QA skills are now hardened: `clip-candidate-ranking`, `generated-clip-qa`, `render-qa`, and `artifact-consistency-audit`.
+3. Next thin skills before reliable autonomous runs: `render-release-candidate`, `timeline-sync-plan`, and the thinner Channel Intelligence skills.
+4. Deterministic handoff validation should stay optional until real runs show repeated drift; prompt/spec hardening is the current priority.
+5. Every media-producing skill should either update the media asset manifest or explicitly state why no media manifest update was possible.
+6. Timeline helpers must consume Visual Producer selections and must not silently become creative visual-ranking authorities.
+7. Review assets and paid model critique need reproducibility fields: prompt path, request preview path, raw response path, model, review mode, frame list, and limitations.
+8. Remotion template governance is now present, but project/channel template override examples are still needed.
+9. Current `channels/` has no durable project artifacts yet, so the next real production run should generate example channel profile, project, manifest, run ledger, and criteria artifacts.

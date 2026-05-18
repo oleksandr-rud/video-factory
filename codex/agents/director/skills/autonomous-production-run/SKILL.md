@@ -22,6 +22,7 @@ Use this after `decompose-video-request` when the user wants a full run, `/goal`
    - Include the project path in downstream handoff inputs once it exists.
    - Include the media asset manifest path, Remotion project contract path, and relevant Remotion template registry/contract paths in downstream handoff inputs once they exist.
    - Include the channel profile path in downstream handoff inputs once it exists.
+   - Include the channel format path in downstream handoff inputs once it exists, especially when `visual_system.vfx_rules` extends shared VFX rules.
    - Include the producer criteria path in downstream handoff inputs once it exists.
 9. Execute phases in dependency order:
    - Channel profile management before channel format synthesis when a durable channel exists.
@@ -63,6 +64,7 @@ Every subagent prompt must include:
 - inputs and artifact paths
 - producer criteria path when available
 - channel profile path when available
+- channel format path when available
 - project path when available
 - media asset manifest path when available
 - Remotion project contract path when available
@@ -85,6 +87,7 @@ When the user changes or updates the request after a full run:
 1. Add a `change_requests[]` entry to the production run ledger.
 2. Classify impact:
    - channel/source/reference
+   - channel format / VFX rule extensions
    - source media / loaded assets
    - scenario/script/voice
    - voiceover/captions/timestamps
@@ -99,6 +102,7 @@ When the user changes or updates the request after a full run:
 4. Re-run only affected agents and downstream dependents.
    - Channel/source/reference changes can invalidate producer criteria, scenario, visual plan, specialist clips, timeline, render, and critique.
    - Channel profile changes can invalidate channel format, producer criteria, scenario voice direction, visuals, Remotion styles, timeline, render, and critique.
+   - Channel format changes, including `visual_system.vfx_rules`, can invalidate producer criteria, visual pack constraints, Remotion clip packages, timeline/render QA, and critique.
    - Scenario or narration changes invalidate scene-level voice, visuals, specialist clips, timeline, render, and critique.
    - Voiceover, caption, or timestamp changes invalidate timeline sync, render, and critique.
    - Visual route or candidate changes invalidate affected specialist clips, timeline, render, and critique.

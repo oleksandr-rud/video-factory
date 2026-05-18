@@ -11,6 +11,8 @@
     "channel_profile_id": { "type": "string" },
     "channel_slug": { "type": "string" },
     "channel_profile_path": { "type": "string" },
+    "channel_format_id": { "type": "string" },
+    "channel_format_path": { "type": "string" },
     "media_asset_manifest_path": { "type": "string" },
     "remotion_project_contract_path": { "type": "string" },
     "remotion_app_root_path": { "type": "string" },
@@ -100,6 +102,39 @@
         "music_path": { "type": "string" },
         "sfx_paths": { "type": "array", "items": { "type": "string" } },
         "qa_notes": { "type": "string" }
+      }
+    },
+    "performance_summary": {
+      "type": "object",
+      "properties": {
+        "render_time_seconds": { "type": "number" },
+        "slowest_frames": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "frame": { "type": "integer" },
+              "duration_ms": { "type": "number" },
+              "notes": { "type": "string" }
+            }
+          }
+        },
+        "vfx_risks": { "type": "array", "items": { "type": "string" } },
+        "vfx_rule_refs": { "type": "array", "items": { "type": "string" } },
+        "optimization_notes": { "type": "array", "items": { "type": "string" } },
+        "benchmark_commands": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["purpose", "command"],
+            "properties": {
+              "purpose": { "type": "string" },
+              "command": { "type": "string" },
+              "completed": { "type": "boolean" },
+              "notes": { "type": "string" }
+            }
+          }
+        }
       }
     },
     "delivery_variants": {

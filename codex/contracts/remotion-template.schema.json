@@ -96,6 +96,20 @@
         "fps": { "type": "number", "minimum": 1 }
       }
     },
+    "vfx_profile": {
+      "type": "object",
+      "properties": {
+        "complexity": {
+          "type": "string",
+          "enum": ["simple_css_svg", "dom_heavy", "canvas", "webgl", "three", "skia", "media_heavy", "hybrid", "unknown"]
+        },
+        "quality_risks": { "type": "array", "items": { "type": "string" } },
+        "performance_risks": { "type": "array", "items": { "type": "string" } },
+        "optimization_notes": { "type": "array", "items": { "type": "string" } },
+        "fallback_plan": { "type": "string" },
+        "status": { "type": "string", "enum": ["pass", "fail", "partial", "not_run"] }
+      }
+    },
     "alpha": {
       "type": "object",
       "properties": {

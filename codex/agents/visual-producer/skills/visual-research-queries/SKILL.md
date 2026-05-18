@@ -12,5 +12,6 @@ For each scene:
 3. Avoid copyrighted character, brand, or celebrity terms unless explicitly supplied and authorized.
 4. Include negative criteria for unsuitable clips.
 5. Map each query to a route: stock, generated video, Remotion, or user media.
+6. When Freepik/Magnific is a likely stock route, include a concise keyword/search term, optional order/filter notes, and language. Prefer simple searchable subjects/actions over full sentence prompts.
 
 Return queries grouped by scene id and route.

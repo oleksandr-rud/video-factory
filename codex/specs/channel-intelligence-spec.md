@@ -24,7 +24,7 @@ Channel Intelligence returns three durable artifacts:
 - `channels/<channel-slug>/projects/<project-slug>/project.json` using `codex/contracts/video-project.schema.json`: durable project metadata, deliverables, artifact paths, render candidates, run history, and delivery state.
 - `channels/<channel-slug>/projects/<project-slug>/media-asset-manifest.json` using `codex/contracts/media-asset-manifest.schema.json`: loaded reference videos, user-supplied media, provider clips, generated clips, Remotion previews/renders, review frames, rights state, technical metadata, and evidence refs.
 - `codex/contracts/reference-analysis.schema.json`: evidence ledger, source summaries, timecoded reference video breakdowns, extracted patterns, source claims, visual evidence opportunities, risks, and downstream guidance.
-- `codex/contracts/channel-format.schema.json`: channel promise, audience, content pillars, hero/hub/hygiene mix, narrative system, visual system, audio system, technical defaults, reusable assets, and anti-redundancy rules.
+- `channels/<channel-slug>/formats/<format-slug>.json` using `codex/contracts/channel-format.schema.json`: channel promise, audience, content pillars, hero/hub/hygiene mix, narrative system, visual system, per-channel VFX rule extensions, audio system, technical defaults, reusable assets, and anti-redundancy rules.
 
 ## Channel Folder Standard
 
@@ -44,6 +44,18 @@ Analyze reference videos for:
 - narrator persona, voice traits, accent/language policy, music, SFX, silence, and mix density
 - reusable execution patterns versus one-off moments that should not be copied
 
+Use a local deterministic evidence pass before higher-level interpretation whenever local media is available:
+
+```text
+ffprobe metadata
+-> scene/segment detection
+-> keyframe extraction
+-> optional transcript/OCR/embedding/model observations
+-> reference-analysis.schema.json
+```
+
+The deterministic pass should record tool status and limitations in `reference-analysis.processing_runs[]`. Missing optional tools should produce a `partial` analysis with evidence gaps rather than blocking all production planning.
+
 ## Channel Format Synthesis
 
 The channel format should define:
@@ -51,6 +63,7 @@ The channel format should define:
 - what must stay consistent for recognition
 - what should vary to keep each episode distinct
 - recurring intro/outro, caption, source-card, thumbnail, and CTA rules
+- per-channel VFX extensions: allowed/preferred/avoided effects, quality and performance constraints, alpha/export behavior, transition limits, hardening triggers, benchmark expectations, and fallback requirements
 - content pillars and video themes
 - technical defaults such as aspect ratios, durations, and export assumptions
 - anti-redundancy rules that prevent mass-produced or repetitive videos

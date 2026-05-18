@@ -13,6 +13,7 @@
     "channel_profile_path": { "type": "string" },
     "reference_analysis_id": { "type": "string" },
     "channel_format_id": { "type": "string" },
+    "channel_format_path": { "type": "string" },
     "media_asset_manifest_path": { "type": "string" },
     "scene_packs": {
       "type": "array",
@@ -85,6 +86,7 @@
             }
           },
           "vfx_requirements": { "type": "array", "items": { "type": "string" } },
+          "vfx_rule_refs": { "type": "array", "items": { "type": "string" } },
           "handoff_recommendations": {
             "type": "array",
             "items": {

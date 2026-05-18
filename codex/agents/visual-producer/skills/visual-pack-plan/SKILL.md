@@ -10,7 +10,7 @@ description: Create a per-scene visual pack plan that lists visual goals, routes
 3. Select candidate routes: `remotion_generated`, `ai_video_generation`, `stock_clip`, or `user_supplied_media`.
 4. Write provider search queries and AI generation route briefs where applicable.
 5. Add technical requirements: aspect ratio, minimum resolution, duration, people/product needs, required source asset ids, Remotion `staticFile()` needs, and brand safety notes.
-6. Apply reusable channel rules while keeping scene-specific visual choices flexible.
+6. Apply reusable channel rules while keeping scene-specific visual choices flexible. When the channel format has `visual_system.vfx_rules`, copy applicable VFX constraints into `vfx_requirements`, add `vfx_rule_refs`, and mention hardening or benchmark expectations in Remotion handoff recommendations.
 7. When the channel format provides `reusable_template_ids` or `remotion_template_contract_paths`, map suitable scenes to `template_hint`, `template_id`, `template_ids`, `template_contract_path`, `template_contract_paths`, and `reusable_template_requirements` in the visual pack.
 8. Prefer a project/channel template contract over a shared template contract when the scene's format, safe areas, aspect ratio, or style requirements differ.
 9. Include one practical fallback route for every important scene.

@@ -6,6 +6,7 @@ description: Generate deterministic VFX clips and overlays in Remotion. Use when
 # Remotion VFX Clip
 
 Load the built-in `remotion:remotion-best-practices` skill before implementation. Read its rule files only as needed: `animations`, `timing`, `transitions`, `light-leaks`, `transparent-videos`, `3d`, `lottie`, `audio-visualization`, `assets`, `fonts`, and `measuring-text`.
+For complex VFX, WebGL/Three/Skia/Canvas, media-heavy clips, transparent overlays, or any render speed/memory/flicker risk, also use `../vfx-quality-performance-hardening/SKILL.md`.
 
 Workflow:
 
@@ -20,12 +21,14 @@ Workflow:
    - Remotion Skia: Skia-heavy vector/canvas effects.
    - Canvas/WebGL inside Remotion: procedural particles or shader-like effects when CSS/SVG is insufficient.
 5. Resolve the Remotion app contract, template registry path, and media asset manifest. Use the shared `remotion/` app by default, and record source media asset ids plus `staticFile()` paths for any local media.
-6. Define frame ranges, entry/exit timing, blend mode, z-index, safe areas, and alpha behavior.
-7. Make props typed and deterministic: `durationInFrames`, colors, seed, intensity, text, audio path, and transparent mode.
-8. Add preview checks: one still frame at a representative frame, one motion preview or full render for complex VFX.
-9. For overlays, define both opaque and transparent render commands when needed.
-10. Write or update a Remotion clip package matching `codex/contracts/remotion-clip-package.schema.json`, including template ids/contract paths or `template_instances[]` when relevant, project/channel fields, Remotion app path, media manifest path, source asset ids, and output asset ids when available.
-11. If this VFX should be reusable, write or update a Remotion template contract matching `codex/contracts/remotion-template.schema.json`.
+6. Read `channel_format_path` when available and apply `visual_system.vfx_rules` to effect selection, intensity limits, transition behavior, alpha/export choices, hardening triggers, benchmarks, and fallback requirements.
+7. Define frame ranges, entry/exit timing, blend mode, z-index, safe areas, and alpha behavior.
+8. Make props typed and deterministic: `durationInFrames`, colors, seed, intensity, text, audio path, and transparent mode.
+9. Add preview checks: one still frame at a representative frame, one motion preview or full render for complex VFX.
+10. For overlays, define both opaque and transparent render commands when needed.
+11. Run quality/performance hardening when the clip is complex, bespoke, GPU-heavy, media-heavy, transparent, intended for repeated reuse, or required by channel-format VFX rules.
+12. Write or update a Remotion clip package matching `codex/contracts/remotion-clip-package.schema.json`, including template ids/contract paths or `template_instances[]` when relevant, project/channel fields, channel format path, Remotion app path, media manifest path, source asset ids, output asset ids, `vfx_rule_refs`, and `vfx_profile` when hardening was performed.
+13. If this VFX should be reusable, write or update a Remotion template contract matching `codex/contracts/remotion-template.schema.json`.
 
 Definition of done:
 
@@ -35,4 +38,5 @@ Definition of done:
 - It fits the target aspect ratio and does not obscure required captions or CTA.
 - Alpha/export settings are documented when transparency is required.
 - It does not depend on generic web UI component libraries.
+- VFX quality/performance risks and fallback plan are recorded for complex effects.
 - It can be consumed by the Remotion Video Producer without hidden assumptions.

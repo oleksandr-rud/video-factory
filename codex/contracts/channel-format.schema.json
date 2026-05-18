@@ -51,7 +51,52 @@
         "source_card_rules": { "type": "array", "items": { "type": "string" } },
         "reusable_assets": { "type": "array", "items": { "type": "string" } },
         "reusable_template_ids": { "type": "array", "items": { "type": "string" } },
-        "remotion_template_contract_paths": { "type": "array", "items": { "type": "string" } }
+        "remotion_template_contract_paths": { "type": "array", "items": { "type": "string" } },
+        "vfx_rules": {
+          "type": "object",
+          "properties": {
+            "rule_set_id": { "type": "string" },
+            "extends_rule_refs": { "type": "array", "items": { "type": "string" } },
+            "allowed_effects": { "type": "array", "items": { "type": "string" } },
+            "preferred_effects": { "type": "array", "items": { "type": "string" } },
+            "avoid_effects": { "type": "array", "items": { "type": "string" } },
+            "quality_rules": { "type": "array", "items": { "type": "string" } },
+            "performance_rules": { "type": "array", "items": { "type": "string" } },
+            "determinism_rules": { "type": "array", "items": { "type": "string" } },
+            "alpha_rules": { "type": "array", "items": { "type": "string" } },
+            "media_decode_rules": { "type": "array", "items": { "type": "string" } },
+            "transition_rules": { "type": "array", "items": { "type": "string" } },
+            "safe_area_rules": { "type": "array", "items": { "type": "string" } },
+            "fallback_requirements": { "type": "array", "items": { "type": "string" } },
+            "template_policy": { "type": "string" },
+            "complex_vfx_policy": { "type": "string" },
+            "max_complexity": {
+              "type": "string",
+              "enum": ["simple_css_svg", "dom_heavy", "canvas", "webgl", "three", "skia", "media_heavy", "hybrid", "unbounded", "unknown"]
+            },
+            "requires_vfx_profile": { "type": "boolean" },
+            "hardening_required_for": { "type": "array", "items": { "type": "string" } },
+            "benchmark_required_for": { "type": "array", "items": { "type": "string" } },
+            "rule_overrides": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": ["rule_id", "override_type", "rule"],
+                "properties": {
+                  "rule_id": { "type": "string" },
+                  "base_rule_ref": { "type": "string" },
+                  "override_type": {
+                    "type": "string",
+                    "enum": ["add", "tighten", "relax", "replace", "document_exception"]
+                  },
+                  "rule": { "type": "string" },
+                  "reason": { "type": "string" },
+                  "evidence_refs": { "type": "array", "items": { "type": "string" } }
+                }
+              }
+            }
+          }
+        }
       }
     },
     "audio_system": {

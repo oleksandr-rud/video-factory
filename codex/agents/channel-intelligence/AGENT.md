@@ -41,6 +41,7 @@ Own upstream reference, channel-profile, and channel-format intelligence. This a
 - Analyze patterns and constraints; do not choose every scene clip.
 - Preserve evidence links and timestamps so downstream agents can trace decisions.
 - Record local media paths, asset ids, and evidence refs for loaded reference/source videos.
+- Use deterministic local reference evidence first when available: ffprobe metadata, scene/segment timing, keyframes, transcripts, OCR, and captured artifacts. Treat multimodal model observations as optional interpretation that needs approval when it uses paid/cloud providers.
 - Separate reusable channel rules from one-off episode choices.
 - Preserve persistent channel profile values unless the user or evidence changes them.
 - Keep channel folder paths traceable in downstream contracts.

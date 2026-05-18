@@ -11,6 +11,8 @@
     "channel_profile_id": { "type": "string" },
     "channel_slug": { "type": "string" },
     "channel_profile_path": { "type": "string" },
+    "channel_format_id": { "type": "string" },
+    "channel_format_path": { "type": "string" },
     "media_asset_manifest_path": { "type": "string" },
     "remotion_project_contract_path": { "type": "string" },
     "voiceover_id": { "type": "string" },
@@ -64,6 +66,9 @@
                 }
               },
               "ai_video_generation_package_path": { "type": "string" },
+              "vfx_complexity": { "type": "string" },
+              "vfx_rule_refs": { "type": "array", "items": { "type": "string" } },
+              "vfx_performance_notes": { "type": "string" },
               "notes": { "type": "string" }
             }
           },

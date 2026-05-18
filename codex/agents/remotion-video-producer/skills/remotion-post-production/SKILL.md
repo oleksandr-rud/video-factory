@@ -18,6 +18,7 @@ Workflow:
    - captions/subtitles
    - VFX clip packages and transitions
    - template ids, template contract paths, and template layer order for reusable Remotion instances
+   - VFX rule refs, complexity/performance notes, and fallback expectations from source clip packages and the channel format
 2. Normalize media:
    - verify local paths
    - confirm required assets have media asset ids and Remotion `staticFile()` paths when rendered by Remotion
@@ -48,5 +49,6 @@ Definition of done:
 - Captions, audio, visuals, source clip packages, and VFX align by scene id through `codex/contracts/timeline-sync-plan.schema.json`.
 - Any template or package used is Remotion-native or explicitly approved as an exception.
 - Template-backed clips reference `codex/contracts/remotion-template.schema.json` artifacts and are consumed through their public props/contracts.
+- Complex VFX package risks and channel-format VFX extensions are surfaced into timeline/render QA, especially GPU-heavy effects, transparent overlays, media-heavy layers, and bespoke procedural effects.
 - Render command and output path are written into the render package.
 - Rendered outputs and sidecar artifacts are written back into the media asset manifest.

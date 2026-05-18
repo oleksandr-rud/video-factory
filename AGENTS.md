@@ -34,6 +34,10 @@ Before calling an agent, read that agent's `AGENT.md` and only the skill files n
 
 Production agents may call only skills in their own folder plus explicitly listed built-in skills. They must not read or execute another production agent's skills to perform feasibility checks or implementation work. When another role is needed, the agent should return a handoff recommendation; the Director turns that recommendation into an `agent-handoff` with the target agent, inputs, allowed paths, output contract, and definition of done.
 
+Every skill file is its own local rule set. Cross-cutting guidance can be summarized in specs, references, and contracts, but reliable autonomous runs require each affected skill to carry the concrete rules it must apply. When shared production rules change later, update all relevant skills together by applying the new rule intent inside each skill's own scope.
+
+Channel and project format specs may extend shared VFX rules through `channel-format.visual_system.vfx_rules`. Downstream handoffs should pass the channel format path so Visual Producer, Remotion Clip Builder, Remotion Video Producer, and Video Critic can apply those per-channel VFX extensions without relying on conversational context.
+
 Use `codex/agents/director/skills/autonomous-production-run/SKILL.md` for full autonomous work and post-run user changes. Track durable project state with `codex/contracts/video-project.schema.json` and execution state with `codex/contracts/production-run.schema.json`.
 
 For deliverable videos, Director must create and preserve the producer criteria artifact using `codex/contracts/producer-criteria.schema.json`: the rules, instructions, restrictions, quality gates, scene criteria, revision policy, and acceptance criteria production agents were expected to follow. Video Critic uses that artifact as binding review input during the review loop.

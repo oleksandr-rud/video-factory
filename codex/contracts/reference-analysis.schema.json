@@ -18,6 +18,25 @@
       "type": "string",
       "enum": ["planned", "in_progress", "complete", "partial", "blocked"]
     },
+    "processing_runs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "run_id": { "type": "string" },
+          "mode": { "type": "string" },
+          "tool": { "type": "string" },
+          "tool_version": { "type": "string" },
+          "status": { "type": "string", "enum": ["planned", "running", "complete", "partial", "blocked", "failed"] },
+          "command": { "type": "array", "items": { "type": "string" } },
+          "inputs": { "type": "array", "items": { "type": "string" } },
+          "outputs": { "type": "array", "items": { "type": "string" } },
+          "deterministic_evidence": { "type": "array", "items": { "type": "string" } },
+          "model_inferred_evidence": { "type": "array", "items": { "type": "string" } },
+          "limitations": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    },
     "sources": {
       "type": "array",
       "items": {
@@ -64,14 +83,44 @@
           "source_id": { "type": "string" },
           "media_asset_id": { "type": "string" },
           "duration_seconds": { "type": "number" },
+          "technical": {
+            "type": "object",
+            "properties": {
+              "duration_seconds": { "type": "number" },
+              "width": { "type": "integer" },
+              "height": { "type": "integer" },
+              "fps": { "type": "number" },
+              "r_frame_rate": { "type": "string" },
+              "video_codec": { "type": "string" },
+              "audio_codec": { "type": "string" },
+              "has_audio": { "type": "boolean" },
+              "format_name": { "type": "string" },
+              "size_bytes": { "type": "integer" },
+              "probe_path": { "type": "string" }
+            }
+          },
+          "artifacts": {
+            "type": "object",
+            "properties": {
+              "probe_json_path": { "type": "string" },
+              "scenes_json_path": { "type": "string" },
+              "frame_samples_json_path": { "type": "string" },
+              "keyframe_dir": { "type": "string" },
+              "ocr_json_path": { "type": "string" },
+              "transcript_path": { "type": "string" },
+              "embedding_index_path": { "type": "string" },
+              "model_observation_path": { "type": "string" }
+            }
+          },
           "transcript_path": { "type": "string" },
           "thumbnail_path": { "type": "string" },
           "shot_breakdown_path": { "type": "string" },
           "beats": {
             "type": "array",
             "items": {
-              "type": "object",
-              "properties": {
+            "type": "object",
+            "properties": {
+                "beat_id": { "type": "string" },
                 "start_seconds": { "type": "number" },
                 "end_seconds": { "type": "number" },
                 "purpose": { "type": "string" },
@@ -80,7 +129,21 @@
                 "visual_notes": { "type": "string" },
                 "audio_notes": { "type": "string" },
                 "caption_or_graphics_notes": { "type": "string" },
-                "pattern_tags": { "type": "array", "items": { "type": "string" } }
+                "pattern_tags": { "type": "array", "items": { "type": "string" } },
+                "keyframe_paths": { "type": "array", "items": { "type": "string" } },
+                "evidence_refs": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "evidence_id": { "type": "string" },
+                      "description": { "type": "string" },
+                      "timestamp_seconds": { "type": "number" },
+                      "path_or_url": { "type": "string" },
+                      "confidence": { "type": "string", "enum": ["high", "medium", "low", "unknown"] }
+                    }
+                  }
+                }
               }
             }
           }
@@ -107,7 +170,8 @@
         "visual_evidence_opportunities": { "type": "array", "items": { "type": "string" } },
         "story_opportunities": { "type": "array", "items": { "type": "string" } },
         "rights_or_policy_risks": { "type": "array", "items": { "type": "string" } },
-        "evidence_gaps": { "type": "array", "items": { "type": "string" } }
+        "evidence_gaps": { "type": "array", "items": { "type": "string" } },
+        "confidence_notes": { "type": "array", "items": { "type": "string" } }
       }
     },
     "evidence_refs": {

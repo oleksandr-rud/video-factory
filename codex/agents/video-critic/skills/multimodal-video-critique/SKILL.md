@@ -53,6 +53,7 @@ Score and critique:
 - voiceover clarity, mix, music, and SFX
 - caption accuracy, sync, safe area, and readability
 - brand/channel fit and anti-redundancy
+- VFX quality, channel-format VFX compliance, alpha/export artifacts, and visible render-performance compromises
 - platform fit: duration, aspect ratio, opening frame, CTA, and mobile readability
 - factual, rights, likeness, watermark, and delivery risks
 - accessibility and viewer comprehension

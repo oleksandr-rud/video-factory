@@ -2,6 +2,13 @@
 
 Use these dimensions when analyzing reference videos, channel materials, and source content.
 
+## Evidence Layers
+
+- Deterministic evidence: ffprobe metadata, scene/segment timestamps, extracted keyframes, local transcripts, OCR text, screenshots, thumbnails, and media asset manifest entries.
+- Model-inferred evidence: multimodal observations, direct-video model notes, visual descriptions, inferred camera movement, inferred mood, and style labels.
+- Human or Director evidence: explicit user notes, channel positioning, brand constraints, approval decisions, and manually supplied timestamps.
+- Promote a rule to channel format only when its evidence layer and confidence are clear. Missing deterministic evidence can still support planning, but it must be recorded as a limitation when it affects rights, factual claims, audio timing, visual style, or source fidelity.
+
 ## Reference Video Dimensions
 
 - Narrative structure: hook, setup, proof, conflict, reveal, payoff, CTA, recurring segments.

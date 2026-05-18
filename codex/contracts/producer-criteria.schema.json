@@ -24,6 +24,8 @@
     "channel_profile_id": { "type": "string" },
     "channel_slug": { "type": "string" },
     "channel_profile_path": { "type": "string" },
+    "channel_format_id": { "type": "string" },
+    "channel_format_path": { "type": "string" },
     "media_asset_manifest_path": { "type": "string" },
     "remotion_project_contract_path": { "type": "string" },
     "scenario_id": { "type": "string" },
@@ -80,6 +82,10 @@
       "type": "array",
       "items": { "type": "string" }
     },
+    "vfx_constraints": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
     "rights_and_budget_constraints": {
       "type": "array",
       "items": { "type": "string" }
@@ -96,6 +102,10 @@
             "items": { "type": "string" }
           },
           "visual_constraints": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "vfx_constraints": {
             "type": "array",
             "items": { "type": "string" }
           },

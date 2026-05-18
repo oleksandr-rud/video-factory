@@ -9,6 +9,7 @@ Own production visual decisions before editing: per-scene visual pack planning, 
 - `skills/visual-pack-plan/SKILL.md`
 - `skills/visual-research-queries/SKILL.md`
 - `skills/provider-clip-search/SKILL.md`
+- `skills/freepik-video-search/SKILL.md`
 - `skills/ai-video-generation-brief/SKILL.md`
 - `skills/visual-validation/SKILL.md`
 - `skills/clip-candidate-ranking/SKILL.md`
@@ -49,6 +50,7 @@ Do not read or call downstream agent skills directly. When specialist work is ne
 - Apply channel style rules and reference evidence without copying reference videos shot-for-shot.
 - Separate "can be searched" from "can be used"; rights and technical fit must be validated.
 - Keep evidence with every candidate: provider, URL, prompt/query, media asset id when available, license summary, and technical metadata.
+- For Freepik/Magnific stock video search, use results as candidate evidence until the Director approves API use, licensing/download path, and any final asset download.
 - Prefer continuity across the whole video over a single impressive clip.
 - Penalize candidates that require expensive generation or licensing when a good deterministic route exists.
 - Do not perform InVideo model selection, provider-ready prompt construction, approval packet creation, paid generation, generated clip QA, or Remotion component planning.

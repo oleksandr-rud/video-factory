@@ -127,6 +127,15 @@ A timeline sync plan must identify:
 
 Clip QA passes only when the component renders or has a clearly documented blocker, timing is deterministic, text fits, assets resolve locally, and alpha/output expectations are verified.
 
+Complex VFX QA additionally requires a quality/performance hardening pass. The clip package should record `vfx_profile` when the clip uses WebGL, Three, Skia, Canvas, media-heavy layers, large CSS filters/shadows/gradients, transparent export, many DOM nodes, particles, or bespoke procedural animation.
+
+VFX hardening checks:
+
+- deterministic frame mapping: `useCurrentFrame()`, `useVideoConfig()`, seeded randomness, no CSS animations, no timers, no render-order assumptions
+- visual quality: representative stills for entry/peak/exit frames, text fit, safe areas, alpha edges, blend/mask behavior, compression artifact risk, and subpixel jitter
+- performance: GPU-heavy effects, particle/geometry counts, blur/shadow/filter cost, memoization of expensive calculations, media decode route, cache/concurrency risk, and fallback plan
+- render strategy: low-scale preview first, stills for changed frames, verbose logs or `npx remotion benchmark` when speed matters, and explicit alpha codec choices
+
 Full-video QA passes only when the timeline sync plan exists, the timeline is assembled in order, captions and audio sync are checked, outputs match platform requirements, and rights/blockers are recorded in the render package.
 
 Remotion setup QA passes only when dependencies install, `npm run lint` passes or has a documented blocker, at least one still or preview render is attempted for changed compositions, and required media assets resolve through the manifest.
@@ -165,3 +174,9 @@ The RemotionTemplates animation intro reinforced that basic Remotion animation i
 The official Remotion AI SaaS template and system-prompt docs support the same validation posture: generated Remotion code needs structured prompts, sanitation, compile/runtime correction, and local preview or render checks. Sources: https://www.remotion.dev/docs/ai/ai-saas-template and https://www.remotion.dev/docs/ai/system-prompt
 
 The current Remotion setup and asset docs support the shared-app/public-projection design: projects can be created with `npx create-video@latest`, videos can render through Studio or CLI, local assets should be loaded from the app `public/` folder with `staticFile()`, and render-time sidecars can be emitted with `<Artifact>`. Sources: https://www.remotion.dev/docs, https://www.remotion.dev/docs/render, https://www.remotion.dev/docs/staticfile, and https://www.remotion.dev/docs/artifact
+
+Remotion's current performance docs also define the VFX hardening surface. Concurrency should be benchmarked because too much or too little concurrency can slow rendering; GPU-heavy content includes WebGL, Canvas, gradients, blur, shadows, and similar effects; slow JavaScript should be measured and memoized; transparent videos need PNG image format, which is slower than JPEG; and lower-resolution preview renders can be used through `--scale`. Remotion also recommends verbose render logs and `npx remotion benchmark` for measuring speed. Sources: https://www.remotion.dev/docs/performance and https://www.remotion.dev/docs/cli/benchmark
+
+GPU and media docs refine the implementation choices: headless Chromium disables GPU by default, cloud environments may lack GPU, `<Html5Video>` and `<OffthreadVideo>` are not GPU-accelerated, `@remotion/media` can be the better render-time video tag, and `@remotion/three` should use `ThreeCanvas` plus frame-derived animation rather than render-loop animation. Sources: https://www.remotion.dev/docs/gpu, https://www.remotion.dev/docs/video-tags, https://www.remotion.dev/docs/offthreadvideo, and https://www.remotion.dev/docs/three
+
+Troubleshooting docs reinforce failure modes that should become QA checks: flickering often comes from non-deterministic or order-dependent animation, SIGKILL commonly indicates memory pressure where lower cache/concurrency can help, and font loading should be scoped to needed weights/subsets to avoid render timeouts. Sources: https://www.remotion.dev/docs/flickering, https://www.remotion.dev/docs/troubleshooting/sigkill, and https://www.remotion.dev/docs/troubleshooting/font-loading-errors

@@ -24,7 +24,8 @@ Treat dependency choice like production change control. Prefer small, reversible
 4. Prefer local assets and deterministic rendering. Avoid runtime network dependencies.
 5. Record rejected alternatives so future agents do not repeat the same dependency debate.
 6. Mark paid/pro templates, unclear licenses, unsupported package versions, or risky shared dependencies as approval/blockers.
-7. Define a fallback that works with core Remotion, CSS, SVG, Canvas, or simpler motion if the selected package fails.
+7. For GPU-heavy, media-heavy, WebGL/Three/Skia/Canvas, transparent, or complex VFX choices, run `../vfx-quality-performance-hardening/SKILL.md`.
+8. Define a fallback that works with core Remotion, CSS, SVG, Canvas, pre-rendered media, or simpler motion if the selected package fails.
 
 Default choices:
 
@@ -100,7 +101,9 @@ Return a stack decision before implementation:
     "remotion_version_match": true,
     "no_runtime_network_dependency": true,
     "no_generic_web_component_library": true,
-    "paid_package_approved": "true | false | not_applicable"
+    "paid_package_approved": "true | false | not_applicable",
+    "vfx_hardening_required": "true | false",
+    "vfx_hardening_status": "pass | partial | fail | not_run | not_applicable"
   },
   "blockers": ["string"],
   "next_recommended_step": "string"

@@ -33,6 +33,7 @@ Read all supplied criteria, not just the rendered video:
    - audio/caption timing and readability
    - source/factual alignment
    - brand/channel style and anti-redundancy rules
+   - channel-format VFX rule extensions, hardening evidence, and fallback requirements when the scene uses VFX
    - platform and safe-area rules
    - any scene-specific production restrictions
 3. Add a scene review for every scene id. Missing evidence is a finding, not a reason to silently pass.

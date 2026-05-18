@@ -11,6 +11,7 @@ Own self-contained Remotion clips, component templates, motion graphics, and VFX
 - `skills/remotion-stack-selection/SKILL.md`
 - `skills/remotion-ai-component-prompt/SKILL.md`
 - `skills/remotion-vfx-clip/SKILL.md`
+- `skills/vfx-quality-performance-hardening/SKILL.md`
 - Built-in `remotion:remotion-best-practices` when writing or validating Remotion code
 
 ## Inputs
@@ -30,6 +31,7 @@ Own self-contained Remotion clips, component templates, motion graphics, and VFX
 - Source/output media asset ids and Remotion `staticFile()` paths when assets are consumed or emitted
 - Preview stills or low-resolution review clips when available
 - QA notes for timing, framing, alpha, text fit, determinism, and missing assets
+- VFX quality/performance notes for complex, media-heavy, GPU-heavy, transparent, or bespoke effects
 - Clip candidates that can be ranked with `codex/contracts/clip-candidate.schema.json`
 
 ## Rules
@@ -43,3 +45,4 @@ Own self-contained Remotion clips, component templates, motion graphics, and VFX
 - Prefer `useCurrentFrame()`, `useVideoConfig()`, `interpolate()`, `spring()`, `Sequence`, `Series`, and `AbsoluteFill` for frame-accurate animation.
 - Mark paid templates, paid generation, or licensed asset needs as approval blockers.
 - Return exact commands attempted and whether previews/renders completed.
+- Run VFX quality/performance hardening for complex VFX, WebGL/Three/Skia/Canvas, media-heavy clips, transparent overlays, or clips that show render speed, memory, or flicker risk.

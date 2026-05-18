@@ -28,7 +28,11 @@ channels/<channel-slug>/projects/<project-slug>/
   voiceover/
   visuals/
     candidates/
+      search-results/
+      <scene-id>/
   source-media/
+    reference-videos/
+    reference-analysis/
     loaded-videos/
     provider-clips/
     generated-clips/
@@ -66,6 +70,40 @@ Use this rule:
 3. Record each asset in `media-asset-manifest.json` with `canonical_path`, `remotion_public_path`, and `static_file_path`.
 4. Use the `static_file_path` value in Remotion code through `staticFile()`.
 5. Do not render from remote media URLs unless the Director records an explicit approval and risk note.
+
+## Visual Candidate Storage
+
+Store candidate records before downloading provider media:
+
+```text
+channels/<channel-slug>/projects/<project-slug>/visuals/candidates/search-results/<provider>/<scene-id>-<query-slug>-<run-id>.json
+channels/<channel-slug>/projects/<project-slug>/visuals/candidates/<scene-id>/<candidate-id>.json
+```
+
+Search result JSON is discovery evidence. Individual candidate JSON files are the durable candidate records and should match `codex/contracts/clip-candidate.schema.json`.
+
+Store downloaded provider media separately:
+
+```text
+channels/<channel-slug>/projects/<project-slug>/source-media/provider-clips/<provider>/<candidate-id>/<filename>
+```
+
+Provider media is usable in Remotion only after it is tracked in `media-asset-manifest.json` and, when needed for render, mirrored into the Remotion public projection with `static_file_path` recorded.
+
+## Reference Analysis Storage
+
+Store project-specific reference media and deterministic analysis sidecars before downstream production:
+
+```text
+channels/<channel-slug>/projects/<project-slug>/source-media/reference-videos/<source-id>/<filename>
+channels/<channel-slug>/projects/<project-slug>/source-media/reference-analysis/<source-id>/probe.json
+channels/<channel-slug>/projects/<project-slug>/source-media/reference-analysis/<source-id>/scenes.json
+channels/<channel-slug>/projects/<project-slug>/source-media/reference-analysis/<source-id>/frame-samples.json
+channels/<channel-slug>/projects/<project-slug>/source-media/reference-analysis/<source-id>/keyframes/
+channels/<channel-slug>/projects/<project-slug>/source-media/reference-analysis/<source-id>/ocr.json
+```
+
+The reference analysis JSON may live under the project, channel references folder, or run artifact folder, but persisted paths should remain repo-relative. Deterministic sidecars should be entered in `media-asset-manifest.json` or explicitly listed as deferred manifest entries.
 
 ## Contract Map
 

@@ -17,6 +17,7 @@ Load `subtitle-caption-pipeline` and the built-in `remotion:remotion-best-practi
    - caption JSON/SRT path and caption time range
    - selected visual candidate, media asset id, `staticFile()` path, or Remotion clip package
    - template id/contract path or template layer list when the selected clip package is template-backed
+   - VFX rule refs, complexity, performance notes, and fallback expectations from any Remotion clip package `vfx_profile`
    - frame start/end at the target fps
    - overlay, lower-third, CTA, and transition notes
 3. Use `../../scripts/build_timeline_sync_plan.py` to create the first JSON plan when the inputs are already structured.
@@ -30,4 +31,6 @@ Load `subtitle-caption-pipeline` and the built-in `remotion:remotion-best-practi
 - Keep captions, lower thirds, product/UI details, logos, and CTA text from occupying the same safe area.
 - Mark a plan partial if any scene has no approved visual candidate, no audio path after approved TTS generation, or no caption timing source.
 - Mark a plan partial if a template-backed clip references a missing template contract or a template with failed QA.
+- Mark a plan partial if a complex VFX clip has failed or missing hardening evidence and the scene depends on that effect.
+- Mark a plan partial if channel-format VFX rules require hardening, benchmark evidence, alpha/export behavior, or fallback coverage that is missing from the relevant clip package.
 - Do not use remote media paths for final render unless the Director explicitly accepts that risk.

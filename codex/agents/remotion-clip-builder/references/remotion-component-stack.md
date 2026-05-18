@@ -96,6 +96,7 @@ Keep `remotion` and all `@remotion/*` packages on the same exact version.
 - Animated illustration asset: `@remotion/lottie` or `@remotion/rive` with local files.
 - Procedural VFX: light leaks, starburst, noise, shapes, paths, motion blur.
 - Media QA and metadata: Remotion renderer helpers or Mediabunny direction.
+- Quality/performance hardening: use `../skills/vfx-quality-performance-hardening/SKILL.md` for GPU-heavy, media-heavy, WebGL/Three/Skia/Canvas, transparent, or complex VFX routes.
 
 ## Guardrails
 
@@ -104,3 +105,4 @@ Keep `remotion` and all `@remotion/*` packages on the same exact version.
 - Check licenses for third-party media assets separately from Remotion package licenses.
 - Do not add libraries for effects that can be done cleanly with CSS, SVG, Canvas, and core Remotion.
 - Do not change a reusable template's public props or visual contract in a breaking way; create a new template version or a scene-specific clip package instead.
+- For render-heavy VFX, record complexity, performance risk, representative preview/still checks, and fallback plan in the clip package.
