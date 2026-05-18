@@ -9,14 +9,19 @@ Use this after `decompose-video-request` when the user wants a full run, `/goal`
 
 ## Run Loop
 
-1. Create or update a run ledger matching `codex/contracts/production-run.schema.json`.
-2. Create or update the producer criteria artifact matching `codex/contracts/producer-criteria.schema.json`; store its path in `producer_criteria_path`.
-3. Load `AGENTS.md`, the target agent `AGENT.md`, and only the skill files named in each handoff.
-4. Build each handoff using `codex/contracts/agent-handoff.schema.json`.
+1. Create or resolve the channel profile under `channels/<channel-slug>/channel-profile.json` when a durable channel is in scope; store its path in `channel_profile_path`.
+2. Create or update the video project under `channels/<channel-slug>/projects/<project-slug>/project.json` when a durable deliverable is in scope; store its path in `project_path`.
+3. Create or update a run ledger matching `codex/contracts/production-run.schema.json` inside the project folder.
+4. Create or update the producer criteria artifact matching `codex/contracts/producer-criteria.schema.json`; store its path in `producer_criteria_path`.
+5. Load `AGENTS.md`, the target agent `AGENT.md`, and only the skill files named in each handoff.
+6. Build each handoff using `codex/contracts/agent-handoff.schema.json`.
    - A production agent's `handoff_recommendations[]` are not executable work by themselves. Convert them into Director-owned handoffs before downstream agents run.
    - Only name skills that belong to the target agent's folder or explicitly approved built-in skills.
+   - Include the project path in downstream handoff inputs once it exists.
+   - Include the channel profile path in downstream handoff inputs once it exists.
    - Include the producer criteria path in downstream handoff inputs once it exists.
-5. Execute phases in dependency order:
+7. Execute phases in dependency order:
+   - Channel profile management before channel format synthesis when a durable channel exists.
    - Channel Intelligence before scenario and visual planning when references, channel data, web sources, or redundancy concerns exist.
    - Creative Producer before Visual Producer; if voiceover is in scope, produce the voiceover package before final timeline assembly.
    - Visual Producer before InVideo AI Generator and Remotion Clip Builder.
@@ -25,9 +30,9 @@ Use this after `decompose-video-request` when the user wants a full run, `/goal`
    - Render QA before Video Critic.
    - Video Critic after a render candidate exists and before final delivery when the run targets a deliverable video.
    - Quality gated review loop after the first critique if findings do not pass release-candidate gates.
-6. Parallelize only independent work. Do not run a downstream agent before its required input artifact exists.
-7. After each handoff, validate that the returned artifact matches its output contract, update the run ledger, and send one targeted repair handoff if required fields or QA evidence are missing.
-8. Continue until complete, blocked, waiting for approval, or release-candidate gates pass.
+8. Parallelize only independent work. Do not run a downstream agent before its required input artifact exists.
+9. After each handoff, validate that the returned artifact matches its output contract, update the project index and run ledger, and send one targeted repair handoff if required fields or QA evidence are missing.
+10. Continue until complete, blocked, waiting for approval, or release-candidate gates pass.
 
 ## Approval Stops
 
@@ -52,6 +57,8 @@ Every subagent prompt must include:
 - objective
 - inputs and artifact paths
 - producer criteria path when available
+- channel profile path when available
+- project path when available
 - allowed paths
 - output contract
 - budget and approval policy
@@ -78,9 +85,11 @@ When the user changes or updates the request after a full run:
    - timeline/subtitles/audio/render
    - critique/revision plan
    - delivery metadata only
+   - channel profile only
 3. Preserve stable ids when possible. Change scene ids only when scene boundaries or order change.
 4. Re-run only affected agents and downstream dependents.
    - Channel/source/reference changes can invalidate producer criteria, scenario, visual plan, specialist clips, timeline, render, and critique.
+   - Channel profile changes can invalidate channel format, producer criteria, scenario voice direction, visuals, Remotion styles, timeline, render, and critique.
    - Scenario or narration changes invalidate scene-level voice, visuals, specialist clips, timeline, render, and critique.
    - Voiceover, caption, or timestamp changes invalidate timeline sync, render, and critique.
    - Visual route or candidate changes invalidate affected specialist clips, timeline, render, and critique.

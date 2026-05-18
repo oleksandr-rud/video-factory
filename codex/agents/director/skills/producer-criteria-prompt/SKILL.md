@@ -10,7 +10,7 @@ Use this after `decompose-video-request` and before production handoffs. The art
 ## Workflow
 
 1. Create a JSON artifact matching `codex/contracts/producer-criteria.schema.json`.
-2. Convert the user request, channel format, source constraints, platform requirements, budget policy, and known approvals into discrete criteria.
+2. Convert the user request, channel profile, channel format, source constraints, platform requirements, budget policy, and known approvals into discrete criteria.
 3. Separate:
    - acceptance criteria: what the finished video must accomplish
    - hard gates: failures that block release unless fixed or waived
@@ -35,4 +35,5 @@ Use this after `decompose-video-request` and before production handoffs. The art
 - Keep criteria testable. Avoid vague gates such as "make it better"; rewrite them as observable checks.
 - Preserve scene ids. If the scenario is not ready yet, create global criteria first and update `scene_criteria[]` after the scenario exists.
 - Include rights, budget, and approval gates even when no paid work is currently planned.
+- Include channel brand, voice, color, format, and governance gates when a channel profile exists.
 - Pass the criteria path in every downstream handoff once it exists.

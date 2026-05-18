@@ -16,7 +16,7 @@
     },
     "review_mode": {
       "type": "string",
-      "enum": ["artifact_only", "multimodal_frames", "hybrid", "human", "unknown"]
+      "enum": ["artifact_only", "multimodal_frames", "direct_video", "hybrid", "human", "unknown"]
     },
     "model": {
       "type": "object",

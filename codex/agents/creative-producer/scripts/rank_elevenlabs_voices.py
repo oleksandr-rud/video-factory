@@ -28,7 +28,7 @@ def load_json(path: str) -> Any:
 
 
 def load_brief(path: str) -> tuple[str, dict[str, Any]]:
-    raw = open(path, "r", encoding="utf-8").read()
+    raw = open(path, "r", encoding="utf-8-sig").read()
     try:
         parsed = json.loads(raw)
     except json.JSONDecodeError:
@@ -59,9 +59,28 @@ def voice_text(voice: dict[str, Any]) -> str:
     return " ".join(parts).lower()
 
 
+def as_list(value: Any) -> list[Any]:
+    if value is None:
+        return []
+    if isinstance(value, list):
+        return value
+    return [value]
+
+
+def nested_voice_direction(brief: dict[str, Any]) -> dict[str, Any]:
+    for key in ("voice_direction", "audio_identity", "voice_profile"):
+        value = brief.get(key)
+        if isinstance(value, dict):
+            if key == "audio_identity" and isinstance(value.get("voice_profile"), dict):
+                return value["voice_profile"]
+            return value
+    return {}
+
+
 def score_voice(voice: dict[str, Any], brief_text: str, brief: dict[str, Any]) -> tuple[float, list[str]]:
     haystack = voice_text(voice)
     brief_words = words(brief_text)
+    direction = nested_voice_direction(brief)
     score = 0.0
     reasons: list[str] = []
 
@@ -82,9 +101,39 @@ def score_voice(voice: dict[str, Any], brief_text: str, brief: dict[str, Any]) -
     labels = {str(k).lower(): str(v).lower() for k, v in (voice.get("labels") or {}).items()}
     for key in ("gender", "accent", "age", "use_case"):
         desired = str(brief.get(key, "")).lower()
+        desired = desired or str(direction.get(key, "")).lower()
         if desired and desired in labels.get(key, ""):
             score += 5.0
             reasons.append(f"{key} fits {desired}")
+
+    for ref in as_list(direction.get("provider_voice_refs")) + as_list(brief.get("provider_voice_refs")):
+        if isinstance(ref, dict) and ref.get("voice_id") and ref.get("voice_id") == voice.get("voice_id"):
+            score += 20.0
+            reasons.append("matches channel provider voice reference")
+
+    desired_traits = []
+    for key in ("voice_traits", "traits", "tone", "narrator_persona", "energy_profile", "accent_policy"):
+        desired_traits.extend(str(item) for item in as_list(direction.get(key) or brief.get(key)))
+    for trait in desired_traits:
+        for term in words(trait):
+            if len(term) >= 4 and term in haystack:
+                score += 4.0
+                reasons.append(f"channel voice trait: {term}")
+
+    for trait in as_list(direction.get("must_avoid_traits") or brief.get("must_avoid_traits")):
+        for term in words(str(trait)):
+            if len(term) >= 4 and term in haystack:
+                score -= 6.0
+                reasons.append(f"avoid trait matched: {term}")
+
+    for criterion in as_list(direction.get("selection_rubric") or brief.get("selection_rubric")):
+        if not isinstance(criterion, dict):
+            continue
+        weight = float(criterion.get("weight") or 1)
+        text = " ".join(str(criterion.get(key, "")) for key in ("criterion", "notes"))
+        if any(len(term) >= 4 and term in haystack for term in words(text)):
+            score += weight
+            reasons.append(f"rubric fit: {criterion.get('criterion', 'criterion')}")
 
     if voice.get("preview_url"):
         score += 0.5
@@ -104,7 +153,7 @@ def main() -> int:
 
     catalog = load_json(args.voice_catalog)
     brief_text, brief = load_brief(args.voice_brief)
-    voices = catalog.get("voices", catalog if isinstance(catalog, list) else [])
+    voices = catalog if isinstance(catalog, list) else catalog.get("voices", [])
 
     ranked = []
     for voice in voices:

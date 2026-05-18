@@ -6,6 +6,9 @@
   "properties": {
     "run_id": { "type": "string" },
     "request_id": { "type": "string" },
+    "project_id": { "type": "string" },
+    "project_slug": { "type": "string" },
+    "project_path": { "type": "string" },
     "objective": { "type": "string" },
     "status": {
       "type": "string",
@@ -13,6 +16,9 @@
     },
     "current_phase": { "type": "string" },
     "artifact_root": { "type": "string" },
+    "channel_profile_id": { "type": "string" },
+    "channel_slug": { "type": "string" },
+    "channel_profile_path": { "type": "string" },
     "producer_criteria_path": { "type": "string" },
     "artifacts": {
       "type": "array",
@@ -78,7 +84,7 @@
           "status": { "type": "string", "enum": ["planned", "in_progress", "complete", "blocked", "rejected"] },
           "impact": {
             "type": "string",
-            "enum": ["channel", "scenario", "voiceover", "visual", "ai_generation", "remotion_clip", "timeline", "timeline_sync", "critique", "delivery_metadata", "unknown"]
+            "enum": ["channel_profile", "channel", "scenario", "voiceover", "visual", "ai_generation", "remotion_clip", "timeline", "timeline_sync", "critique", "delivery_metadata", "unknown"]
           },
           "affected_artifacts": { "type": "array", "items": { "type": "string" } },
           "actions": { "type": "array", "items": { "type": "string" } },
@@ -109,7 +115,7 @@
             "type": "array",
             "items": {
               "type": "string",
-              "enum": ["channel", "scenario", "voiceover", "visual", "ai_generation", "remotion_clip", "timeline", "timeline_sync", "render", "critique", "delivery_metadata"]
+              "enum": ["channel_profile", "channel", "scenario", "voiceover", "visual", "ai_generation", "remotion_clip", "timeline", "timeline_sync", "render", "critique", "delivery_metadata"]
             }
           },
           "routed_actions": {

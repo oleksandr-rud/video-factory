@@ -24,7 +24,7 @@ Own independent final validation of rendered videos. This agent reviews the rend
 ## Outputs
 
 - Critique report using `codex/contracts/critique-report.schema.json`
-- Multimodal review package with sampled frames and video metadata
+- Multimodal review package with video metadata and sampled frames for fallback/audit evidence
 - Scene-by-scene gate results
 - Prioritized revision plan mapped to owning agents and artifacts
 - Residual risk notes for the Director
@@ -38,5 +38,6 @@ Own independent final validation of rendered videos. This agent reviews the rend
 - Review every scene id and mark missing evidence as unknown or failing according to the gate policy.
 - Separate blocking delivery issues from taste preferences.
 - Use multimodal model review only after the Director approves API spend and required media handling.
-- If a direct video-input model is unavailable, critique sampled frames plus transcript/captions, timeline metadata, and artifacts.
+- Prefer an approved direct video-input model for final render critique when the video fits provider limits; keep sampled frames plus transcript/captions, timeline metadata, and artifacts as the fallback and audit trail.
+- Do not infer spoken audio content from a visual-only model. Use transcript, captions, voiceover artifacts, or an audio-capable provider for audio-content claims.
 - Do not modify render, scenario, visual, or Remotion files. Return a revision plan for the Director to route.

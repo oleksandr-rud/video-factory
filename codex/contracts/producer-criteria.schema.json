@@ -18,6 +18,12 @@
     "producer_criteria_id": { "type": "string" },
     "run_id": { "type": "string" },
     "request_id": { "type": "string" },
+    "project_id": { "type": "string" },
+    "project_slug": { "type": "string" },
+    "project_path": { "type": "string" },
+    "channel_profile_id": { "type": "string" },
+    "channel_slug": { "type": "string" },
+    "channel_profile_path": { "type": "string" },
     "scenario_id": { "type": "string" },
     "version": { "type": "string" },
     "status": {

@@ -6,10 +6,13 @@
   "properties": {
     "handoff_id": { "type": "string" },
     "run_id": { "type": "string" },
+    "project_id": { "type": "string" },
+    "project_path": { "type": "string" },
     "request_id": { "type": "string" },
     "from_agent": { "type": "string" },
     "to_agent": { "type": "string" },
     "phase": { "type": "string" },
+    "channel_profile_path": { "type": "string" },
     "producer_criteria_path": { "type": "string" },
     "depends_on": { "type": "array", "items": { "type": "string" } },
     "status": {

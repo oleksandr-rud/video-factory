@@ -5,6 +5,11 @@
   "required": ["scenario_id", "title", "audience", "platform", "duration_seconds", "scenes"],
   "properties": {
     "scenario_id": { "type": "string" },
+    "project_id": { "type": "string" },
+    "project_path": { "type": "string" },
+    "channel_profile_id": { "type": "string" },
+    "channel_slug": { "type": "string" },
+    "channel_profile_path": { "type": "string" },
     "reference_analysis_id": { "type": "string" },
     "channel_format_id": { "type": "string" },
     "title": { "type": "string" },

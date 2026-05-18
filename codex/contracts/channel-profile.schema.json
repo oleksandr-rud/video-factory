@@ -1,0 +1,217 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ChannelProfile",
+  "type": "object",
+  "required": [
+    "channel_profile_id",
+    "channel_slug",
+    "version",
+    "status",
+    "root_path",
+    "metadata",
+    "brand_identity",
+    "content_strategy",
+    "visual_identity",
+    "audio_identity",
+    "governance",
+    "qa"
+  ],
+  "properties": {
+    "channel_profile_id": { "type": "string" },
+    "channel_slug": { "type": "string" },
+    "version": { "type": "string" },
+    "status": {
+      "type": "string",
+      "enum": ["draft", "active", "needs_review", "archived"]
+    },
+    "root_path": { "type": "string" },
+    "metadata": {
+      "type": "object",
+      "required": ["name", "domain", "primary_platforms"],
+      "properties": {
+        "name": { "type": "string" },
+        "domain": { "type": "string" },
+        "description": { "type": "string" },
+        "audience": { "type": "string" },
+        "primary_platforms": { "type": "array", "items": { "type": "string" } },
+        "language_defaults": { "type": "array", "items": { "type": "string" } },
+        "timezone": { "type": "string" },
+        "owner_notes": { "type": "string" }
+      }
+    },
+    "platform_profiles": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["platform", "handle_or_url"],
+        "properties": {
+          "platform": { "type": "string" },
+          "handle_or_url": { "type": "string" },
+          "about_text": { "type": "string" },
+          "upload_schedule": { "type": "string" },
+          "layout_notes": { "type": "string" },
+          "profile_image_path": { "type": "string" },
+          "banner_image_path": { "type": "string" },
+          "watermark_path": { "type": "string" },
+          "safe_area_notes": { "type": "string" }
+        }
+      }
+    },
+    "brand_identity": {
+      "type": "object",
+      "required": ["promise", "values", "positioning"],
+      "properties": {
+        "promise": { "type": "string" },
+        "values": { "type": "array", "items": { "type": "string" } },
+        "positioning": { "type": "string" },
+        "personality": { "type": "array", "items": { "type": "string" } },
+        "messaging_pillars": { "type": "array", "items": { "type": "string" } },
+        "approved_vocabulary": { "type": "array", "items": { "type": "string" } },
+        "avoid_vocabulary": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "content_strategy": {
+      "type": "object",
+      "properties": {
+        "content_pillars": { "type": "array", "items": { "type": "string" } },
+        "format_registry_paths": { "type": "array", "items": { "type": "string" } },
+        "hero_hub_hygiene": {
+          "type": "object",
+          "properties": {
+            "hero": { "type": "array", "items": { "type": "string" } },
+            "hub": { "type": "array", "items": { "type": "string" } },
+            "hygiene": { "type": "array", "items": { "type": "string" } }
+          }
+        },
+        "upload_schedule": { "type": "string" },
+        "anti_redundancy_rules": { "type": "array", "items": { "type": "string" } },
+        "novelty_requirements": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "visual_identity": {
+      "type": "object",
+      "properties": {
+        "color_palette": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["name", "hex", "role"],
+            "properties": {
+              "name": { "type": "string" },
+              "hex": { "type": "string" },
+              "role": { "type": "string" },
+              "usage": { "type": "string" }
+            }
+          }
+        },
+        "typography": { "type": "array", "items": { "type": "string" } },
+        "logo_rules": { "type": "array", "items": { "type": "string" } },
+        "imagery_rules": { "type": "array", "items": { "type": "string" } },
+        "thumbnail_rules": { "type": "array", "items": { "type": "string" } },
+        "caption_style": { "type": "array", "items": { "type": "string" } },
+        "motion_rules": { "type": "array", "items": { "type": "string" } },
+        "asset_paths": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "audio_identity": {
+      "type": "object",
+      "properties": {
+        "voice_profile": {
+          "type": "object",
+          "properties": {
+            "voice_profile_id": { "type": "string" },
+            "narrator_persona": { "type": "string" },
+            "voice_traits": { "type": "array", "items": { "type": "string" } },
+            "must_avoid_traits": { "type": "array", "items": { "type": "string" } },
+            "language_defaults": { "type": "array", "items": { "type": "string" } },
+            "accent_policy": { "type": "string" },
+            "pace_wpm_range": { "type": "string" },
+            "energy_profile": { "type": "string" },
+            "pronunciation_defaults": { "type": "array", "items": { "type": "string" } },
+            "preferred_provider": { "type": "string" },
+            "provider_voice_refs": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "provider": { "type": "string" },
+                  "voice_id": { "type": "string" },
+                  "voice_name": { "type": "string" },
+                  "usage": { "type": "string" },
+                  "rights_notes": { "type": "array", "items": { "type": "string" } }
+                }
+              }
+            },
+            "reference_audio_paths": { "type": "array", "items": { "type": "string" } },
+            "continuity_policy": { "type": "string" },
+            "rights_notes": { "type": "array", "items": { "type": "string" } }
+          }
+        },
+        "music_rules": { "type": "array", "items": { "type": "string" } },
+        "sfx_rules": { "type": "array", "items": { "type": "string" } },
+        "mix_notes": { "type": "string" }
+      }
+    },
+    "governance": {
+      "type": "object",
+      "properties": {
+        "approval_rules": { "type": "array", "items": { "type": "string" } },
+        "rights_rules": { "type": "array", "items": { "type": "string" } },
+        "sensitive_topics": { "type": "array", "items": { "type": "string" } },
+        "last_reviewed": { "type": "string" },
+        "change_log": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "folder_layout": {
+      "type": "object",
+      "properties": {
+        "brand_path": { "type": "string" },
+        "formats_path": { "type": "string" },
+        "references_path": { "type": "string" },
+        "rules_path": { "type": "string" },
+        "assets_path": { "type": "string" },
+        "projects_path": { "type": "string" }
+      }
+    },
+    "projects": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["project_id", "project_slug", "path", "status"],
+        "properties": {
+          "project_id": { "type": "string" },
+          "project_slug": { "type": "string" },
+          "path": { "type": "string" },
+          "status": {
+            "type": "string",
+            "enum": ["planned", "in_progress", "needs_approval", "blocked", "rendered", "approved", "delivered", "archived"]
+          },
+          "summary": { "type": "string" },
+          "latest_run_id": { "type": "string" },
+          "approved_render_id": { "type": "string" }
+        }
+      }
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "claim": { "type": "string" },
+          "source": { "type": "string" },
+          "confidence": { "type": "string", "enum": ["high", "medium", "low", "unknown"] }
+        }
+      }
+    },
+    "qa": {
+      "type": "object",
+      "required": ["status", "summary"],
+      "properties": {
+        "status": { "type": "string", "enum": ["pass", "fail", "partial", "not_run"] },
+        "summary": { "type": "string" },
+        "missing_assets": { "type": "array", "items": { "type": "string" } },
+        "risks": { "type": "array", "items": { "type": "string" } }
+      }
+    }
+  }
+}

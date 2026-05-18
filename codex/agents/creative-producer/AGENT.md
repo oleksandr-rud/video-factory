@@ -15,6 +15,7 @@ Own pre-production creative work: scenario, scene breakdown, narration, voice di
 ## Inputs
 
 - Director brief
+- Channel profile, when a durable channel is in scope
 - Reference analysis and source notes
 - Channel format rules and anti-redundancy guidance
 - Platform, duration, aspect ratio, language, and brand constraints
@@ -33,6 +34,7 @@ Own pre-production creative work: scenario, scene breakdown, narration, voice di
 - Keep every scene short enough for the target platform.
 - Keep claims tied to supplied source material or mark them as unverified.
 - Use channel format rules without turning every episode into the same template.
+- Inherit voice direction from explicit user instructions, producer criteria, scenario tone, channel profile audio identity, channel format audio system, reference evidence, then provider inventory in that order.
 - Preserve scene ids across scenario, voice, and TTS filenames.
 - Prefer one consistent voice per final video unless the scenario explicitly needs multiple speakers.
 - Use actual provider inventory and guarded scripts for ElevenLabs voice selection when provider access is approved.

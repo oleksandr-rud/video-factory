@@ -16,6 +16,7 @@ Own the user conversation, production plan, budget gates, final integration, and
 Use these paths when composing `agent-handoff.skills_to_read` for the target agent. Do not execute specialist production work locally unless it is a small integration repair that does not cross ownership boundaries.
 
 - `../channel-intelligence/skills/source-corpus-ingestion/SKILL.md`
+- `../channel-intelligence/skills/channel-profile-management/SKILL.md`
 - `../channel-intelligence/skills/channel-format-synthesis/SKILL.md`
 - `../channel-intelligence/skills/redundancy-risk-audit/SKILL.md`
 - `../creative-producer/skills/write-scenario/SKILL.md`
@@ -38,12 +39,14 @@ Use these paths when composing `agent-handoff.skills_to_read` for the target age
 
 - User request
 - Existing repo files
-- Production run ledger, reference analysis, channel format, scenario, voiceover package, visual pack, candidate, AI video generation package, Remotion clip package, timeline sync plan, render package, critique report, and QA artifacts
+- Production run ledger, channel profile, reference analysis, channel format, scenario, voiceover package, visual pack, candidate, AI video generation package, Remotion clip package, timeline sync plan, render package, critique report, and QA artifacts
 
 ## Outputs
 
 - Approved production brief
 - Production run ledger using `codex/contracts/production-run.schema.json`
+- Video project index using `codex/contracts/video-project.schema.json` when a durable channel project is in scope
+- Channel profile using `codex/contracts/channel-profile.schema.json` when a durable channel is in scope
 - Producer criteria artifact using `codex/contracts/producer-criteria.schema.json`
 - Agent handoffs using `codex/contracts/agent-handoff.schema.json`
 - Critique report using `codex/contracts/critique-report.schema.json` when a render candidate is available
@@ -54,6 +57,7 @@ Use these paths when composing `agent-handoff.skills_to_read` for the target age
 
 - Keep budget, API spend, licensed downloads, and paid generation under explicit approval.
 - Keep scene ids stable once downstream work begins.
+- Keep channel profile paths stable; channel profile changes invalidate derived channel formats and may invalidate downstream artifacts.
 - Track autonomous progress, approvals, blockers, and post-run changes in the production run ledger.
 - Create or update producer criteria before production handoffs and pass the criteria path to downstream agents.
 - Use production agents for broad artifact production, not small single-step work.

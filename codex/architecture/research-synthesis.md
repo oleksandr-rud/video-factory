@@ -102,9 +102,17 @@ The loop also needs guardrails. Self-Refine and Reflexion show that natural-lang
 
 ## Channel Intelligence Findings
 
-The Visual Producer should not own deep channel/reference analysis. Reference-video analysis, web-source synthesis, channel style rules, and anti-redundancy checks affect scenario writing, visual planning, AI generation prompts, Remotion clips, and final editing. That makes them an upstream channel intelligence responsibility rather than a scene-level visual production task.
+The Visual Producer should not own deep channel/reference analysis. Reference-video analysis, web-source synthesis, channel style rules, persistent channel folders, and anti-redundancy checks affect scenario writing, voice selection, visual planning, AI generation prompts, Remotion clips, and final editing. That makes them an upstream channel intelligence responsibility rather than a scene-level visual production task.
 
 YouTube's channel branding guidance frames a channel brand as a recognizable message, values, community, and consistent visual identity, not just isolated clip choices. Source: https://support.google.com/youtube/answer/12950272
+
+YouTube's channel branding docs track concrete reusable platform assets: profile picture, banner, and video watermark, with banner safe-area and watermark constraints. Source: https://support.google.com/youtube/answer/10456525
+
+YouTube's channel layout docs show persistent channel management beyond video production: home tab, channel trailer, featured video, and channel sections. Source: https://support.google.com/youtube/answer/3219384
+
+Public brand systems such as Purdue's include strategy, messaging, visual identity, voice/tone, logos, templates, photography, video, editorial style, and analytics resources. This supports storing channel defaults as a profile folder rather than embedding all brand state in one production prompt. Source: https://marcom.purdue.edu/our-brand/
+
+Hunter's voice/tone guidance shows that brand voice encodes domain posture and personality constraints, not only writing style. This maps to the local voice inheritance rule: channel profile audio identity guides Creative Producer before provider voice selection. Source: https://www.hunter.com/en-int/media-center/brand-guidelines/voice--tone/
 
 YouTube's creator playbook for brands uses a content strategy split of hero, hub, and hygiene content. That maps well to a reusable channel format package: major tent-pole videos, recurring episode formats, and always-on search/utility videos should share a channel language while serving different jobs. Source: https://think.storage.googleapis.com/docs/creator-playbook-for-brands_research-studies.pdf
 
@@ -119,7 +127,7 @@ Use eight agent folders:
 ```mermaid
 flowchart TD
     U["User request"] --> D["Director"]
-    D --> R["Channel Intelligence"]
+    D --> R["Channel Intelligence / Channel Profile"]
     R --> C["Creative Producer"]
     C --> V["Visual Producer"]
     R --> V
@@ -132,13 +140,13 @@ flowchart TD
     D --> O["Final package"]
 ```
 
-The old ten-agent model was too granular for the MVP. Deep reference and channel-format analysis is now one upstream responsibility because it supports the whole production system and prevents redundant output. Scenario writing, scene breakdown, voice casting, and TTS planning are one creative pre-production responsibility. Visual pack planning, stock search, route selection, validation, and ranking are one visual production responsibility. InVideo AI generation is split out because it has provider-specific prompts, prompt guides, credit approvals, model limits, variants, and output QA. The previous single Remotion Editor QA agent became bloated because it combined 5-20 second component/VFX generation with 1-10 minute timeline assembly, captions, audio mix, final rendering, and QA. Those two Remotion responsibilities now have separate owners. The Video Critic is the only added validation role because it provides independent final judgment and revision routing after a render exists.
+The old ten-agent model was too granular for the MVP. Persistent channel profile management plus deep reference and channel-format analysis is now one upstream responsibility because it supports the whole production system and prevents redundant output. Scenario writing, scene breakdown, voice casting, and TTS planning are one creative pre-production responsibility, with channel voice inherited before provider selection. Visual pack planning, stock search, route selection, validation, and ranking are one visual production responsibility. InVideo AI generation is split out because it has provider-specific prompts, prompt guides, credit approvals, model limits, variants, and output QA. The previous single Remotion Editor QA agent became bloated because it combined 5-20 second component/VFX generation with 1-10 minute timeline assembly, captions, audio mix, final rendering, and QA. Those two Remotion responsibilities now have separate owners. The Video Critic is the only added validation role because it provides independent final judgment and revision routing after a render exists.
 
 ## Agent Ownership
 
 1. `director`: owns user conversation, approvals, orchestration, final integration, and delivery.
-2. `channel-intelligence`: owns reference video analysis, source corpus synthesis, channel format packages, style-system extraction, scenario alignment notes, and redundancy-risk audits.
-3. `creative-producer`: owns scenario, scene timing, narration, voice direction, provider voice selection, and voiceover package.
+2. `channel-intelligence`: owns channel profile folders, reference video analysis, source corpus synthesis, channel format packages, style-system extraction, scenario alignment notes, and redundancy-risk audits.
+3. `creative-producer`: owns scenario, scene timing, narration, inherited voice direction, provider voice selection, and voiceover package.
 4. `visual-producer`: owns visual pack planning, research queries, provider search specs, AI generation route briefs, downstream handoff recommendations, candidate validation, and ranking.
 5. `invideo-ai-generator`: owns InVideo/model AI generation prompt packages, model/settings selection, approval packets, variants, generated clip QA, and AI clip candidates.
 6. `remotion-clip-builder`: owns 5-20 second Remotion clips, component templates, motion graphics, VFX overlays, and clip package QA.
@@ -149,15 +157,15 @@ The old ten-agent model was too granular for the MVP. Deep reference and channel
 
 1. Agents are built per production responsibility, not per intent. Intents become skills inside an agent.
 2. Subagents are used only when they protect the Director's context or need a distinct skill set.
-3. Channel format is a first-class contract, not informal notes. It contains reusable identity, content pillars, narrative patterns, style rules, and flex zones that help multiple videos stay coherent without becoming clones.
-4. Autonomous execution needs a small run ledger. `production-run.schema.json` tracks phase status, artifacts, handoffs, approvals, blockers, QA, and post-run user change requests without expanding every artifact contract.
+3. Channel profile is durable channel state under `channels/<channel-slug>`, video projects are durable deliverable workspaces under `channels/<channel-slug>/projects/<project-slug>`, and channel format is the production-ready format package derived from the profile and current references.
+4. Autonomous execution needs both a project index and a small run ledger. `video-project.schema.json` tracks the durable deliverable, artifacts, render candidates, and delivery state; `production-run.schema.json` tracks one execution attempt with phase status, handoffs, approvals, blockers, QA, and post-run user change requests.
 5. Provider-specific logic stays behind the owning agent's skills. Stock/provider search stays in Visual Producer. Credit-sensitive InVideo AI generation has its own agent because prompt guides, model selection, approval, generation variants, and QA are substantial enough to need separate scope.
 6. Scene-level candidate objects remain the cross-agent contract. A scene can compare Remotion-generated visuals, AI video generation, stock/provider clips, or user media with the same schema.
 7. Planning and spending stay separated. Agents can prepare provider queries, prompts, cost estimates, and rankings without making paid calls until the Director gets approval.
 8. Every important scene needs a primary and fallback route because search and generation are variable.
 9. AI video generation delivery is tracked as a generation package, not just a prompt. The package should include positive prompt, negative constraints, prompt guides, model/settings, approval state, outputs, variants, and QA.
 10. Remotion clip delivery is tracked separately from full render delivery. A clip package should include the composition id, component files, assets, props, preview/render commands, and clip QA.
-11. Voiceover delivery is tracked separately from the scenario. A voiceover package should include the selected provider voice, generation approval state, request payloads, audio paths, timestamp alignment, caption paths, pronunciation notes, and QA.
+11. Voiceover delivery is tracked separately from the scenario. A voiceover package should include inherited channel voice direction, selected provider voice, generation approval state, request payloads, audio paths, timestamp alignment, caption paths, pronunciation notes, and QA.
 12. Timeline sync is tracked before full assembly. A timeline sync plan should align scene ids, frame ranges, voiceover audio, captions, selected visual candidates, Remotion clip packages, transitions, and overlay safe areas.
 13. Producer criteria are a first-class artifact, not a loose prompt. The Director creates them before production handoffs, passes the path downstream, and treats them as binding input for Video Critic review.
 14. Final critique is tracked separately from technical render QA. A critique report should include sampled frame evidence, scene-by-scene gate results, artifact consistency findings, category scores, severity-ranked issues, limitations, and a prioritized revision plan.

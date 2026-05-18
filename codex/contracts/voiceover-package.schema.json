@@ -6,6 +6,11 @@
   "properties": {
     "voiceover_id": { "type": "string" },
     "scenario_id": { "type": "string" },
+    "project_id": { "type": "string" },
+    "project_path": { "type": "string" },
+    "channel_profile_id": { "type": "string" },
+    "channel_slug": { "type": "string" },
+    "channel_profile_path": { "type": "string" },
     "channel_format_id": { "type": "string" },
     "reference_analysis_id": { "type": "string" },
     "provider": {
@@ -51,6 +56,41 @@
             }
           }
         }
+      }
+    },
+    "voice_direction": {
+      "type": "object",
+      "properties": {
+        "inherited_from": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "source": { "type": "string" },
+              "path": { "type": "string" },
+              "notes": { "type": "string" }
+            }
+          }
+        },
+        "narrator_persona": { "type": "string" },
+        "voice_traits": { "type": "array", "items": { "type": "string" } },
+        "must_avoid_traits": { "type": "array", "items": { "type": "string" } },
+        "pace_wpm_range": { "type": "string" },
+        "energy_profile": { "type": "string" },
+        "accent_policy": { "type": "string" },
+        "selection_rubric": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["criterion", "weight"],
+            "properties": {
+              "criterion": { "type": "string" },
+              "weight": { "type": "number" },
+              "notes": { "type": "string" }
+            }
+          }
+        },
+        "selection_reason": { "type": "string" }
       }
     },
     "generation_policy": {

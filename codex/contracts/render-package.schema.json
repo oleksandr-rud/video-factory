@@ -6,6 +6,8 @@
   "properties": {
     "render_id": { "type": "string" },
     "scenario_id": { "type": "string" },
+    "project_id": { "type": "string" },
+    "project_path": { "type": "string" },
     "composition_id": { "type": "string" },
     "composition_type": {
       "type": "string",

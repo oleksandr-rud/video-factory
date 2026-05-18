@@ -9,10 +9,10 @@ Use this skill with `voice-casting` and `tts-production-plan`. The output is a v
 
 ## Workflow
 
-1. Read the scenario, channel format, reference audio notes, platform, target language, and pacing requirements.
+1. Read the scenario, channel profile, channel format, reference audio notes, platform, target language, inherited voice direction, and pacing requirements.
 2. Build a voice brief: audience fit, tone, accent, age range if relevant, gender or neutral preference, energy, speed, pronunciation needs, and must-avoid constraints.
 3. If the Director approved provider access and `ELEVENLABS_API_KEY` is present, snapshot available voices with `../../scripts/fetch_elevenlabs_voices.py`. Voice listing does not generate audio, but it still uses the user's provider account.
-4. Rank available voices with `../../scripts/rank_elevenlabs_voices.py`. Keep the top candidates and a short reason for the selected voice.
+4. Rank available voices with `../../scripts/rank_elevenlabs_voices.py`. Score them against inherited channel voice traits, scenario tone, language/accent, pacing, pronunciation safety, rights notes, and provider availability. Keep the top candidates and a short reason for the selected voice.
 5. Prepare a generation policy that records the endpoint, model, output format, estimated character credits, and explicit approval status.
 6. Use `../../scripts/elevenlabs_tts_with_timestamps.py` only after the Director records approval. Run it in dry-run mode first; require `--execute --approved` before it calls the paid TTS endpoint.
 7. Convert ElevenLabs character timestamps into Remotion Caption JSON and optional `.srt` with `../../scripts/elevenlabs_alignment_to_captions.py`.
@@ -30,6 +30,7 @@ Use this skill with `voice-casting` and `tts-production-plan`. The output is a v
 ## Quality Checks
 
 - Voice matches the channel format and scenario tone without making every video sound identical.
+- Voice follows explicit overrides first, then channel profile audio identity, then channel format defaults.
 - Pace supports the target duration and caption readability.
 - Pronunciation notes cover names, acronyms, numbers, and technical terms.
 - Generated audio has no clipping, long leading/trailing silence, major mispronunciation, or scene-order mismatch.

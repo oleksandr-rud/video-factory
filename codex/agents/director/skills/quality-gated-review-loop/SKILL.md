@@ -45,7 +45,7 @@ Every critic handoff must include:
 
 Record `invalidated_artifacts`, `preserved_artifacts`, and `rerun_scope` in the production run ledger before dispatching fixes.
 
-- Channel/source/reference findings: rerun Channel Intelligence, update producer criteria if needed, then rerun affected Creative Producer, Visual Producer, specialist, Remotion Video Producer, render, and Critic work.
+- Channel profile, channel/source/reference findings: rerun Channel Intelligence, update channel profile/channel format and producer criteria if needed, then rerun affected Creative Producer, Visual Producer, specialist, Remotion Video Producer, render, and Critic work.
 - Scenario, narration, claim, or scene-boundary findings: rerun Creative Producer, update producer criteria scene checks if needed, then rerun affected Visual Producer, InVideo AI Generator or Remotion Clip Builder, Remotion Video Producer, render, and Critic work.
 - Voiceover, pronunciation, caption, or timestamp findings: rerun Creative Producer voice/TTS artifacts when needed, then timeline sync, Remotion Video Producer render, and Critic work.
 - Visual route, candidate, rights, or continuity findings: rerun Visual Producer for affected scenes, then the required InVideo AI Generator or Remotion Clip Builder handoffs, then Remotion Video Producer, render, and Critic work.

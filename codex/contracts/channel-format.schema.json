@@ -6,6 +6,10 @@
   "properties": {
     "channel_format_id": { "type": "string" },
     "channel_id": { "type": "string" },
+    "channel_profile_id": { "type": "string" },
+    "channel_slug": { "type": "string" },
+    "channel_root_path": { "type": "string" },
+    "channel_profile_path": { "type": "string" },
     "version": { "type": "string" },
     "status": {
       "type": "string",
@@ -51,7 +55,26 @@
     "audio_system": {
       "type": "object",
       "properties": {
+        "voice_profile_id": { "type": "string" },
         "voice_direction": { "type": "string" },
+        "voice_traits": { "type": "array", "items": { "type": "string" } },
+        "must_avoid_voice_traits": { "type": "array", "items": { "type": "string" } },
+        "pace_wpm_range": { "type": "string" },
+        "accent_policy": { "type": "string" },
+        "preferred_voice_provider": { "type": "string" },
+        "provider_voice_refs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "provider": { "type": "string" },
+              "voice_id": { "type": "string" },
+              "voice_name": { "type": "string" },
+              "usage": { "type": "string" },
+              "rights_notes": { "type": "array", "items": { "type": "string" } }
+            }
+          }
+        },
         "music_rules": { "type": "array", "items": { "type": "string" } },
         "sfx_rules": { "type": "array", "items": { "type": "string" } },
         "mix_notes": { "type": "string" }
@@ -86,6 +109,10 @@
           "confidence": { "type": "string", "enum": ["high", "medium", "low", "unknown"] }
         }
       }
+    },
+    "channel_asset_paths": {
+      "type": "array",
+      "items": { "type": "string" }
     }
   }
 }
