@@ -1,0 +1,93 @@
+{
+  "project_id": "project_<project-slug>",
+  "project_slug": "<project-slug>",
+  "channel_profile_id": "channel_<channel-slug>",
+  "channel_slug": "<channel-slug>",
+  "channel_profile_path": "channels/<channel-slug>/channel-profile.json",
+  "status": "planned",
+  "root_path": "channels/<channel-slug>/projects/<project-slug>",
+  "objective": "Produce the requested video package or stop at an explicit approval/blocker.",
+  "brief": {
+    "title": "<video title>",
+    "topic": "<topic>",
+    "audience": "<target audience>",
+    "platform": "youtube_shorts",
+    "duration_target_seconds": 60,
+    "aspect_ratio": "9:16",
+    "language": "en",
+    "request_summary": "<short user request summary>"
+  },
+  "deliverables": [
+    {
+      "kind": "full_video",
+      "path_or_expected_path": "channels/<channel-slug>/projects/<project-slug>/renders/final/<project-slug>.mp4",
+      "status": "planned",
+      "notes": "Final delivery path after gates pass."
+    },
+    {
+      "kind": "media_manifest",
+      "path_or_expected_path": "channels/<channel-slug>/projects/<project-slug>/media-asset-manifest.json",
+      "status": "planned",
+      "notes": "Canonical media ledger."
+    }
+  ],
+  "artifacts": {
+    "production_run_path": "channels/<channel-slug>/projects/<project-slug>/production-run.json",
+    "producer_criteria_path": "channels/<channel-slug>/projects/<project-slug>/producer-criteria.json",
+    "media_asset_manifest_paths": ["channels/<channel-slug>/projects/<project-slug>/media-asset-manifest.json"],
+    "remotion_project_contract_path": "remotion/remotion-project.json",
+    "remotion_template_contract_paths": [],
+    "remotion_app_root_path": "remotion",
+    "reference_analysis_path": "channels/<channel-slug>/projects/<project-slug>/source-media/reference-analysis/reference-analysis.json",
+    "web_content_source_report_paths": [],
+    "channel_format_path": "channels/<channel-slug>/formats/<format-slug>.json",
+    "scenario_paths": [],
+    "voiceover_package_paths": [],
+    "visual_pack_paths": [],
+    "clip_candidate_paths": [],
+    "ai_generation_package_paths": [],
+    "remotion_clip_package_paths": [],
+    "timeline_sync_plan_paths": [],
+    "render_package_paths": [],
+    "critique_report_paths": [],
+    "review_asset_paths": []
+  },
+  "folder_layout": {
+    "scenario_path": "channels/<channel-slug>/projects/<project-slug>/scenario",
+    "voiceover_path": "channels/<channel-slug>/projects/<project-slug>/voiceover",
+    "visuals_path": "channels/<channel-slug>/projects/<project-slug>/visuals",
+    "source_media_path": "channels/<channel-slug>/projects/<project-slug>/source-media",
+    "reference_videos_path": "channels/<channel-slug>/projects/<project-slug>/source-media/reference-videos",
+    "reference_analysis_path": "channels/<channel-slug>/projects/<project-slug>/source-media/reference-analysis",
+    "web_content_path": "channels/<channel-slug>/projects/<project-slug>/source-media/web-content",
+    "loaded_videos_path": "channels/<channel-slug>/projects/<project-slug>/source-media/loaded-videos",
+    "rendered_clips_path": "channels/<channel-slug>/projects/<project-slug>/remotion/clips",
+    "remotion_path": "channels/<channel-slug>/projects/<project-slug>/remotion",
+    "remotion_public_projection_path": "channels/<channel-slug>/projects/<project-slug>/remotion/public-projection",
+    "remotion_public_path": "remotion/public/projects/<project-slug>",
+    "renders_path": "channels/<channel-slug>/projects/<project-slug>/renders",
+    "reviews_path": "channels/<channel-slug>/projects/<project-slug>/reviews",
+    "review_assets_path": "channels/<channel-slug>/projects/<project-slug>/reviews/assets",
+    "runs_path": "channels/<channel-slug>/projects/<project-slug>/runs",
+    "delivery_path": "channels/<channel-slug>/projects/<project-slug>/delivery"
+  },
+  "remotion_setup": {
+    "remotion_project_id": "remotion_shared_app",
+    "remotion_project_contract_path": "remotion/remotion-project.json",
+    "app_root_path": "remotion",
+    "public_root_path": "remotion/public",
+    "static_file_prefix": "/projects/<project-slug>",
+    "composition_ids": [],
+    "notes": "Use shared Remotion app unless Director approves project-specific app."
+  },
+  "runs": [],
+  "current_run_id": "",
+  "current_render_id": "",
+  "approved_render_id": "",
+  "change_log": ["Initial template."],
+  "qa": {
+    "status": "not_run",
+    "summary": "Template only; validate project paths before production.",
+    "residual_risks": []
+  }
+}

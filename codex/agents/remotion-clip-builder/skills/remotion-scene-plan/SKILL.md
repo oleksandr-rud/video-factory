@@ -132,7 +132,7 @@ Every prop, asset, template, VFX rule, source-card detail, and timing decision m
 
 If this skill consumes, creates, validates, renders, previews, mirrors, or defers source assets, Remotion public assets, template media, frame stills, clip outputs, transparent overlays, thumbnails, or preview evidence, update the media asset manifest or return `manifest_actions[]`.
 
-Each manifest action must include `action`, `asset_id`, `canonical_path`, `remotion_public_path` and `static_file_path` when relevant, `rights_state`, `technical_metadata_state`, and `reason`.
+Each manifest action must include `action`, `asset_id`, `canonical_path`, `remotion_public_path` and `static_file_path` when relevant, `rights_state`, `technical_metadata_state`, `evidence_refs`, and `reason`.
 
 Use `deferred` for planned assets, missing `staticFile()` projections, preview renders that are not created yet, or clip outputs that will be written by `remotion-vfx-clip`. Remotion Video Producer should receive manifest-backed asset ids or explicit deferred actions.
 

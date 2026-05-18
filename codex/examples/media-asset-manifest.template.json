@@ -1,0 +1,50 @@
+{
+  "manifest_id": "media_<project-slug>",
+  "project_id": "project_<project-slug>",
+  "project_slug": "<project-slug>",
+  "project_path": "channels/<channel-slug>/projects/<project-slug>/project.json",
+  "channel_profile_id": "channel_<channel-slug>",
+  "channel_slug": "<channel-slug>",
+  "channel_profile_path": "channels/<channel-slug>/channel-profile.json",
+  "source_ledger_path": "channels/<channel-slug>/references/source-ledger.json",
+  "status": "planned",
+  "assets": [
+    {
+      "asset_id": "asset_<project-slug>_placeholder_001",
+      "kind": "metadata",
+      "origin": "derived",
+      "status": "planned",
+      "canonical_path": "channels/<channel-slug>/projects/<project-slug>/source-media/README.md",
+      "title": "Placeholder media manifest entry",
+      "description": "Replace with actual media or remove before production.",
+      "rights": {
+        "license_summary": "not_applicable",
+        "usage_allowed": false,
+        "approval_required": false,
+        "attribution_required": false,
+        "restrictions": []
+      },
+      "technical": {
+        "checksum": ""
+      },
+      "derived_from_asset_ids": [],
+      "related_scene_ids": [],
+      "related_contract_paths": [],
+      "evidence_refs": [
+        {
+          "evidence_id": "evidence_manifest_template",
+          "description": "Template placeholder; not production media.",
+          "confidence": "high"
+        }
+      ],
+      "notes": "Production assets must record canonical path, rights, technical metadata, evidence refs, and Remotion public/static paths when relevant."
+    }
+  ],
+  "qa": {
+    "status": "not_run",
+    "summary": "Template only; asset entries must be replaced with real manifest actions.",
+    "missing_assets": [],
+    "rights_risks": [],
+    "technical_risks": []
+  }
+}

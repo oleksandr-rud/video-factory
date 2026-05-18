@@ -112,7 +112,7 @@ Every `mandatory`, `preferred`, `avoid`, reusable asset, or template token must 
 
 If this skill consumes, validates, or promotes a local brand asset, reference frame, screenshot, audio reference, reusable visual asset, or Remotion template media dependency, update the media asset manifest or return `manifest_actions[]`.
 
-Each manifest action must include `action`, `asset_id`, `canonical_path`, `remotion_public_path` and `static_file_path` when relevant, `rights_state`, `technical_metadata_state`, and `reason`.
+Each manifest action must include `action`, `asset_id`, `canonical_path`, `remotion_public_path` and `static_file_path` when relevant, `rights_state`, `technical_metadata_state`, `evidence_refs`, and `reason`.
 
 Use `deferred` for style tokens inferred from media that is not yet captured, approved, or manifest-tracked. Do not promote a reusable asset or template media dependency into channel format without either a manifest entry or an explicit deferred manifest action.
 

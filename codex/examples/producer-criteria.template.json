@@ -1,0 +1,77 @@
+{
+  "producer_criteria_id": "criteria_<project-slug>_v1",
+  "run_id": "run_<project-slug>_001",
+  "request_id": "request_<id>",
+  "project_id": "project_<project-slug>",
+  "project_slug": "<project-slug>",
+  "project_path": "channels/<channel-slug>/projects/<project-slug>/project.json",
+  "channel_profile_id": "channel_<channel-slug>",
+  "channel_slug": "<channel-slug>",
+  "channel_profile_path": "channels/<channel-slug>/channel-profile.json",
+  "channel_format_id": "format_<format-slug>_v1",
+  "channel_format_path": "channels/<channel-slug>/formats/<format-slug>.json",
+  "media_asset_manifest_path": "channels/<channel-slug>/projects/<project-slug>/media-asset-manifest.json",
+  "remotion_project_contract_path": "remotion/remotion-project.json",
+  "scenario_id": "scenario_<project-slug>_v1",
+  "version": "v1",
+  "status": "draft",
+  "objective": "Define binding production and review criteria for the requested video.",
+  "platform": "youtube_shorts",
+  "duration_target_seconds": 60,
+  "aspect_ratio": "9:16",
+  "acceptance_criteria": [
+    "Video matches the user's objective and target platform.",
+    "Scene claims are source-backed or explicitly marked as assumptions.",
+    "Captions are readable, synchronized, and inside safe areas.",
+    "No paid, licensed, or external provider work is performed without approval."
+  ],
+  "hard_gates": [
+    {
+      "gate_id": "gate_rights_001",
+      "category": "rights",
+      "rule": "Final media must have approved rights or an explicit user waiver.",
+      "applies_to_scene_ids": [],
+      "failure_policy": "blocks_delivery",
+      "evidence_required": "media asset manifest rights entries"
+    },
+    {
+      "gate_id": "gate_sync_001",
+      "category": "sync",
+      "rule": "Voiceover, visuals, and captions must align with the timeline.",
+      "applies_to_scene_ids": [],
+      "failure_policy": "must_fix",
+      "evidence_required": "timeline sync plan and render QA"
+    }
+  ],
+  "required_rules": ["Preserve stable scene ids after downstream work begins."],
+  "forbidden_rules": ["Do not copy reference execution or article text directly without approval."],
+  "style_rules": [],
+  "provider_constraints": ["Paid generation and provider uploads require explicit approval."],
+  "vfx_constraints": [],
+  "rights_and_budget_constraints": ["Stop before paid APIs, licensed downloads, external generation, or voice cloning."],
+  "scene_criteria": [
+    {
+      "scene_id": "scene_001",
+      "criteria": ["Hook is clear and source-safe."],
+      "visual_constraints": ["Visual route must be manifest-backed or explicitly deferred."],
+      "vfx_constraints": [],
+      "audio_caption_constraints": ["Caption coverage required."],
+      "source_or_claim_constraints": ["Claims must map to source ids or be softened."]
+    }
+  ],
+  "review_thresholds": {
+    "overall_min": 8,
+    "category_min": 7,
+    "max_major_findings": 0,
+    "allow_minor_findings": true,
+    "required_category_scores": ["story_clarity", "visual_relevance", "subtitle_sync", "platform_fit", "factual_alignment"]
+  },
+  "revision_policy": {
+    "max_review_iterations": 3,
+    "rerun_only_affected_artifacts": true,
+    "stop_on_repeated_blocker": true,
+    "waiver_policy": "Only Director/user may waive hard gates; record the waiver in the run ledger."
+  },
+  "source_artifacts": [],
+  "notes": "Template only; Director must update scene criteria and gates for the actual request."
+}

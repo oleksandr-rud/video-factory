@@ -1,0 +1,105 @@
+{
+  "template_id": "vf.example-template.v1",
+  "name": "Example Template",
+  "version": "v1",
+  "status": "planned",
+  "category": "other",
+  "owner_agent": "remotion-clip-builder",
+  "project_id": "project_<project-slug>",
+  "project_path": "channels/<channel-slug>/projects/<project-slug>/project.json",
+  "channel_profile_id": "channel_<channel-slug>",
+  "channel_slug": "<channel-slug>",
+  "channel_profile_path": "channels/<channel-slug>/channel-profile.json",
+  "media_asset_manifest_path": "channels/<channel-slug>/projects/<project-slug>/media-asset-manifest.json",
+  "remotion_project_contract_path": "remotion/remotion-project.json",
+  "remotion_app_root_path": "remotion",
+  "template_registry_path": "remotion/src/templateRegistry.tsx",
+  "composition_id": "vf.example-template.v1.preview",
+  "composition_type": "template",
+  "component_paths": ["remotion/src/templates/example/ExampleTemplate.tsx"],
+  "registry_paths": ["remotion/src/templateRegistry.tsx"],
+  "props_schema_path": "remotion/templates/vf.example-template.v1.props.schema.json",
+  "default_props_path": "remotion/templates/vf.example-template.v1.props.json",
+  "props_contract": {
+    "required": ["title"],
+    "optional": ["subtitle", "accentColor"],
+    "notes": "Props must remain serializable and stable across template versions."
+  },
+  "supported_aspect_ratios": ["9:16", "16:9"],
+  "supported_dimensions": [
+    {
+      "width": 1080,
+      "height": 1920
+    }
+  ],
+  "duration": {
+    "default_seconds": 5,
+    "min_seconds": 3,
+    "max_seconds": 20,
+    "fps": 30
+  },
+  "vfx_profile": {
+    "complexity": "simple_css_svg",
+    "quality_risks": [],
+    "performance_risks": [],
+    "optimization_notes": [],
+    "fallback_plan": "Use static card if animation fails.",
+    "status": "not_run"
+  },
+  "alpha": {
+    "supports_transparency": false,
+    "preferred_export": "mp4",
+    "notes": "No alpha by default."
+  },
+  "safe_areas": {
+    "caption_safe": true,
+    "cta_safe": true,
+    "reserved_zones": ["bottom_caption_zone"],
+    "notes": "Keep important text inside safe areas."
+  },
+  "usage": {
+    "when_to_use": ["Use for generic parameterized scene cards."],
+    "when_not_to_use": ["Do not use for bespoke VFX or rights-sensitive source recreations without approval."],
+    "instance_output_contract": "codex/contracts/remotion-clip-package.schema.json",
+    "handoff_notes": ["Clip packages must reference this template id and contract path."]
+  },
+  "dependencies": [
+    {
+      "name": "remotion",
+      "version": "record_actual_version",
+      "purpose": "core rendering",
+      "license_summary": "check package license",
+      "approval_required": false
+    }
+  ],
+  "source": {
+    "created_from": "core_remotion",
+    "source_clip_package_path": "",
+    "source_url": "",
+    "license_summary": "local template",
+    "approval_required": false,
+    "notes": "Template placeholder."
+  },
+  "preview_frames": [
+    {
+      "frame": 0,
+      "path": "channels/<channel-slug>/projects/<project-slug>/renders/previews/vf.example-template.v1-frame000.png",
+      "notes": "Preview not rendered yet."
+    }
+  ],
+  "render_commands": [
+    {
+      "purpose": "preview_still",
+      "command": "npx remotion still vf.example-template.v1.preview <output-path>",
+      "completed": false,
+      "notes": "Run after implementation."
+    }
+  ],
+  "known_instances": [],
+  "qa": {
+    "status": "not_run",
+    "summary": "Template contract example only; implementation and preview not validated.",
+    "checks": [],
+    "findings": []
+  }
+}

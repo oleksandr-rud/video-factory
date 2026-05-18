@@ -94,7 +94,7 @@ Unsupported visual ideas are allowed only as exploratory fallbacks and must be m
 
 If this skill consumes, references, requires, validates, or defers source media, approved web images, screenshots, provider clips, generated clips, Remotion assets, reusable template media, or public-projection needs, update the media asset manifest or return `manifest_actions[]`.
 
-Each manifest action must include `action`, `asset_id`, `canonical_path`, `remotion_public_path` and `static_file_path` when relevant, `rights_state`, `technical_metadata_state`, and `reason`.
+Each manifest action must include `action`, `asset_id`, `canonical_path`, `remotion_public_path` and `static_file_path` when relevant, `rights_state`, `technical_metadata_state`, `evidence_refs`, and `reason`.
 
 Use `deferred` for planned-but-not-yet-created media, assets awaiting approval, source visuals that should be recreated instead of copied, or media that must later be mirrored into Remotion `public/`. Visual plans should pass asset ids and manifest status downstream, not just descriptive clip ideas.
 

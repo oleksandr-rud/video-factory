@@ -93,7 +93,7 @@ Return an approval-ready package matching `codex/contracts/ai-video-generation-p
 
 If this skill consumes, references, validates, or defers reference assets, seed images, source clips, generated-output placeholders, provider previews, or future downloaded generation files, update the media asset manifest or return `manifest_actions[]`.
 
-Each manifest action must include `action`, `asset_id`, `canonical_path`, `rights_state`, `technical_metadata_state`, and `reason`; include `remotion_public_path` and `static_file_path` when approved outputs will be mirrored for Remotion.
+Each manifest action must include `action`, `asset_id`, `canonical_path`, `rights_state`, `technical_metadata_state`, `evidence_refs`, and `reason`; include `remotion_public_path` and `static_file_path` when approved outputs will be mirrored for Remotion.
 
 Use `deferred` until generation is approved and actual files exist. The approval package must identify which source asset ids and future output asset ids will need manifest entries before downstream timeline work.
 

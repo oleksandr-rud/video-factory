@@ -31,7 +31,7 @@ Use `codex/agents/video-critic/scripts/run_openrouter_video_critique.py` for pro
 
 ## Agent System Audit
 
-`codex/scripts/audit_agent_system.py` checks the project-internal skill inventory, Director handoff coverage, skill script references, approval-gate wording for API/paid-looking skills, and the local hardening section template.
+`codex/scripts/audit_agent_system.py` checks the project-internal skill inventory, Director handoff coverage, skill script references, approval-gate wording for API/paid-looking skills, the local hardening section template, P0 critical skill regression, canonical handoff fields, required context-state fields, and required example templates.
 
 Run:
 
@@ -39,7 +39,7 @@ Run:
 python codex/scripts/audit_agent_system.py
 ```
 
-Use `--json` for a machine-readable report and `--strict` in CI-style checks when missing script references, handoff drift, missing frontmatter, or missing approval-gate wording should fail the command.
+Use `--json` for a machine-readable report and `--strict` in CI-style checks when missing script references, handoff drift, missing frontmatter, missing approval-gate wording, P0 critical skill regression, missing canonical handoff fields, missing context-state fields, or missing example templates should fail the command.
 
 ## Reference Video Analysis
 

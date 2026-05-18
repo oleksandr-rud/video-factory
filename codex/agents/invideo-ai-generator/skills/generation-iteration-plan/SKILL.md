@@ -79,7 +79,7 @@ Return:
 
 If this skill consumes, validates, compares, or defers generated variants, reference assets, provider previews, downloaded outputs, thumbnails, prompt sidecars, or QA evidence media, update the media asset manifest or return `manifest_actions[]`.
 
-Each manifest action must include `action`, `asset_id`, `canonical_path`, `rights_state`, `technical_metadata_state`, and `reason`; include `remotion_public_path` and `static_file_path` when an accepted output will be mirrored for Remotion.
+Each manifest action must include `action`, `asset_id`, `canonical_path`, `rights_state`, `technical_metadata_state`, `evidence_refs`, and `reason`; include `remotion_public_path` and `static_file_path` when an accepted output will be mirrored for Remotion.
 
 Use `deferred` for planned variants before generation approval, rerolls that may spend credits, provider outputs not yet downloaded, or files that still need QA before becoming timeline candidates.
 

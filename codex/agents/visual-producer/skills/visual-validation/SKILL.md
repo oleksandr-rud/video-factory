@@ -93,6 +93,6 @@ Return this validation summary:
 
 If this skill consumes, validates, rejects, approves, or defers a local media file, provider preview, downloaded clip, generated clip, Remotion output, screenshot, thumbnail, or source evidence asset, update the media asset manifest or return `manifest_actions[]`.
 
-Each manifest action must include `action`, `asset_id`, `canonical_path`, `remotion_public_path` and `static_file_path` when relevant, `rights_state`, `technical_metadata_state`, and `reason`.
+Each manifest action must include `action`, `asset_id`, `canonical_path`, `remotion_public_path` and `static_file_path` when relevant, `rights_state`, `technical_metadata_state`, `evidence_refs`, and `reason`.
 
 Use `deferred` when validation depends on a media file, license, download, metadata probe, or Remotion public projection that is missing or awaiting approval. A candidate cannot become primary solely from validation prose without manifest-backed identity or an explicit deferred/blocking action.

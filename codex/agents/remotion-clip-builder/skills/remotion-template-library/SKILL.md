@@ -88,6 +88,30 @@ Return either a selected-template decision or a new/updated template contract:
 }
 ```
 
+## Contract Fields Populated
+
+- `remotion-template.schema.json`: template id, version, status, category, owner, component paths, composition id, props contract, usage rules, dependencies, source, previews, render commands, known instances, and QA
+- `remotion-project.schema.json`: `template_registry_paths`, `template_contract_paths`, and `composition_registry[]` entries for template preview compositions
+- `remotion-clip-package.schema.json`: `template_id`, `template_contract_path`, `template_instances[]`, instance props, component paths, render commands, preview frames, output asset ids, and QA for scene-specific use
+- `media-asset-manifest.schema.json`: template media dependencies, preview stills, rendered template instances, thumbnails, transparent overlays, and deferred asset needs
+- `video-project.schema.json` and `production-run.schema.json`: template contract paths and changed artifact references when available
+
+## Status Policy
+
+- Return `selected` when an existing template satisfies the scene purpose, producer criteria, aspect ratio, safe areas, alpha needs, dependency policy, and manifest requirements.
+- Return `implemented` when a new or revised template is registered, contract-backed, project-contract-aligned, and ready for scene instances.
+- Return `needs_approval` when the template uses paid/pro templates, licensed assets, unclear licenses, new external dependencies, direct source screenshots, or provider media outside approved scope.
+- Return `blocked` when no template fits, required assets are unavailable, the registry/project contract cannot be aligned, or a breaking template change would invalidate existing clip packages.
+- Return `needs_revision` when props, usage rules, registry entries, preview evidence, project contract entries, or clip package references are incomplete.
+
+## Evidence Required
+
+Every selected, created, revised, or promoted template must cite the scene brief, channel format rule, producer criteria rule, existing registry entry, source clip package, media asset id, or explicit Director instruction that justifies the template decision. Every registry/project/clip-package update must list the exact file path changed or deferred.
+
+## Approval And Stop Conditions
+
+Stop before using paid/pro templates, licensed media, unapproved source screenshots, new external services, or new dependencies without Director approval. Stop before mutating an existing template in a breaking way; create a new template version or scene-specific instance instead. Stop if `remotion-project.schema.json`, the template registry, the template contract, and any clip package references cannot be kept aligned in the same handoff.
+
 ## Definition Of Done
 
 - Template has a stable id, composition id, component path, props contract, usage rules, dependencies, safe-area/alpha notes, and QA status.
@@ -99,6 +123,50 @@ Return either a selected-template decision or a new/updated template contract:
 
 If this skill consumes, creates, validates, previews, renders, mirrors, or defers template media dependencies, local assets, preview stills, rendered template instances, thumbnails, transparent overlays, or reusable Remotion outputs, update the media asset manifest or return `manifest_actions[]`.
 
-Each manifest action must include `action`, `asset_id`, `canonical_path`, `remotion_public_path` and `static_file_path` when relevant, `rights_state`, `technical_metadata_state`, and `reason`.
+Each manifest action must include `action`, `asset_id`, `canonical_path`, `remotion_public_path` and `static_file_path` when relevant, `rights_state`, `technical_metadata_state`, `evidence_refs`, and `reason`.
 
 Use `deferred` for templates that declare future assets, missing public projections, preview renders not yet generated, or template instances that will be rendered later. Template contracts and registry entries must not replace manifest provenance for real media files.
+
+## Handoff Summary Shape
+
+Return:
+
+```json
+{
+  "status": "selected | implemented | needs_approval | blocked | needs_revision",
+  "artifact_paths": ["string"],
+  "changed_files": ["string"],
+  "populated_contracts": [
+    "codex/contracts/remotion-template.schema.json",
+    "codex/contracts/remotion-project.schema.json",
+    "codex/contracts/remotion-clip-package.schema.json"
+  ],
+  "template_alignment": {
+    "template_contract_path": "string",
+    "template_registry_path": "string",
+    "remotion_project_contract_path": "string",
+    "instance_clip_package_path": "string",
+    "registry_updated": false,
+    "project_contract_updated": false,
+    "clip_package_references_template": false
+  },
+  "manifest_actions": [
+    {
+      "action": "created | updated | consumed | validated | mirrored_to_remotion_public | deferred | not_applicable",
+      "asset_id": "string",
+      "canonical_path": "string",
+      "remotion_public_path": "string",
+      "static_file_path": "string",
+      "rights_state": "approved | needs_approval | blocked | unknown",
+      "technical_metadata_state": "present | missing | partial | not_applicable",
+      "evidence_refs": ["string"],
+      "reason": "string"
+    }
+  ],
+  "validation_performed": ["template fit", "props contract", "registry alignment", "project contract alignment", "clip package reference", "manifest coverage"],
+  "assumptions": ["string"],
+  "blockers": ["string"],
+  "risks": ["string"],
+  "next_recommended_step": "string"
+}
+```

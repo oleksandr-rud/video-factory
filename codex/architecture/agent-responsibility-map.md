@@ -10,7 +10,7 @@ Local scan summary:
 - Specs: 7
 - Agent reference docs: 4
 - Shared Remotion template contracts: 4
-- Example fixtures: `codex/examples/production-run.template.json`
+- Example fixtures: `codex/examples/channel-profile.template.json`, `codex/examples/video-project.template.json`, `codex/examples/media-asset-manifest.template.json`, `codex/examples/producer-criteria.template.json`, `codex/examples/remotion-project.template.json`, `codex/examples/remotion-template.template.json`, and `codex/examples/production-run.template.json`
 - Channel project artifacts currently present: none beyond `channels/.gitkeep`
 
 ## Architecture Rule
@@ -271,7 +271,7 @@ Own upstream channel, source, reference, and reusable format intelligence. It ma
 
 ### Analysis Notes
 
-Channel Intelligence is correctly upstream because its outputs affect script, voice, visual routes, AI prompts, Remotion styling, final timeline, and critique. `source-corpus-ingestion`, `reference-video-breakdown`, `web-content-synthesis`, `style-system-extraction`, `channel-format-synthesis`, `scenario-alignment-brief`, and `redundancy-risk-audit` now have structured evidence, approval gates, manifest-action rules, and routable findings or summaries. The remaining Channel Intelligence hardening need is mainly `channel-profile-management` output deltas and invalidation detail.
+Channel Intelligence is correctly upstream because its outputs affect script, voice, visual routes, AI prompts, Remotion styling, final timeline, and critique. All Channel Intelligence skills now have structured evidence, approval gates, manifest-action rules, and routable findings or summaries, including channel-profile deltas and invalidation impact.
 
 ## Creative Producer
 
@@ -812,12 +812,12 @@ Every artifact that affects delivery should preserve at least one trace:
 
 ## Current Gaps And Recommended Hardening
 
-1. Manual inventory counts are now supported by `codex/scripts/audit_agent_system.py`; current scan is 48 local skills, 43 non-Director skills, 43 Director handoff refs, 36 strong matrix skills, and 19 contracts.
+1. Manual inventory counts are now supported by `codex/scripts/audit_agent_system.py`; current scan is 48 local skills, 43 non-Director skills, 43 Director handoff refs, 38 strong matrix skills, and 19 contracts.
 2. The first four critical judgment/QA skills are now hardened: `clip-candidate-ranking`, `generated-clip-qa`, `render-qa`, and `artifact-consistency-audit`.
-3. No matrix skills remain classified as Thin. Next hardening should focus on Medium skills: `channel-profile-management`, `elevenlabs-voice-selection`, Director criteria/review-loop skills, Remotion post-production, Remotion AI/VFX outputs, and Video Critic review package/revision skills.
+3. No matrix skills remain classified as Thin. Next hardening should focus on Medium skills: `elevenlabs-voice-selection`, Director criteria/review-loop skills, Remotion post-production, Remotion AI/VFX outputs, and Video Critic review package/revision skills.
 4. Deterministic handoff validation should stay optional until real runs show repeated drift; the current audit script covers static handoff map drift and script-reference drift.
 5. Every media-producing skill should either update the media asset manifest or explicitly state why no media manifest update was possible.
 6. Timeline helpers now default to consuming Visual Producer selections and can only choose repair fallback visuals through explicit Director-reviewed repair mode.
 7. Review assets and paid model critique need reproducibility fields: prompt path, request preview path, raw response path, model, review mode, frame list, and limitations.
-8. Remotion template governance is now present, but project/channel template override examples are still needed.
+8. Remotion template governance is now present with contract examples; project/channel template override examples using real production data are still useful after the first run.
 9. Current `channels/` has no durable project artifacts yet, so the next real production run should generate example channel profile, project, manifest, run ledger, and criteria artifacts.

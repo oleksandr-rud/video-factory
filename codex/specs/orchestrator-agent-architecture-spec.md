@@ -347,6 +347,12 @@ Current real architecture and runtime artifacts:
 - `codex/specs/invideo-ai-generation-spec.md`
 - `codex/specs/remotion-production-spec.md`
 - `codex/specs/video-critique-spec.md`
+- `codex/examples/channel-profile.template.json`
+- `codex/examples/video-project.template.json`
+- `codex/examples/media-asset-manifest.template.json`
+- `codex/examples/producer-criteria.template.json`
+- `codex/examples/remotion-project.template.json`
+- `codex/examples/remotion-template.template.json`
 - `codex/examples/production-run.template.json`
 - `codex/contracts/*.schema.json`
 - `remotion/remotion-project.json`

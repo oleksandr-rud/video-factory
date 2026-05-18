@@ -1,0 +1,76 @@
+{
+  "remotion_project_id": "remotion_shared_app",
+  "scope": "shared_app",
+  "status": "scaffolded",
+  "project_id": "project_<project-slug>",
+  "project_path": "channels/<channel-slug>/projects/<project-slug>/project.json",
+  "channel_profile_id": "channel_<channel-slug>",
+  "channel_slug": "<channel-slug>",
+  "app_root_path": "remotion",
+  "package_json_path": "remotion/package.json",
+  "src_root_path": "remotion/src",
+  "public_root_path": "remotion/public",
+  "render_output_root_path": "channels/<channel-slug>/projects/<project-slug>/renders",
+  "package_manager": "npm",
+  "remotion_version": "record_actual_version",
+  "template_registry_paths": ["remotion/src/templateRegistry.tsx"],
+  "template_contract_paths": ["remotion/templates/vf.caption.safe.v1.json"],
+  "template_source": {
+    "name": "local Video Factory shared templates",
+    "url": "",
+    "license_summary": "local project templates",
+    "approval_required": false
+  },
+  "composition_registry": [
+    {
+      "composition_id": "vf.caption.safe.v1.preview",
+      "template_id": "vf.caption.safe.v1",
+      "template_contract_path": "remotion/templates/vf.caption.safe.v1.json",
+      "category": "caption",
+      "reusable": true,
+      "composition_type": "template",
+      "owner_agent": "remotion-clip-builder",
+      "source_paths": ["remotion/src/templateRegistry.tsx"],
+      "default_props_path": "remotion/templates/vf.caption.safe.v1.props.json",
+      "output_contracts": ["codex/contracts/remotion-template.schema.json"],
+      "status": "planned",
+      "notes": "Replace with actual registry state."
+    }
+  ],
+  "dependencies": [
+    {
+      "name": "remotion",
+      "version": "record_actual_version",
+      "purpose": "video rendering",
+      "license_summary": "check package license",
+      "approval_required": false
+    }
+  ],
+  "public_asset_policy": {
+    "public_root_path": "remotion/public",
+    "static_file_prefix": "/projects/<project-slug>",
+    "media_asset_manifest_path": "channels/<channel-slug>/projects/<project-slug>/media-asset-manifest.json",
+    "mirror_rules": ["Canonical media stays under the project; Remotion public is a render-visible projection."],
+    "remote_asset_policy": "forbidden_for_final_render"
+  },
+  "commands": {
+    "install": "npm install",
+    "studio": "npm run dev",
+    "lint": "npm run lint",
+    "render": "npx remotion render <composition-id> <output-path>",
+    "still": "npx remotion still <composition-id> <output-path>",
+    "bundle": "npx remotion bundle"
+  },
+  "artifact_paths": {
+    "props_path": "channels/<channel-slug>/projects/<project-slug>/remotion/props",
+    "preview_output_path": "channels/<channel-slug>/projects/<project-slug>/renders/previews",
+    "render_output_path": "channels/<channel-slug>/projects/<project-slug>/renders/rc",
+    "qa_report_path": "channels/<channel-slug>/projects/<project-slug>/renders/qa"
+  },
+  "qa": {
+    "status": "not_run",
+    "summary": "Template only; verify package, registry, commands, and Remotion version.",
+    "checks": [],
+    "risks": ["Version placeholders must be replaced with actual package metadata."]
+  }
+}

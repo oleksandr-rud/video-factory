@@ -28,6 +28,6 @@ Use this before `multimodal-video-critique`. The goal is to convert a video file
 
 If this skill consumes, creates, samples, validates, probes, mirrors, or defers review media, source render files, frame stills, thumbnails, metadata sidecars, prompt packages, captions, or sampled evidence assets, update the media asset manifest or return `manifest_actions[]`.
 
-Each manifest action must include `action`, `asset_id`, `canonical_path`, `remotion_public_path` and `static_file_path` when relevant, `rights_state`, `technical_metadata_state`, and `reason`.
+Each manifest action must include `action`, `asset_id`, `canonical_path`, `remotion_public_path` and `static_file_path` when relevant, `rights_state`, `technical_metadata_state`, `evidence_refs`, and `reason`.
 
 Use `deferred` when frame extraction, metadata probing, direct-video packaging, or review asset creation cannot run. The critic must know whether missing review media is a model limitation, media policy blocker, or technical extraction failure.

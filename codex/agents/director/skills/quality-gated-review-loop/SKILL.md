@@ -18,6 +18,8 @@ Track each loop in `codex/contracts/production-run.schema.json` under `review_lo
 - routed revision actions and owning agents
 - next action and stop reason
 
+When rerun dependencies are no longer obvious from a single finding, also update `production-run.invalidation_graph` with artifact nodes, dependency edges, and invalidation events. Use the graph to make stale artifacts, preserved artifacts, owner agents, and rerun scope auditable without reconstructing the decision from prose.
+
 ## Inputs To Critic
 
 Every critic handoff must include:
@@ -45,6 +47,14 @@ Every critic handoff must include:
 
 Record `invalidated_artifacts`, `preserved_artifacts`, and `rerun_scope` in the production run ledger before dispatching fixes.
 
+Also add an `invalidation_graph.events[]` entry when any of these are true:
+
+- more than one owner agent must rerun work
+- a change invalidates both media and Remotion artifacts
+- a template change affects multiple clip packages
+- a channel/source/scenario change invalidates artifacts across more than one phase
+- a previous critique iteration is being preserved as evidence while newer artifacts supersede it
+
 - Channel profile, channel/source/reference findings: rerun Channel Intelligence, update channel profile/channel format and producer criteria if needed, then rerun affected Creative Producer, Visual Producer, specialist, Remotion Video Producer, render, and Critic work.
 - Scenario, narration, claim, or scene-boundary findings: rerun Creative Producer, update producer criteria scene checks if needed, then rerun affected Visual Producer, InVideo AI Generator or Remotion Clip Builder, Remotion Video Producer, render, and Critic work.
 - Voiceover, pronunciation, caption, or timestamp findings: rerun Creative Producer voice/TTS artifacts when needed, then timeline sync, Remotion Video Producer render, and Critic work.
@@ -53,6 +63,8 @@ Record `invalidated_artifacts`, `preserved_artifacts`, and `rerun_scope` in the 
 - Remotion component, overlay, or short-clip findings: rerun Remotion Clip Builder for affected scenes, then Remotion Video Producer, render, and Critic work.
 - Timeline, subtitles, audio mix, transition, export, or technical render findings: rerun Remotion Video Producer, render, and Critic work only.
 - Critic evidence gaps: rerun `prepare-multimodal-review-package` or request missing inputs before changing production artifacts.
+
+Graph event fields should include `trigger`, source critique finding or change id when available, affected artifacts, preserved artifacts, rerun scope, owner agents, created timestamp, and notes. Mark any affected node status as `stale` or `invalidated` before dispatching the owner handoff.
 
 ## Default Gate Policy
 

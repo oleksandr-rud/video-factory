@@ -12,11 +12,13 @@ Use this after `decompose-video-request` when the user wants a full run, `/goal`
 1. Create or resolve the channel profile under `channels/<channel-slug>/channel-profile.json` when a durable channel is in scope; store its repo-relative POSIX path in `channel_profile_path`.
 2. Create or update the video project under `channels/<channel-slug>/projects/<project-slug>/project.json` when a durable deliverable is in scope; store its path in `project_path`.
 3. Create or update the media asset manifest under the project folder when source videos, reference videos, web content captures, generated clips, rendered clips, subtitles, review frames, or other media assets are in scope; store its path in `media_asset_manifest_path`.
+   - Require each media-producing handoff to update or explicitly defer manifest entries with `asset_id`, canonical path, Remotion public/static path when relevant, rights state, technical metadata state, evidence refs, and reason.
 4. Create or resolve the Remotion app contract matching `codex/contracts/remotion-project.schema.json`; default to the shared `remotion/` app and store the repo-relative contract path in `remotion_project_contract_path`. When reusable Remotion components are in scope, also resolve the app template registry path and any project template contract paths matching `codex/contracts/remotion-template.schema.json`.
 5. Create or update a run ledger matching `codex/contracts/production-run.schema.json` inside the project folder. Initialize `context_state` so the run can resume from files after context compaction.
 6. Create or update the producer criteria artifact matching `codex/contracts/producer-criteria.schema.json`; store its path in `producer_criteria_path`.
 7. Load `AGENTS.md`, the target agent `AGENT.md`, and only the skill files named in each handoff. On resume, first read the production run ledger and the files listed in `context_state.artifacts_to_reload_next`.
 8. Build each handoff using `codex/contracts/agent-handoff.schema.json`.
+   - Every handoff must include canonical fields: `handoff_id`, `run_id`, `project_path`, `skills_to_read`, `output_contract`, `definition_of_done`, `stop_conditions`, and `budget_policy`.
    - A production agent's `handoff_recommendations[]` are not executable work by themselves. Convert them into Director-owned handoffs before downstream agents run.
    - Only name skills that belong to the target agent's folder or explicitly approved built-in skills.
    - Include the project path in downstream handoff inputs once it exists.
@@ -39,7 +41,8 @@ Use this after `decompose-video-request` when the user wants a full run, `/goal`
 10. Parallelize only independent work. Do not run a downstream agent before its required input artifact exists.
 11. After each handoff, validate that the returned artifact matches its output contract, update the media asset manifest, project index, and run ledger, and send one targeted repair handoff if required fields or QA evidence are missing.
 12. Run `context-compaction` after each phase boundary, long handoff, review-loop iteration, user change, or large research/tool-output step. Keep the active working set limited to the current phase, next handoff, approvals, blockers, and `context_state.artifacts_to_reload_next`.
-13. Continue until complete, blocked, waiting for approval, or release-candidate gates pass.
+13. When rerun dependencies become hard to audit from `review_loops[]`, add or update `production-run.invalidation_graph` with artifact nodes, dependency edges, and invalidation events before dispatching repairs.
+14. Continue until complete, blocked, waiting for approval, or release-candidate gates pass.
 
 ## Context Growth Policy
 
@@ -68,6 +71,7 @@ Stop and ask the user only for:
 
 Every subagent prompt must include:
 
+- handoff id and run id
 - agent name and role
 - exact `AGENT.md` path
 - exact skill files to read

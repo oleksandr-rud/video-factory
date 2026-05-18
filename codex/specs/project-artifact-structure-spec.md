@@ -63,7 +63,7 @@ channels/<channel-slug>/projects/<project-slug>/runs/<run-id>/context/context-sn
 
 The production run ledger remains the entry point. Snapshot files are optional detailed sidecars; `production-run.context_state` must contain the compact working set and reload list needed to continue the next phase.
 
-Use `codex/examples/production-run.template.json` as the minimal fixture for new run ledgers. Replace placeholder channel/project/request ids and paths before writing it into `channels/<channel-slug>/projects/<project-slug>/production-run.json`.
+Use `codex/examples/*.template.json` as minimal fixtures for new channel/project artifacts. Replace placeholder channel/project/request ids and paths before writing them into `channels/<channel-slug>/` or `channels/<channel-slug>/projects/<project-slug>/`.
 
 ## Remotion Public Projection
 
@@ -139,10 +139,13 @@ For 10-20 supplied links, process each URL as an independent one-page source wit
 
 ## Contract Map
 
-- `video-project.schema.json`: durable project index, folder layout, deliverables, artifact paths, Remotion setup, current run/render state.
-- `production-run.schema.json`: one execution attempt, handoffs, approvals, blockers, review loops, invalidation/rerun state, and compact context/resume state. Minimal fixture: `codex/examples/production-run.template.json`.
-- `media-asset-manifest.schema.json`: loaded videos, provider clips, generated clips, rendered clips, subtitles, review frames, technical metadata, rights state, and evidence refs.
-- `remotion-project.schema.json`: Remotion app root, package manager, composition registry, commands, dependency policy, and public asset policy.
+- `channel-profile.schema.json`: durable channel identity, brand, content, visual/audio defaults, governance, and project registry. Minimal fixture: `codex/examples/channel-profile.template.json`.
+- `video-project.schema.json`: durable project index, folder layout, deliverables, artifact paths, Remotion setup, current run/render state. Minimal fixture: `codex/examples/video-project.template.json`.
+- `production-run.schema.json`: one execution attempt, handoffs, approvals, blockers, review loops, invalidation/rerun graph, and compact context/resume state. Minimal fixture: `codex/examples/production-run.template.json`.
+- `producer-criteria.schema.json`: binding production criteria, hard gates, scene criteria, thresholds, and revision policy. Minimal fixture: `codex/examples/producer-criteria.template.json`.
+- `media-asset-manifest.schema.json`: loaded videos, provider clips, generated clips, rendered clips, subtitles, review frames, technical metadata, rights state, and evidence refs. Minimal fixture: `codex/examples/media-asset-manifest.template.json`.
+- `remotion-project.schema.json`: Remotion app root, package manager, composition registry, commands, dependency policy, and public asset policy. Minimal fixture: `codex/examples/remotion-project.template.json`.
+- `remotion-template.schema.json`: reusable Remotion template contract, props, previews, usage, registry alignment, and QA. Minimal fixture: `codex/examples/remotion-template.template.json`.
 - `reference-analysis.schema.json`: source ledger and timecoded evidence distilled for production.
 - `clip-candidate.schema.json`, `ai-video-generation-package.schema.json`, `remotion-clip-package.schema.json`, `timeline-sync-plan.schema.json`, and `render-package.schema.json`: media-producing contracts that must point back to project, channel, media manifest, and source/output asset ids when available.
 

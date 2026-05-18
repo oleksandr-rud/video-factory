@@ -116,7 +116,7 @@ Every durable `must_reuse`, `must_vary`, anti-redundancy, template, asset, voice
 
 If this skill references, promotes, validates, or defers reusable media assets, brand assets, audio identity assets, Remotion template media, source cards, overlays, thumbnail assets, or reference-derived examples, update the media asset manifest or return `manifest_actions[]`.
 
-Each manifest action must include `action`, `asset_id`, `canonical_path`, `remotion_public_path` and `static_file_path` when relevant, `rights_state`, `technical_metadata_state`, and `reason`.
+Each manifest action must include `action`, `asset_id`, `canonical_path`, `remotion_public_path` and `static_file_path` when relevant, `rights_state`, `technical_metadata_state`, `evidence_refs`, and `reason`.
 
 Use `deferred` for format rules that need a future asset, template, public projection, rights approval, or metadata probe. Channel format must not become the only record of a media asset's identity, rights, or render-visible path.
 

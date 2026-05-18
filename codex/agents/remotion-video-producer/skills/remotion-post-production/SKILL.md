@@ -61,6 +61,6 @@ Definition of done:
 
 If this skill consumes, creates, validates, normalizes, trims, mixes, renders, mirrors, or defers media files, parsed web source reports, approved web images/screenshots, captions, audio, SFX/music, Remotion public assets, timeline sidecars, thumbnails, previews, render outputs, or QA evidence, update the media asset manifest or return `manifest_actions[]`.
 
-Each manifest action must include `action`, `asset_id`, `canonical_path`, `remotion_public_path` and `static_file_path` when relevant, `rights_state`, `technical_metadata_state`, and `reason`.
+Each manifest action must include `action`, `asset_id`, `canonical_path`, `remotion_public_path` and `static_file_path` when relevant, `rights_state`, `technical_metadata_state`, `evidence_refs`, and `reason`.
 
 Use `deferred` for missing probes, unmapped `staticFile()` paths, render outputs not yet produced, or media waiting on rights/approval. A post-production package is not render-ready when required timeline media has no manifest-backed identity or explicit blocker.

@@ -10,13 +10,13 @@ Current repo inventory from local scan:
 - Director handoff map entries: 43
 - Contract schemas: 19
 - Specs: 7
-- Example fixtures: `codex/examples/production-run.template.json`
+- Example fixtures: `codex/examples/channel-profile.template.json`, `codex/examples/video-project.template.json`, `codex/examples/media-asset-manifest.template.json`, `codex/examples/producer-criteria.template.json`, `codex/examples/remotion-project.template.json`, `codex/examples/remotion-template.template.json`, and `codex/examples/production-run.template.json`
 - Duplicate skill names: 0
 - Missing Director handoff map entries: 0
-- Strong skills by hardening template: 21
+- Strong skills by hardening template: 31
 - Missing skill script references: 0
 - API/paid-looking skills missing approval terms: 0
-- Durable channel/project examples in `channels/`: none beyond `channels/.gitkeep`
+- Durable channel/project examples in `channels/`: none beyond `channels/.gitkeep`; reusable placeholders live under `codex/examples/`
 
 ## Hardening Standard
 
@@ -127,7 +127,7 @@ Do not add a validation helper yet. Revisit a helper only if persisted handoffs 
 
 ### 2a. Keep Director Context Compaction Explicit
 
-Current status: Director has a dedicated `context-compaction` skill, required `production-run.context_state` contract fields, and a minimal `codex/examples/production-run.template.json` fixture.
+Current status: Director has a dedicated `context-compaction` skill, required `production-run.context_state` contract fields, optional `production-run.invalidation_graph` support, and reusable fixtures under `codex/examples/` for channel profile, video project, media manifest, producer criteria, Remotion project, Remotion template, and production run artifacts.
 
 Required rule:
 
@@ -141,7 +141,7 @@ Acceptance criteria:
 - The run ledger can explain current phase, next actions, blockers, open decisions, stale artifacts, and files to reload without relying on conversation memory.
 - Snapshot files live under `channels/<channel-slug>/projects/<project-slug>/runs/<run-id>/context/` when detailed sidecars are needed.
 - Compaction never marks production work complete without the owning artifact contract and validation evidence.
-- New runs can start from `codex/examples/production-run.template.json` after replacing placeholders.
+- New runs can start from the relevant `codex/examples/*.template.json` fixtures after replacing channel, project, request, run, and path placeholders.
 
 ### 3. Add Media Manifest Policy To Media-Producing Skills
 
@@ -210,7 +210,7 @@ Acceptance criteria:
 | Skill | Current problem | Required hardening |
 |---|---|---|
 | `source-corpus-ingestion` | Strong after evidence-graph hardening. | Keep `source_ledger[]`, `claim_ledger[]`, rights, reusable scope, evidence refs, missing assets, confidence, invalidation impact, and manifest actions explicit. |
-| `channel-profile-management` | Output summary and invalidation policy are weak. | Add channel profile delta, project scaffold result, changed fields, downstream invalidation, manifest status, and QA summary. |
+| `channel-profile-management` | Strong after profile-delta hardening. | Keep channel profile delta, project scaffold result, changed/inherited fields, downstream invalidation, manifest status, and QA summary explicit. |
 | `reference-video-breakdown` | Strong after evidence-graph hardening. | Keep `reference_beats[]`, transcript/shot/audio/caption evidence, reusable patterns, do-not-copy risks, media asset ids, model limitations, confidence, invalidation impact, and manifest actions explicit. |
 | `web-content-synthesis` | Strong after one-page web capture hardening. | Keep direct URL parsing bounded, preserve `web_pages[]`, `claim_ledger[]`, annotations, image candidates, rights/robots gates, and manifest actions. |
 | `style-system-extraction` | Strong after tokenized style-system hardening. | Keep style token taxonomy, policy levels, inheritance priority, do-not-copy rules, evidence/confidence, template candidates, invalidation impact, and manifest policy explicit. |
@@ -245,7 +245,7 @@ Acceptance criteria:
 | Skill | Current problem | Required hardening |
 |---|---|---|
 | `remotion-scene-plan` | Strong after deterministic scene-plan hardening. | Keep implementation mode, composition id, props schema, frame timing map, asset requirements, safe areas, VFX triggers, preview commands, and validation gates explicit. |
-| `remotion-template-library` | Strong but needs examples later. | Add override-example references once examples exist. |
+| `remotion-template-library` | Strong after template-alignment hardening. | Keep template contract, registry, Remotion project contract, instance clip package, manifest entries, and versioning aligned in one handoff. |
 | `remotion-stack-selection` | Strong. | Consider an optional stack-decision artifact only if dependency choices become large. |
 | `remotion-ai-component-prompt` | Good guidance but not a contract. | Add generated prompt packet shape, targeted edit plan, forbidden imports checklist, compile-error repair loop, and validation summary. |
 | `remotion-vfx-clip` | Output mapping could be stronger. | Add exact `remotion-clip-package` field checklist, transparent/opaque render commands, output media asset ids, and manifest action summary. |
@@ -288,9 +288,9 @@ Add these only after prompt/spec hardening, or when real runs show repeated drif
 - Optional handoff validator: check persisted `agent-handoff` files for existing skills, allowed paths, output contracts, budget policy, and stop conditions.
 - Completed inventory/audit script: `codex/scripts/audit_agent_system.py` generates counts and catches stale script refs, Director handoff drift, approval-gate wording gaps, and section-hardening status.
 - Optional Remotion app setup checker: only if checklist-based Remotion setup fails repeatedly.
-- Golden prompts and fixture artifacts for each contract.
-- Remotion template override examples for project > channel > shared resolution.
-- Minimal channel/project example fixtures under `codex/examples/`.
+- Golden prompts and richer fixture artifacts for contracts not covered by the current minimal templates.
+- Remotion template override examples for project > channel > shared resolution using real or representative production data.
+- Additional golden examples using real channel/project data after the first production run.
 - Reviewer prompt archive and raw model response archive policy.
 - Run report generation from the production-run ledger.
 

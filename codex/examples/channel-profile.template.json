@@ -1,0 +1,117 @@
+{
+  "channel_profile_id": "channel_<channel-slug>",
+  "channel_slug": "<channel-slug>",
+  "version": "v1",
+  "status": "draft",
+  "root_path": "channels/<channel-slug>",
+  "metadata": {
+    "name": "<Channel Name>",
+    "domain": "<domain>",
+    "description": "Reusable channel identity and production defaults.",
+    "audience": "<target audience>",
+    "primary_platforms": ["youtube_shorts"],
+    "language_defaults": ["en"],
+    "timezone": "UTC",
+    "owner_notes": "Replace placeholders with user-approved channel facts."
+  },
+  "platform_profiles": [
+    {
+      "platform": "youtube_shorts",
+      "handle_or_url": "<handle-or-url>",
+      "safe_area_notes": "Keep captions and lower thirds out of platform UI zones."
+    }
+  ],
+  "brand_identity": {
+    "promise": "<channel promise>",
+    "values": ["clarity", "evidence", "usefulness"],
+    "positioning": "<positioning>",
+    "personality": ["direct", "credible"],
+    "messaging_pillars": ["source-backed explanation"],
+    "approved_vocabulary": [],
+    "avoid_vocabulary": []
+  },
+  "content_strategy": {
+    "content_pillars": ["<pillar>"],
+    "format_registry_paths": ["channels/<channel-slug>/formats/<format-slug>.json"],
+    "hero_hub_hygiene": {
+      "hero": [],
+      "hub": [],
+      "hygiene": []
+    },
+    "upload_schedule": "unknown",
+    "anti_redundancy_rules": ["Vary hook, proof, visual metaphor, and payoff between episodes."],
+    "novelty_requirements": ["Each video needs a specific new angle or source-backed insight."]
+  },
+  "visual_identity": {
+    "color_palette": [
+      {
+        "name": "Primary",
+        "hex": "#111111",
+        "role": "text",
+        "usage": "Default high-contrast text."
+      }
+    ],
+    "typography": ["Use readable sans-serif captions unless a channel font is approved."],
+    "logo_rules": [],
+    "imagery_rules": ["Treat source imagery as evidence unless manifest rights approve direct use."],
+    "thumbnail_rules": [],
+    "caption_style": ["High contrast, two-line maximum by default."],
+    "motion_rules": ["Use deterministic Remotion motion for recurring graphics."],
+    "asset_paths": []
+  },
+  "audio_identity": {
+    "voice_profile": {
+      "voice_profile_id": "voice_<channel-slug>_default",
+      "narrator_persona": "Clear, credible narrator.",
+      "voice_traits": ["calm", "precise"],
+      "must_avoid_traits": ["overhyped", "celebrity-like"],
+      "language_defaults": ["en"],
+      "accent_policy": "Neutral unless user specifies otherwise.",
+      "pace_wpm_range": "145-170",
+      "energy_profile": "moderate",
+      "pronunciation_defaults": [],
+      "preferred_provider": "elevenlabs",
+      "provider_voice_refs": [],
+      "reference_audio_paths": [],
+      "continuity_policy": "Prefer continuity across videos unless the scenario requires a different narrator.",
+      "rights_notes": ["Do not clone or imitate real people without explicit approval."]
+    },
+    "music_rules": [],
+    "sfx_rules": [],
+    "mix_notes": "Voice remains intelligible over music and effects."
+  },
+  "governance": {
+    "approval_rules": ["Paid APIs, licensed media, voice cloning, and provider generation require Director/user approval."],
+    "rights_rules": ["Manifest rights state must be approved before media becomes final-use material."],
+    "sensitive_topics": [],
+    "last_reviewed": "not_reviewed",
+    "change_log": ["Initial template."]
+  },
+  "folder_layout": {
+    "brand_path": "channels/<channel-slug>/brand",
+    "formats_path": "channels/<channel-slug>/formats",
+    "references_path": "channels/<channel-slug>/references",
+    "rules_path": "channels/<channel-slug>/rules",
+    "assets_path": "channels/<channel-slug>/assets",
+    "evidence_path": "channels/<channel-slug>/references/evidence",
+    "projects_path": "channels/<channel-slug>/projects"
+  },
+  "reference_management": {
+    "source_ledger_path": "channels/<channel-slug>/references/source-ledger.json",
+    "reference_videos_path": "channels/<channel-slug>/references/reference-videos",
+    "web_content_path": "channels/<channel-slug>/references/web-content",
+    "evidence_path": "channels/<channel-slug>/references/evidence",
+    "media_asset_manifest_paths": [],
+    "web_content_source_report_paths": [],
+    "reference_analysis_paths": [],
+    "rules": []
+  },
+  "projects": [],
+  "evidence": [],
+  "qa": {
+    "status": "not_run",
+    "summary": "Template only; validate before production.",
+    "missing_assets": [],
+    "risks": ["Placeholder fields must be replaced with user-approved channel facts."]
+  }
+}

@@ -78,6 +78,6 @@ Do not rewrite the video directly. The Director routes revisions.
 
 If this skill consumes, validates, uploads, references, writes, or defers rendered video, sampled frames, captions, transcripts, prompt packages, raw model responses, metadata sidecars, or critique evidence media, update the media asset manifest or return `manifest_actions[]`.
 
-Each manifest action must include `action`, `asset_id`, `canonical_path`, `rights_state`, `technical_metadata_state`, and `reason`; include provider request ids or review package paths when direct video or frame assets are sent to an approved multimodal provider.
+Each manifest action must include `action`, `asset_id`, `canonical_path`, `rights_state`, `technical_metadata_state`, `evidence_refs`, and `reason`; include provider request ids or review package paths when direct video or frame assets are sent to an approved multimodal provider.
 
 Use `deferred` when paid/provider critique is not approved, raw responses are not written, direct video is unavailable, or sampled frames are missing. Critique findings that depend on media not actually inspected must be marked as unknown or limited, not pass.

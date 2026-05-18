@@ -57,6 +57,13 @@
   "approvals": [],
   "change_requests": [],
   "review_loops": [],
+  "invalidation_graph": {
+    "status": "not_required",
+    "last_updated_at": "not_updated_yet",
+    "nodes": [],
+    "edges": [],
+    "events": []
+  },
   "blockers": [],
   "qa": {
     "status": "not_run",
