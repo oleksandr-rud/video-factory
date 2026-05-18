@@ -10,11 +10,13 @@ Use this after `decompose-video-request` when the user wants a full run, `/goal`
 ## Run Loop
 
 1. Create or update a run ledger matching `codex/contracts/production-run.schema.json`.
-2. Load `AGENTS.md`, the target agent `AGENT.md`, and only the skill files named in each handoff.
-3. Build each handoff using `codex/contracts/agent-handoff.schema.json`.
+2. Create or update the producer criteria artifact matching `codex/contracts/producer-criteria.schema.json`; store its path in `producer_criteria_path`.
+3. Load `AGENTS.md`, the target agent `AGENT.md`, and only the skill files named in each handoff.
+4. Build each handoff using `codex/contracts/agent-handoff.schema.json`.
    - A production agent's `handoff_recommendations[]` are not executable work by themselves. Convert them into Director-owned handoffs before downstream agents run.
    - Only name skills that belong to the target agent's folder or explicitly approved built-in skills.
-4. Execute phases in dependency order:
+   - Include the producer criteria path in downstream handoff inputs once it exists.
+5. Execute phases in dependency order:
    - Channel Intelligence before scenario and visual planning when references, channel data, web sources, or redundancy concerns exist.
    - Creative Producer before Visual Producer; if voiceover is in scope, produce the voiceover package before final timeline assembly.
    - Visual Producer before InVideo AI Generator and Remotion Clip Builder.
@@ -23,9 +25,9 @@ Use this after `decompose-video-request` when the user wants a full run, `/goal`
    - Render QA before Video Critic.
    - Video Critic after a render candidate exists and before final delivery when the run targets a deliverable video.
    - Quality gated review loop after the first critique if findings do not pass release-candidate gates.
-5. Parallelize only independent work. Do not run a downstream agent before its required input artifact exists.
-6. After each handoff, validate that the returned artifact matches its output contract, update the run ledger, and send one targeted repair handoff if required fields or QA evidence are missing.
-7. Continue until complete, blocked, waiting for approval, or release-candidate gates pass.
+6. Parallelize only independent work. Do not run a downstream agent before its required input artifact exists.
+7. After each handoff, validate that the returned artifact matches its output contract, update the run ledger, and send one targeted repair handoff if required fields or QA evidence are missing.
+8. Continue until complete, blocked, waiting for approval, or release-candidate gates pass.
 
 ## Approval Stops
 
@@ -49,6 +51,7 @@ Every subagent prompt must include:
 - exact skill files to read
 - objective
 - inputs and artifact paths
+- producer criteria path when available
 - allowed paths
 - output contract
 - budget and approval policy
@@ -77,6 +80,13 @@ When the user changes or updates the request after a full run:
    - delivery metadata only
 3. Preserve stable ids when possible. Change scene ids only when scene boundaries or order change.
 4. Re-run only affected agents and downstream dependents.
+   - Channel/source/reference changes can invalidate producer criteria, scenario, visual plan, specialist clips, timeline, render, and critique.
+   - Scenario or narration changes invalidate scene-level voice, visuals, specialist clips, timeline, render, and critique.
+   - Voiceover, caption, or timestamp changes invalidate timeline sync, render, and critique.
+   - Visual route or candidate changes invalidate affected specialist clips, timeline, render, and critique.
+   - AI generation output changes invalidate affected clip candidates, timeline, render, and critique.
+   - Remotion clip/component changes invalidate timeline, render, and critique.
+   - Timeline, subtitle, audio mix, transition, or export changes invalidate render and critique only.
 5. Update artifact versions and QA.
 6. Return a concise diff: what changed, what was regenerated, what stayed valid, and any residual blocker.
 

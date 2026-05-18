@@ -1,6 +1,6 @@
 ---
 name: render-qa
-description: Inspect a video preview, VFX clip, subtitle track, render release candidate, or final render against the scenario, voiceover, selected visual candidates, rights notes, and export requirements. Use for final QA, Remotion preview checks, timing validation, and delivery readiness.
+description: Inspect a video preview, VFX clip, subtitle track, render release candidate, or final render against the scenario, voiceover, selected visual candidates, rights notes, and export requirements. Use for technical render QA, Remotion preview checks, timing validation, export validation, and delivery-readiness evidence before independent Video Critic release review.
 ---
 
 # Render QA
@@ -16,5 +16,7 @@ Check:
 - Aspect ratio, resolution, FPS, and export format
 - Subtitle artifact presence when separate `.srt` export is required
 - Rights, attribution, and approval notes
+
+This skill does not approve release-candidate gates. It produces technical QA evidence for the Video Critic and Director.
 
 Return pass/fail, findings by scene or timestamp, fixes made, and residual risk.

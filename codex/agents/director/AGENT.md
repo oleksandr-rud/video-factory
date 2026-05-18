@@ -7,6 +7,7 @@ Own the user conversation, production plan, budget gates, final integration, and
 ## Local Skills It Calls
 
 - `skills/decompose-video-request/SKILL.md`
+- `skills/producer-criteria-prompt/SKILL.md`
 - `skills/autonomous-production-run/SKILL.md`
 - `skills/quality-gated-review-loop/SKILL.md`
 
@@ -43,6 +44,7 @@ Use these paths when composing `agent-handoff.skills_to_read` for the target age
 
 - Approved production brief
 - Production run ledger using `codex/contracts/production-run.schema.json`
+- Producer criteria artifact using `codex/contracts/producer-criteria.schema.json`
 - Agent handoffs using `codex/contracts/agent-handoff.schema.json`
 - Critique report using `codex/contracts/critique-report.schema.json` when a render candidate is available
 - Review loop state and release-candidate gate decision
@@ -53,6 +55,7 @@ Use these paths when composing `agent-handoff.skills_to_read` for the target age
 - Keep budget, API spend, licensed downloads, and paid generation under explicit approval.
 - Keep scene ids stable once downstream work begins.
 - Track autonomous progress, approvals, blockers, and post-run changes in the production run ledger.
+- Create or update producer criteria before production handoffs and pass the criteria path to downstream agents.
 - Use production agents for broad artifact production, not small single-step work.
 - Run independent critique after a render candidate exists when the user asks for final validation or the run targets delivery.
 - Do not mark a video release-candidate approved until quality gates pass or the user explicitly waives the remaining gate failures.

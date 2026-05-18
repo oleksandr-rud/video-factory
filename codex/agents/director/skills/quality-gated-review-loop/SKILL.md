@@ -14,6 +14,7 @@ Track each loop in `codex/contracts/production-run.schema.json` under `review_lo
 - loop id and iteration number
 - render package path and critique report path
 - quality gate status: `pass`, `fail`, `needs_approval`, or `blocked`
+- invalidated artifacts, preserved artifacts, and rerun scope
 - routed revision actions and owning agents
 - next action and stop reason
 
@@ -22,7 +23,7 @@ Track each loop in `codex/contracts/production-run.schema.json` under `review_lo
 Every critic handoff must include:
 
 - user request and acceptance criteria
-- producer criteria prompt: rules, instructions, restrictions, quality bars, and provider constraints that production agents were supposed to apply
+- producer criteria artifact matching `codex/contracts/producer-criteria.schema.json`: rules, instructions, restrictions, quality bars, scene criteria, revision policy, and provider constraints that production agents were supposed to apply
 - scenario, channel format, reference analysis, visual pack, voiceover package, timeline sync plan, render package, captions, and final video path
 - previous critique reports and attempted fixes when iteration > 1
 - explicit pass/fail gates and score thresholds
@@ -39,6 +40,19 @@ Every critic handoff must include:
    - If only accepted minor findings/notes remain, the Director may approve RC with residual risks.
 5. Dispatch revision handoffs by owner agent. Include the exact finding ids, scene ids, timestamps, evidence, producer criteria, previous failed fix attempts, and expected output artifacts.
 6. Re-render downstream artifacts after fixes, then run Video Critic again.
+
+## Revision Dependency Rules
+
+Record `invalidated_artifacts`, `preserved_artifacts`, and `rerun_scope` in the production run ledger before dispatching fixes.
+
+- Channel/source/reference findings: rerun Channel Intelligence, update producer criteria if needed, then rerun affected Creative Producer, Visual Producer, specialist, Remotion Video Producer, render, and Critic work.
+- Scenario, narration, claim, or scene-boundary findings: rerun Creative Producer, update producer criteria scene checks if needed, then rerun affected Visual Producer, InVideo AI Generator or Remotion Clip Builder, Remotion Video Producer, render, and Critic work.
+- Voiceover, pronunciation, caption, or timestamp findings: rerun Creative Producer voice/TTS artifacts when needed, then timeline sync, Remotion Video Producer render, and Critic work.
+- Visual route, candidate, rights, or continuity findings: rerun Visual Producer for affected scenes, then the required InVideo AI Generator or Remotion Clip Builder handoffs, then Remotion Video Producer, render, and Critic work.
+- AI generation prompt/output findings: rerun InVideo AI Generator for affected scenes, then Remotion Video Producer, render, and Critic work.
+- Remotion component, overlay, or short-clip findings: rerun Remotion Clip Builder for affected scenes, then Remotion Video Producer, render, and Critic work.
+- Timeline, subtitles, audio mix, transition, export, or technical render findings: rerun Remotion Video Producer, render, and Critic work only.
+- Critic evidence gaps: rerun `prepare-multimodal-review-package` or request missing inputs before changing production artifacts.
 
 ## Default Gate Policy
 

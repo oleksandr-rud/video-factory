@@ -12,7 +12,7 @@ from typing import Any
 def load_json(path: str | None) -> Any:
     if not path:
         return None
-    with open(path, "r", encoding="utf-8") as handle:
+    with open(path, "r", encoding="utf-8-sig") as handle:
         return json.load(handle)
 
 

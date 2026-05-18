@@ -12,7 +12,7 @@ Read `codex/architecture/research-synthesis.md` before changing the agent model.
 4. The Visual Producer owns visual research, visual pack planning, candidate validation, and candidate ranking.
 5. The InVideo AI Generator owns AI video generation prompt packages, model/settings selection, approval packets, variants, and generated clip QA.
 6. The Remotion Clip Builder owns 5-20 second Remotion clips, component templates, motion graphics, and VFX overlays.
-7. The Remotion Video Producer owns 1-10 minute timeline assembly, captions/subtitles, audio mix, render release candidates, and delivery QA.
+7. The Remotion Video Producer owns 1-10 minute timeline assembly, captions/subtitles, audio mix, render release candidates, and technical render QA.
 8. The Video Critic owns independent multimodal final critique, artifact consistency review, and revision prioritization.
 9. Agents exchange JSON-compatible contracts from `codex/contracts/`.
 10. Paid APIs, licensed assets, or external generation jobs require explicit user approval before spend, download, or generation.
@@ -30,13 +30,13 @@ Read `codex/architecture/research-synthesis.md` before changing the agent model.
 
 ## Operating Rule
 
-Before calling an agent, read that agent's `AGENT.md` and only the skill files needed for the current task. Each subagent prompt must include role, scope, inputs, allowed files, output contract, budget policy, and definition of done.
+Before calling an agent, read that agent's `AGENT.md` and only the skill files needed for the current task. Each subagent prompt must include role, scope, inputs, allowed files, producer criteria path when available, output contract, budget policy, and definition of done.
 
 Production agents may call only skills in their own folder plus explicitly listed built-in skills. They must not read or execute another production agent's skills to perform feasibility checks or implementation work. When another role is needed, the agent should return a handoff recommendation; the Director turns that recommendation into an `agent-handoff` with the target agent, inputs, allowed paths, output contract, and definition of done.
 
 Use `codex/agents/director/skills/autonomous-production-run/SKILL.md` for full autonomous runs and post-run user changes. Track run state with `codex/contracts/production-run.schema.json`.
 
-For deliverable videos, Director must preserve the producer criteria prompt: the rules, instructions, restrictions, quality gates, and acceptance criteria production agents were expected to follow. Video Critic uses that prompt as binding review input during the review loop.
+For deliverable videos, Director must create and preserve the producer criteria artifact using `codex/contracts/producer-criteria.schema.json`: the rules, instructions, restrictions, quality gates, scene criteria, revision policy, and acceptance criteria production agents were expected to follow. Video Critic uses that artifact as binding review input during the review loop.
 
 Base subagent instruction:
 
@@ -46,14 +46,14 @@ You are the <agent-name> agent for the Video Factory project. Read your AGENT.md
 
 ## Pipeline
 
-1. Director decomposes the request and sets acceptance criteria.
+1. Director decomposes the request, creates the producer criteria artifact, and sets acceptance criteria.
 2. Channel Intelligence analyzes reference videos, source pages, channel data, and best-practice specs into reusable reference and channel-format packages.
 3. Creative Producer creates or revises the scenario, scene list, narration, and voiceover package using the channel format and source evidence. When ElevenLabs is the route, it uses provider inventory and guarded scripts before any approved generation.
 4. Visual Producer creates the visual pack, researches routes, validates candidates, selects primary/fallback visual choices, and returns downstream handoff recommendations using the channel format and reference analysis.
 5. Director converts Visual Producer handoff recommendations into formal InVideo AI Generator and Remotion Clip Builder handoffs when specialist work is needed.
 6. InVideo AI Generator prepares approved AI video prompt packages, generates or records generated clip variants, and returns QA-backed clip candidates.
 7. Remotion Clip Builder implements selected deterministic clips, component templates, motion graphics, and VFX overlays.
-8. Remotion Video Producer builds a timeline sync plan, then assembles the full timeline, captions/subtitles, audio, transitions, render release candidate, and QA evidence.
+8. Remotion Video Producer builds a timeline sync plan, then assembles the full timeline, captions/subtitles, audio, transitions, render release candidate, and technical render QA evidence.
 9. Video Critic prepares multimodal review assets, critiques the render candidate scene by scene against production criteria and viewer experience, and returns gate results plus a revision plan.
 10. Director routes failed gates back to owning agents, requests a new render, and repeats critique until gates pass, a stop condition is hit, or the user approves a waiver.
 11. Director resolves cross-stage conflicts and delivers the final package.
@@ -66,6 +66,7 @@ After a full run, treat new user requests as change requests against `codex/cont
 
 - `codex/contracts/agent-handoff.schema.json`
 - `codex/contracts/production-run.schema.json`
+- `codex/contracts/producer-criteria.schema.json`
 - `codex/contracts/reference-analysis.schema.json`
 - `codex/contracts/channel-format.schema.json`
 - `codex/contracts/scenario.schema.json`

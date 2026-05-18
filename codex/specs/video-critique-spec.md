@@ -39,7 +39,7 @@ The critic returns `codex/contracts/critique-report.schema.json` with:
 Use an evaluator-optimizer loop:
 
 1. Producer agents create or revise the render candidate.
-2. Video Critic evaluates the actual render against the producer criteria, scenario, channel format, artifacts, and sampled video frames.
+2. Video Critic evaluates the actual render against the producer criteria artifact, scenario, channel format, artifacts, and sampled video frames.
 3. Director reads the critique report and gate decision.
 4. If gates fail, Director dispatches targeted handoffs to the owning agents with exact findings, scene ids, timestamps, criteria, and expected artifacts.
 5. Downstream agents regenerate only affected artifacts, Remotion Video Producer renders a new candidate, and Video Critic reviews again.

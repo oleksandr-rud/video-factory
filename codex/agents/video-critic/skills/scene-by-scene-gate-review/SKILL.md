@@ -12,7 +12,7 @@ Use this inside the review loop before final release-candidate approval. It exte
 Read all supplied criteria, not just the rendered video:
 
 - user acceptance criteria
-- producer criteria prompt with rules, instructions, restrictions, and intended style constraints
+- producer criteria artifact with rules, instructions, restrictions, scene criteria, revision policy, and intended style constraints
 - scenario and scene list
 - channel format and reference analysis
 - visual pack, selected candidates, AI generation packages, Remotion clip packages

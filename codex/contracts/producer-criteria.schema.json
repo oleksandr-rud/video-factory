@@ -1,0 +1,135 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ProducerCriteria",
+  "type": "object",
+  "required": [
+    "producer_criteria_id",
+    "request_id",
+    "version",
+    "status",
+    "objective",
+    "acceptance_criteria",
+    "hard_gates",
+    "review_thresholds",
+    "scene_criteria",
+    "revision_policy"
+  ],
+  "properties": {
+    "producer_criteria_id": { "type": "string" },
+    "run_id": { "type": "string" },
+    "request_id": { "type": "string" },
+    "scenario_id": { "type": "string" },
+    "version": { "type": "string" },
+    "status": {
+      "type": "string",
+      "enum": ["draft", "active", "superseded"]
+    },
+    "objective": { "type": "string" },
+    "platform": { "type": "string" },
+    "duration_target_seconds": { "type": "number" },
+    "aspect_ratio": { "type": "string" },
+    "acceptance_criteria": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "hard_gates": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["gate_id", "category", "rule", "failure_policy"],
+        "properties": {
+          "gate_id": { "type": "string" },
+          "category": {
+            "type": "string",
+            "enum": ["story", "hook", "pacing", "visual", "audio", "subtitles", "sync", "brand", "platform", "factual", "rights", "technical", "accessibility", "engagement", "redundancy", "other"]
+          },
+          "rule": { "type": "string" },
+          "applies_to_scene_ids": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "failure_policy": {
+            "type": "string",
+            "enum": ["must_fix", "needs_user_waiver", "blocks_delivery"]
+          },
+          "evidence_required": { "type": "string" }
+        }
+      }
+    },
+    "required_rules": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "forbidden_rules": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "style_rules": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "provider_constraints": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "rights_and_budget_constraints": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "scene_criteria": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["scene_id", "criteria"],
+        "properties": {
+          "scene_id": { "type": "string" },
+          "criteria": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "visual_constraints": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "audio_caption_constraints": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "source_or_claim_constraints": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        }
+      }
+    },
+    "review_thresholds": {
+      "type": "object",
+      "required": ["overall_min", "category_min", "max_major_findings", "allow_minor_findings"],
+      "properties": {
+        "overall_min": { "type": "number" },
+        "category_min": { "type": "number" },
+        "max_major_findings": { "type": "integer" },
+        "allow_minor_findings": { "type": "boolean" },
+        "required_category_scores": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "revision_policy": {
+      "type": "object",
+      "required": ["max_review_iterations", "rerun_only_affected_artifacts", "stop_on_repeated_blocker"],
+      "properties": {
+        "max_review_iterations": { "type": "integer" },
+        "rerun_only_affected_artifacts": { "type": "boolean" },
+        "stop_on_repeated_blocker": { "type": "boolean" },
+        "waiver_policy": { "type": "string" }
+      }
+    },
+    "source_artifacts": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "notes": { "type": "string" }
+  }
+}

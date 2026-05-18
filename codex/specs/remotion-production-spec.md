@@ -27,7 +27,7 @@ Use for full 1-10 minute videos:
 - Voiceover, music, and SFX timing
 - Timeline sync plans that align scenario text, narration, captions, and selected visuals
 - Transitions between approved scene assets
-- Render release candidates and final QA
+- Render release candidates and technical render QA
 
 The Video Producer returns `codex/contracts/timeline-sync-plan.schema.json` before assembly and `codex/contracts/render-package.schema.json` for delivery. It consumes Remotion clip packages instead of treating every scene as custom timeline code.
 

@@ -21,7 +21,7 @@ DEFAULT_MODEL = os.environ.get("OPENAI_VISION_MODEL", "gpt-5.2")
 def load_json(path: str | None) -> Any:
     if not path:
         return None
-    with open(path, "r", encoding="utf-8") as handle:
+    with open(path, "r", encoding="utf-8-sig") as handle:
         return json.load(handle)
 
 
@@ -31,6 +31,55 @@ def drop_none(value: Any) -> Any:
     if isinstance(value, list):
         return [drop_none(item) for item in value]
     return value
+
+
+def required_report_defaults(artifact_paths: dict[str, Any], artifacts: dict[str, Any]) -> dict[str, Any]:
+    producer_criteria = artifacts.get("producer_criteria") if isinstance(artifacts.get("producer_criteria"), dict) else {}
+    quality_thresholds = (
+        producer_criteria.get("quality_thresholds")
+        or producer_criteria.get("review_thresholds")
+        or {
+            "overall_min": 8,
+            "category_min": 7,
+            "max_major_findings": 0,
+            "allow_minor_findings": True,
+        }
+    )
+    return {
+        "producer_criteria": {
+            "criteria_prompt_path": artifact_paths.get("producer_criteria_path") or "",
+            "acceptance_criteria": producer_criteria.get("acceptance_criteria", []),
+            "required_rules": producer_criteria.get("required_rules", []),
+            "forbidden_rules": producer_criteria.get("forbidden_rules", []),
+            "style_rules": producer_criteria.get("style_rules", []),
+            "quality_thresholds": quality_thresholds,
+        },
+        "scores": {
+            "story_clarity": 0,
+            "visual_relevance": 0,
+            "subtitle_sync": 0,
+            "platform_fit": 0,
+            "factual_alignment": 0,
+            "overall": 0,
+        },
+        "gate_decision": {
+            "status": "needs_approval",
+            "release_candidate": False,
+            "failed_gates": [],
+            "waived_gates": [],
+            "next_action": "ask_user",
+            "stop_reason": "Multimodal critique requires approval before gate decision.",
+        },
+    }
+
+
+def merge_required_report_defaults(report: dict[str, Any], defaults: dict[str, Any]) -> None:
+    for key in ("producer_criteria", "scores", "gate_decision"):
+        report[key] = {**defaults[key], **(report.get(key) or {})}
+    report["producer_criteria"]["quality_thresholds"] = {
+        **defaults["producer_criteria"]["quality_thresholds"],
+        **(report["producer_criteria"].get("quality_thresholds") or {}),
+    }
 
 
 def read_text(path: str | None, limit: int = 12000) -> str:
@@ -100,6 +149,7 @@ Return JSON only. Follow this shape:
 {{
   "status": "reviewed|needs_revision|blocked|approved",
   "review_mode": "multimodal_frames|hybrid",
+  "producer_criteria": {{"criteria_prompt_path": "...", "acceptance_criteria": ["..."], "required_rules": ["..."], "forbidden_rules": ["..."], "quality_thresholds": {{"overall_min": 8, "category_min": 7, "max_major_findings": 0, "allow_minor_findings": true}}}},
   "video_observations": [{{"timestamp_seconds": 0, "scene_id": "scene-01", "observation": "..."}}],
   "scores": {{"story_clarity": 0-10, "hook_strength": 0-10, "pacing": 0-10, "visual_quality": 0-10, "visual_relevance": 0-10, "audio_quality": 0-10, "subtitle_sync": 0-10, "brand_fit": 0-10, "platform_fit": 0-10, "factual_alignment": 0-10, "originality": 0-10, "accessibility": 0-10, "overall": 0-10}},
   "findings": [{{"severity": "blocker|major|minor|note", "category": "story|hook|pacing|visual|audio|subtitles|sync|brand|platform|factual|rights|technical|accessibility|engagement|redundancy|other", "scene_id": "scene-01", "timestamp_seconds": 0, "evidence": "...", "description": "...", "recommendation": "...", "owner_agent": "..."}}],
@@ -121,7 +171,7 @@ Critique dimensions:
 
 Gate discipline:
 - Evaluate every scene id in the scenario or timeline sync plan.
-- Treat the producer criteria as binding. Mark each required rule pass, fail, waived, not_applicable, or unknown.
+- Treat the producer criteria artifact as binding. Mark each required rule pass, fail, waived, not_applicable, or unknown.
 - A release candidate can pass only when hard gates pass or are explicitly waived.
 - Missing evidence for a hard gate is unknown or fail, not pass.
 
@@ -189,6 +239,7 @@ def main() -> int:
 
     scenario = artifacts.get("scenario") or {}
     render = artifacts.get("render_package") or {}
+    defaults = required_report_defaults(artifact_paths, artifacts)
     base_report: dict[str, Any] = {
         "critique_id": f"{render.get('render_id', 'render')}-critique",
         "render_id": render.get("render_id", "unknown"),
@@ -209,19 +260,12 @@ def main() -> int:
             "review_assets_path": args.review_assets,
             **artifact_paths,
         },
-        "producer_criteria": {
-            "criteria_prompt_path": artifact_paths.get("producer_criteria_path"),
-        },
-        "scores": {"overall": 0},
+        "producer_criteria": defaults["producer_criteria"],
+        "scores": defaults["scores"],
         "findings": [],
         "scene_reviews": [],
         "revision_plan": [],
-        "gate_decision": {
-            "status": "needs_approval",
-            "release_candidate": False,
-            "next_action": "ask_user",
-            "stop_reason": "Multimodal critique requires approval before gate decision.",
-        },
+        "gate_decision": defaults["gate_decision"],
         "limitations": review_assets.get("limitations", []),
         "qa": {
             "status": "not_run",
@@ -262,6 +306,8 @@ def main() -> int:
             base_report["status"] = "reviewed"
         if not parsed.get("qa") or base_report.get("qa", {}).get("status") == "not_run":
             base_report["qa"] = {"status": "partial", "summary": "Model critique returned."}
+
+    merge_required_report_defaults(base_report, defaults)
 
     with open(args.output, "w", encoding="utf-8") as handle:
         json.dump(drop_none(base_report), handle, indent=2, ensure_ascii=False)

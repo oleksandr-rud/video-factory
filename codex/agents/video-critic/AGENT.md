@@ -15,7 +15,7 @@ Own independent final validation of rendered videos. This agent reviews the rend
 ## Inputs
 
 - Render package and final video path
-- Producer criteria prompt, quality gates, user acceptance criteria, and previous critique reports
+- Producer criteria artifact, quality gates, user acceptance criteria, and previous critique reports
 - Scenario, reference analysis, channel format, and source evidence
 - Timeline sync plan, voiceover package, captions, and subtitle artifacts
 - Visual pack, clip candidates, Remotion clip packages, and AI generation packages

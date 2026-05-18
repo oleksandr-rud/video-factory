@@ -21,7 +21,7 @@ ENDPOINT = "https://api.elevenlabs.io/v1/text-to-speech/{voice_id}/with-timestam
 
 
 def load_json(path: str) -> dict[str, Any]:
-    with open(path, "r", encoding="utf-8") as handle:
+    with open(path, "r", encoding="utf-8-sig") as handle:
         return json.load(handle)
 
 

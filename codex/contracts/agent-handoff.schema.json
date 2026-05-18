@@ -10,6 +10,7 @@
     "from_agent": { "type": "string" },
     "to_agent": { "type": "string" },
     "phase": { "type": "string" },
+    "producer_criteria_path": { "type": "string" },
     "depends_on": { "type": "array", "items": { "type": "string" } },
     "status": {
       "type": "string",

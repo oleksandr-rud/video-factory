@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "CritiqueReport",
   "type": "object",
-  "required": ["critique_id", "render_id", "scenario_id", "status", "review_mode", "inputs", "scores", "findings", "revision_plan", "qa"],
+  "required": ["critique_id", "render_id", "scenario_id", "status", "review_mode", "producer_criteria", "inputs", "scene_reviews", "scores", "findings", "revision_plan", "gate_decision", "limitations", "qa"],
   "properties": {
     "critique_id": { "type": "string" },
     "render_id": { "type": "string" },
@@ -31,6 +31,7 @@
     },
     "producer_criteria": {
       "type": "object",
+      "required": ["criteria_prompt_path", "acceptance_criteria", "required_rules", "forbidden_rules", "quality_thresholds"],
       "properties": {
         "criteria_prompt_path": { "type": "string" },
         "acceptance_criteria": { "type": "array", "items": { "type": "string" } },
@@ -39,6 +40,7 @@
         "style_rules": { "type": "array", "items": { "type": "string" } },
         "quality_thresholds": {
           "type": "object",
+          "required": ["overall_min", "category_min", "max_major_findings", "allow_minor_findings"],
           "properties": {
             "overall_min": { "type": "number" },
             "category_min": { "type": "number" },
@@ -81,7 +83,7 @@
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["scene_id", "status", "summary"],
+        "required": ["scene_id", "status", "summary", "criteria_results"],
         "properties": {
           "scene_id": { "type": "string" },
           "start_seconds": { "type": "number" },
@@ -114,7 +116,7 @@
     },
     "scores": {
       "type": "object",
-      "required": ["overall"],
+      "required": ["overall", "story_clarity", "visual_relevance", "subtitle_sync", "platform_fit", "factual_alignment"],
       "properties": {
         "story_clarity": { "type": "number" },
         "hook_strength": { "type": "number" },
@@ -172,6 +174,7 @@
     },
     "gate_decision": {
       "type": "object",
+      "required": ["status", "release_candidate", "failed_gates", "waived_gates", "next_action"],
       "properties": {
         "status": {
           "type": "string",

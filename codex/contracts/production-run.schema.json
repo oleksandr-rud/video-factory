@@ -13,6 +13,7 @@
     },
     "current_phase": { "type": "string" },
     "artifact_root": { "type": "string" },
+    "producer_criteria_path": { "type": "string" },
     "artifacts": {
       "type": "array",
       "items": {
@@ -89,7 +90,7 @@
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["loop_id", "status", "iteration"],
+        "required": ["loop_id", "status", "iteration", "producer_criteria_path"],
         "properties": {
           "loop_id": { "type": "string" },
           "status": {
@@ -102,6 +103,15 @@
           "critique_report_path": { "type": "string" },
           "producer_criteria_path": { "type": "string" },
           "failed_gates": { "type": "array", "items": { "type": "string" } },
+          "invalidated_artifacts": { "type": "array", "items": { "type": "string" } },
+          "preserved_artifacts": { "type": "array", "items": { "type": "string" } },
+          "rerun_scope": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": ["channel", "scenario", "voiceover", "visual", "ai_generation", "remotion_clip", "timeline", "timeline_sync", "render", "critique", "delivery_metadata"]
+            }
+          },
           "routed_actions": {
             "type": "array",
             "items": {

@@ -142,7 +142,7 @@ The old ten-agent model was too granular for the MVP. Deep reference and channel
 4. `visual-producer`: owns visual pack planning, research queries, provider search specs, AI generation route briefs, downstream handoff recommendations, candidate validation, and ranking.
 5. `invideo-ai-generator`: owns InVideo/model AI generation prompt packages, model/settings selection, approval packets, variants, generated clip QA, and AI clip candidates.
 6. `remotion-clip-builder`: owns 5-20 second Remotion clips, component templates, motion graphics, VFX overlays, and clip package QA.
-7. `remotion-video-producer`: owns 1-10 minute Remotion timeline sync, timeline assembly, captions/subtitles, audio mix, render release candidates, and final QA.
+7. `remotion-video-producer`: owns 1-10 minute Remotion timeline sync, timeline assembly, captions/subtitles, audio mix, render release candidates, and technical render QA.
 8. `video-critic`: owns independent render critique, multimodal review packaging, artifact consistency audit, and revision prioritization.
 
 ## Design Decisions
@@ -159,8 +159,9 @@ The old ten-agent model was too granular for the MVP. Deep reference and channel
 10. Remotion clip delivery is tracked separately from full render delivery. A clip package should include the composition id, component files, assets, props, preview/render commands, and clip QA.
 11. Voiceover delivery is tracked separately from the scenario. A voiceover package should include the selected provider voice, generation approval state, request payloads, audio paths, timestamp alignment, caption paths, pronunciation notes, and QA.
 12. Timeline sync is tracked before full assembly. A timeline sync plan should align scene ids, frame ranges, voiceover audio, captions, selected visual candidates, Remotion clip packages, transitions, and overlay safe areas.
-13. Final critique is tracked separately from render QA. A critique report should include sampled frame evidence, scene-by-scene gate results, artifact consistency findings, category scores, severity-ranked issues, limitations, and a prioritized revision plan.
-14. Review loop state belongs in the production run ledger, not in every artifact. Each loop records the render candidate, critique report, failed gates, routed actions, iteration count, next action, and stop reason.
+13. Producer criteria are a first-class artifact, not a loose prompt. The Director creates them before production handoffs, passes the path downstream, and treats them as binding input for Video Critic review.
+14. Final critique is tracked separately from technical render QA. A critique report should include sampled frame evidence, scene-by-scene gate results, artifact consistency findings, category scores, severity-ranked issues, limitations, and a prioritized revision plan.
+15. Review loop state belongs in the production run ledger, not in every artifact. Each loop records the render candidate, critique report, failed gates, invalidated artifacts, rerun scope, routed actions, iteration count, next action, and stop reason.
 15. Full render delivery is tracked as a render release candidate, not only a single MP4. The package should include the timeline, source clip packages, voiceover package, timeline sync plan, render command, output file, subtitle artifacts, QA result, critique report, rights notes, and residual blockers.
 16. Specialist-to-specialist work crosses through the Director. Visual Producer can recommend InVideo AI Generator or Remotion Clip Builder work, but it does not load those agents' skills or perform their feasibility checks locally.
 
