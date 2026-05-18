@@ -16,6 +16,8 @@
     "producer_criteria_path": { "type": "string" },
     "media_asset_manifest_path": { "type": "string" },
     "remotion_project_contract_path": { "type": "string" },
+    "remotion_template_registry_path": { "type": "string" },
+    "remotion_template_contract_paths": { "type": "array", "items": { "type": "string" } },
     "depends_on": { "type": "array", "items": { "type": "string" } },
     "status": {
       "type": "string",

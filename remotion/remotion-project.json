@@ -9,6 +9,15 @@
   "render_output_root_path": "remotion/out",
   "package_manager": "npm",
   "remotion_version": "4.0.462",
+  "template_registry_paths": [
+    "remotion/src/templateRegistry.tsx"
+  ],
+  "template_contract_paths": [
+    "remotion/templates/vf.lower-third.minimal.v1.json",
+    "remotion/templates/vf.source-card.standard.v1.json",
+    "remotion/templates/vf.caption.safe.v1.json",
+    "remotion/templates/vf.overlay.soft-vignette.v1.json"
+  ],
   "template_source": {
     "name": "Remotion blank template",
     "url": "https://www.remotion.dev/docs",
@@ -30,6 +39,82 @@
       ],
       "status": "previewed",
       "notes": "Default composition shell accepts scene props and local staticFile assets."
+    },
+    {
+      "composition_id": "TemplateLowerThirdMinimal",
+      "template_id": "vf.lower-third.minimal.v1",
+      "template_contract_path": "remotion/templates/vf.lower-third.minimal.v1.json",
+      "composition_type": "template",
+      "category": "lower_third",
+      "reusable": true,
+      "owner_agent": "remotion-clip-builder",
+      "source_paths": [
+        "remotion/src/templateRegistry.tsx",
+        "remotion/src/templates/lower-thirds/MinimalLowerThird.tsx"
+      ],
+      "output_contracts": [
+        "codex/contracts/remotion-template.schema.json",
+        "codex/contracts/remotion-clip-package.schema.json"
+      ],
+      "status": "previewed",
+      "notes": "Reusable lower third template for source labels, speaker IDs, and chapter labels."
+    },
+    {
+      "composition_id": "TemplateSourceCardStandard",
+      "template_id": "vf.source-card.standard.v1",
+      "template_contract_path": "remotion/templates/vf.source-card.standard.v1.json",
+      "composition_type": "template",
+      "category": "source_card",
+      "reusable": true,
+      "owner_agent": "remotion-clip-builder",
+      "source_paths": [
+        "remotion/src/templateRegistry.tsx",
+        "remotion/src/templates/source-cards/SourceCard.tsx"
+      ],
+      "output_contracts": [
+        "codex/contracts/remotion-template.schema.json",
+        "codex/contracts/remotion-clip-package.schema.json"
+      ],
+      "status": "previewed",
+      "notes": "Reusable source card template for citations, references, and claim receipts."
+    },
+    {
+      "composition_id": "TemplateSafeCaption",
+      "template_id": "vf.caption.safe.v1",
+      "template_contract_path": "remotion/templates/vf.caption.safe.v1.json",
+      "composition_type": "template",
+      "category": "caption",
+      "reusable": true,
+      "owner_agent": "remotion-clip-builder",
+      "source_paths": [
+        "remotion/src/templateRegistry.tsx",
+        "remotion/src/templates/captions/SafeCaption.tsx"
+      ],
+      "output_contracts": [
+        "codex/contracts/remotion-template.schema.json",
+        "codex/contracts/remotion-clip-package.schema.json"
+      ],
+      "status": "previewed",
+      "notes": "Reusable high-contrast caption block with one-word emphasis."
+    },
+    {
+      "composition_id": "TemplateSoftVignetteOverlay",
+      "template_id": "vf.overlay.soft-vignette.v1",
+      "template_contract_path": "remotion/templates/vf.overlay.soft-vignette.v1.json",
+      "composition_type": "template",
+      "category": "overlay",
+      "reusable": true,
+      "owner_agent": "remotion-clip-builder",
+      "source_paths": [
+        "remotion/src/templateRegistry.tsx",
+        "remotion/src/templates/overlays/SoftVignetteOverlay.tsx"
+      ],
+      "output_contracts": [
+        "codex/contracts/remotion-template.schema.json",
+        "codex/contracts/remotion-clip-package.schema.json"
+      ],
+      "status": "previewed",
+      "notes": "Reusable soft vignette overlay for focus and timeline polish."
     }
   ],
   "dependencies": [
@@ -91,7 +176,11 @@
     "checks": [
       "npm install",
       "npm run lint",
-      "npm run still:main"
+      "npm run still:main",
+      "npx remotion still TemplateLowerThirdMinimal out/template-lower-third.png --frame=30 --scale=0.25",
+      "npx remotion still TemplateSourceCardStandard out/template-source-card.png --frame=30 --scale=0.25",
+      "npx remotion still TemplateSafeCaption out/template-safe-caption.png --frame=30 --scale=0.25",
+      "npx remotion still TemplateSoftVignetteOverlay out/template-soft-vignette.png --frame=30 --scale=0.25"
     ],
     "risks": [
       "npm audit reported two low-severity vulnerabilities in installed dependencies."

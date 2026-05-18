@@ -17,6 +17,7 @@ Workflow:
    - narration/audio segment
    - captions/subtitles
    - VFX clip packages and transitions
+   - template ids, template contract paths, and template layer order for reusable Remotion instances
 2. Normalize media:
    - verify local paths
    - confirm required assets have media asset ids and Remotion `staticFile()` paths when rendered by Remotion
@@ -35,7 +36,7 @@ Workflow:
 5. Add post polish:
    - captions/subtitles
    - light leaks or motion blur only where they serve the edit
-   - Remotion-native component templates or packages for 3D, audiogram, TikTok captions, overlay, Skia, Code Hike, Lottie, Rive, shapes, paths, and transitions
+   - approved local Remotion templates first, then Remotion-native component templates or packages for 3D, audiogram, TikTok captions, overlay, Skia, Code Hike, Lottie, Rive, shapes, paths, and transitions
    - safe-area CTA and platform-specific framing
    - color/contrast consistency
 6. Prepare render commands for preview, release candidate, and optional transparent/VFX overlay exports.
@@ -46,5 +47,6 @@ Definition of done:
 - Timeline matches scenario duration.
 - Captions, audio, visuals, source clip packages, and VFX align by scene id through `codex/contracts/timeline-sync-plan.schema.json`.
 - Any template or package used is Remotion-native or explicitly approved as an exception.
+- Template-backed clips reference `codex/contracts/remotion-template.schema.json` artifacts and are consumed through their public props/contracts.
 - Render command and output path are written into the render package.
 - Rendered outputs and sidecar artifacts are written back into the media asset manifest.

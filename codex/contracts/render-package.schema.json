@@ -27,6 +27,10 @@
       "type": "array",
       "items": { "type": "string" }
     },
+    "source_template_contracts": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
     "source_asset_ids": {
       "type": "array",
       "items": { "type": "string" }

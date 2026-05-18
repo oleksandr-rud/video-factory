@@ -1,0 +1,87 @@
+{
+  "$schema": "../../codex/contracts/remotion-template.schema.json",
+  "template_id": "vf.lower-third.minimal.v1",
+  "name": "Minimal Lower Third",
+  "version": "1.0.0",
+  "status": "previewed",
+  "category": "lower_third",
+  "owner_agent": "remotion-clip-builder",
+  "remotion_project_contract_path": "remotion/remotion-project.json",
+  "remotion_app_root_path": "remotion",
+  "template_registry_path": "remotion/src/templateRegistry.tsx",
+  "composition_id": "TemplateLowerThirdMinimal",
+  "composition_type": "template",
+  "component_paths": [
+    "remotion/src/templates/lower-thirds/MinimalLowerThird.tsx"
+  ],
+  "registry_paths": [
+    "remotion/src/templateRegistry.tsx"
+  ],
+  "props_contract": {
+    "required": ["title"],
+    "optional": ["label", "detail", "align", "accentColor", "backgroundColor", "textColor", "safeBottom"],
+    "notes": "Use scene-specific props for all copy and colors. Do not hardcode names or claims into the component."
+  },
+  "supported_aspect_ratios": ["9:16", "16:9", "1:1"],
+  "supported_dimensions": [
+    { "width": 1080, "height": 1920 },
+    { "width": 1920, "height": 1080 }
+  ],
+  "duration": {
+    "default_seconds": 5,
+    "min_seconds": 3,
+    "max_seconds": 12,
+    "fps": 30
+  },
+  "alpha": {
+    "supports_transparency": true,
+    "preferred_export": "transparent_overlay",
+    "notes": "Component itself has no full-frame opaque background."
+  },
+  "safe_areas": {
+    "caption_safe": true,
+    "cta_safe": true,
+    "reserved_zones": ["lower-left or lower-right depending on align"],
+    "notes": "Avoid using simultaneous bottom captions unless captions are moved above the lower third."
+  },
+  "usage": {
+    "when_to_use": ["Source labels", "Speaker IDs", "Chapter labels", "Short context tags"],
+    "when_not_to_use": ["Long paragraphs", "Full citation cards", "Primary title cards"],
+    "instance_output_contract": "codex/contracts/remotion-clip-package.schema.json",
+    "handoff_notes": ["Create a scene-specific clip package with title/detail props and template provenance."]
+  },
+  "dependencies": [
+    {
+      "name": "remotion",
+      "version": "4.0.462",
+      "purpose": "Frame-aware animation primitives",
+      "license_summary": "Remotion package license applies",
+      "approval_required": false
+    }
+  ],
+  "source": {
+    "created_from": "core_remotion",
+    "license_summary": "Repo-local component",
+    "approval_required": false
+  },
+  "render_commands": [
+    {
+      "purpose": "preview still",
+      "command": "npx remotion still TemplateLowerThirdMinimal out/template-lower-third.png --frame=30 --scale=0.25",
+      "completed": true,
+      "notes": "Rendered preview still for template validation."
+    }
+  ],
+  "preview_frames": [
+    {
+      "frame": 30,
+      "path": "remotion/out/template-lower-third.png",
+      "notes": "Preview still rendered at 0.25 scale."
+    }
+  ],
+  "qa": {
+    "status": "pass",
+    "summary": "Template preview still rendered successfully.",
+    "checks": ["npx remotion still TemplateLowerThirdMinimal out/template-lower-third.png --frame=30 --scale=0.25"]
+  }
+}

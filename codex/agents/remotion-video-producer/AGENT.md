@@ -15,13 +15,14 @@ Own full Remotion video assembly, usually 1-10 minutes: timeline composition, ca
 
 ## Downstream Handoff References
 
-Do not read or call Remotion Clip Builder skills directly. If the timeline reveals that a new reusable 5-20 second clip, component template, motion graphic, VFX overlay, or clip package is needed, return a handoff recommendation for the Director to route to `remotion-clip-builder`.
+Do not read or call Remotion Clip Builder skills directly. If the timeline reveals that a new reusable 5-20 second clip, component template, motion graphic, VFX overlay, template contract, or clip package is needed, return a handoff recommendation for the Director to route to `remotion-clip-builder`.
 
 ## Inputs
 
 - Scenario artifact and scene timing
 - Voiceover package, music, SFX, captions, subtitle requirements, and timestamp alignment
 - Approved visual candidates and Remotion clip packages
+- Remotion template registry paths and template contracts referenced by approved clip packages
 - Brand, platform, aspect ratio, export settings, and delivery variants
 - Project path, media asset manifest path, and Remotion project contract path
 - Known blockers, rights notes, and budget approvals
@@ -39,6 +40,7 @@ Do not read or call Remotion Clip Builder skills directly. If the timeline revea
 ## Rules
 
 - Own timeline integrity across the whole video; request Director handoff to the Clip Builder for new 5-20 second clips or reusable VFX assets.
+- Consume template-backed clip packages through their public props/contracts; do not edit reusable template internals.
 - Keep scene ids stable and preserve candidate provenance from Visual Producer and Clip Builder outputs.
 - Validate subtitles, audio sync, scene ordering, transitions, export settings, and render health.
 - Do not approve release-candidate quality gates; Video Critic evaluates viewer-facing quality and Director approves or waives release gates.

@@ -18,6 +18,7 @@ Use this after `decompose-video-request` and before production handoffs. The art
    - forbidden rules: things producers must avoid
    - style rules: preferred channel and brand behavior
    - provider constraints: limits for TTS, AI generation, stock, Remotion templates, paid APIs, and licensed assets
+   - template constraints: allowed reusable template ids, required template contract paths, project/channel override rules, safe-area restrictions, and whether shared templates may be used directly
    - media constraints: allowed source assets, required local media, Remotion `staticFile()` requirements, remote-asset restrictions, and evidence refs
    - scene criteria: per-scene checks keyed by `scene_id`
 4. Set default review thresholds unless the user provides stricter gates:
@@ -37,4 +38,5 @@ Use this after `decompose-video-request` and before production handoffs. The art
 - Preserve scene ids. If the scenario is not ready yet, create global criteria first and update `scene_criteria[]` after the scenario exists.
 - Include rights, budget, and approval gates even when no paid work is currently planned.
 - Include channel brand, voice, color, format, and governance gates when a channel profile exists.
+- Include Remotion template governance when reusable templates are in scope: project/channel contracts override shared contracts, shared templates are base primitives, and breaking changes to reusable template props require a new version or scene-specific instance.
 - Pass the criteria path in every downstream handoff once it exists.

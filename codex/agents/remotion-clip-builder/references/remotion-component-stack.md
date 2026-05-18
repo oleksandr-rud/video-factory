@@ -2,6 +2,8 @@
 
 Use this when choosing templates, packages, and component primitives for Remotion VFX, subtitles, or post-production.
 
+Reusable local templates are tracked with `codex/contracts/remotion-template.schema.json` and registered in the Remotion app, usually `remotion/src/templateRegistry.tsx`. Check those local templates before importing external examples or adding new dependencies.
+
 ## Boundary
 
 Use Remotion-native packages and official Remotion templates. Do not use generic web UI/component libraries as the production source for video components unless the Director explicitly approves an exception.
@@ -82,6 +84,7 @@ Keep `remotion` and all `@remotion/*` packages on the same exact version.
 
 ## Selection Heuristics
 
+- Existing local reusable template: use first when the scene needs a lower third, source card, caption block, transition, overlay, opener, callout, mockup, or visual shell already represented in the template registry.
 - Fast short from scratch: Blank or Hello World template.
 - Text-to-motion component generation: Prompt to Motion Graphics SaaS workflow ideas plus `../skills/remotion-ai-component-prompt/SKILL.md`.
 - Word-by-word short captions: TikTok template plus `@remotion/captions` and `@remotion/rounded-text-box`.
@@ -100,3 +103,4 @@ Keep `remotion` and all `@remotion/*` packages on the same exact version.
 - Avoid remote assets during render.
 - Check licenses for third-party media assets separately from Remotion package licenses.
 - Do not add libraries for effects that can be done cleanly with CSS, SVG, Canvas, and core Remotion.
+- Do not change a reusable template's public props or visual contract in a breaking way; create a new template version or a scene-specific clip package instead.

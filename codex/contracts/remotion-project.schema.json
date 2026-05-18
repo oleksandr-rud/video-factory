@@ -28,6 +28,14 @@
     "render_output_root_path": { "type": "string" },
     "package_manager": { "type": "string", "enum": ["npm", "pnpm", "yarn", "bun", "unknown"] },
     "remotion_version": { "type": "string" },
+    "template_registry_paths": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "template_contract_paths": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
     "template_source": {
       "type": "object",
       "properties": {
@@ -44,6 +52,10 @@
         "required": ["composition_id", "composition_type", "source_paths", "status"],
         "properties": {
           "composition_id": { "type": "string" },
+          "template_id": { "type": "string" },
+          "template_contract_path": { "type": "string" },
+          "category": { "type": "string" },
+          "reusable": { "type": "boolean" },
           "composition_type": { "type": "string", "enum": ["full_video", "short_clip", "transparent_overlay", "still", "template"] },
           "owner_agent": { "type": "string" },
           "source_paths": { "type": "array", "items": { "type": "string" } },

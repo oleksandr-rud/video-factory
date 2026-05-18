@@ -12,6 +12,7 @@ Check:
 - Voiceover sync, clipping, silence, and pronunciation
 - Visual continuity and candidate usage
 - VFX timing, alpha/export behavior, and transition continuity
+- Template provenance, template contract availability, and whether template-backed instances respect their props/safe-area contracts
 - Missing assets or broken media paths
 - Media asset manifest coverage for source clips, Remotion public projection paths, outputs, subtitles, and review-prep artifacts
 - Aspect ratio, resolution, FPS, and export format

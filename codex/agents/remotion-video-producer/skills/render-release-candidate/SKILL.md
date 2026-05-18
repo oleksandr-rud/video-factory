@@ -9,7 +9,7 @@ Use this after the Remotion composition is assembled and before final delivery.
 
 Workflow:
 
-1. Confirm composition id, Remotion app contract, media asset manifest, timeline path, source clip packages, fps, dimensions, duration, and target platform.
+1. Confirm composition id, Remotion app contract, media asset manifest, timeline path, source clip packages, referenced Remotion template contracts, fps, dimensions, duration, and target platform.
 2. Run the lightest meaningful validation first:
    - still frame checks at representative scene frames
    - preview in Studio or browser when available
@@ -30,3 +30,4 @@ Rules:
 - Mark the RC as blocked if full render, captions, audio, or license approval is missing.
 - Include fallback export commands for transparent overlays, square/vertical crops, or no-caption versions when requested.
 - The render package must carry project/channel fields, media asset manifest path, Remotion project contract path, source asset ids, and output media asset ids when available.
+- Template-backed source clips must preserve template ids and contract paths in their source clip packages so the render package provenance remains traceable.

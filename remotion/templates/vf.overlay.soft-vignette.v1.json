@@ -1,0 +1,87 @@
+{
+  "$schema": "../../codex/contracts/remotion-template.schema.json",
+  "template_id": "vf.overlay.soft-vignette.v1",
+  "name": "Soft Vignette Overlay",
+  "version": "1.0.0",
+  "status": "previewed",
+  "category": "overlay",
+  "owner_agent": "remotion-clip-builder",
+  "remotion_project_contract_path": "remotion/remotion-project.json",
+  "remotion_app_root_path": "remotion",
+  "template_registry_path": "remotion/src/templateRegistry.tsx",
+  "composition_id": "TemplateSoftVignetteOverlay",
+  "composition_type": "template",
+  "component_paths": [
+    "remotion/src/templates/overlays/SoftVignetteOverlay.tsx"
+  ],
+  "registry_paths": [
+    "remotion/src/templateRegistry.tsx"
+  ],
+  "props_contract": {
+    "required": [],
+    "optional": ["color", "opacity", "edgeStrength", "animated"],
+    "notes": "Use as a top-layer overlay. Tune opacity conservatively so it does not obscure captions or UI details."
+  },
+  "supported_aspect_ratios": ["9:16", "16:9", "1:1"],
+  "supported_dimensions": [
+    { "width": 1080, "height": 1920 },
+    { "width": 1920, "height": 1080 }
+  ],
+  "duration": {
+    "default_seconds": 5,
+    "min_seconds": 1,
+    "max_seconds": 20,
+    "fps": 30
+  },
+  "alpha": {
+    "supports_transparency": true,
+    "preferred_export": "transparent_overlay",
+    "notes": "Best used as a transparent overlay or top timeline layer."
+  },
+  "safe_areas": {
+    "caption_safe": true,
+    "cta_safe": true,
+    "reserved_zones": [],
+    "notes": "Validate caption contrast after applying the overlay."
+  },
+  "usage": {
+    "when_to_use": ["Edge focus", "Subtle polish", "Background contrast support", "Transparent overlay export"],
+    "when_not_to_use": ["Scenes with already-dark footage", "Dense UI/product details that need exact inspection"],
+    "instance_output_contract": "codex/contracts/remotion-clip-package.schema.json",
+    "handoff_notes": ["Record alpha/export expectations in the scene clip package."]
+  },
+  "dependencies": [
+    {
+      "name": "remotion",
+      "version": "4.0.462",
+      "purpose": "Frame-aware animation primitives",
+      "license_summary": "Remotion package license applies",
+      "approval_required": false
+    }
+  ],
+  "source": {
+    "created_from": "core_remotion",
+    "license_summary": "Repo-local component",
+    "approval_required": false
+  },
+  "render_commands": [
+    {
+      "purpose": "preview still",
+      "command": "npx remotion still TemplateSoftVignetteOverlay out/template-soft-vignette.png --frame=30 --scale=0.25",
+      "completed": true,
+      "notes": "Rendered preview still for template validation."
+    }
+  ],
+  "preview_frames": [
+    {
+      "frame": 30,
+      "path": "remotion/out/template-soft-vignette.png",
+      "notes": "Preview still rendered at 0.25 scale."
+    }
+  ],
+  "qa": {
+    "status": "pass",
+    "summary": "Template preview still rendered successfully.",
+    "checks": ["npx remotion still TemplateSoftVignetteOverlay out/template-soft-vignette.png --frame=30 --scale=0.25"]
+  }
+}

@@ -12,7 +12,7 @@ Use this after `decompose-video-request` when the user wants a full run, `/goal`
 1. Create or resolve the channel profile under `channels/<channel-slug>/channel-profile.json` when a durable channel is in scope; store its repo-relative POSIX path in `channel_profile_path`.
 2. Create or update the video project under `channels/<channel-slug>/projects/<project-slug>/project.json` when a durable deliverable is in scope; store its path in `project_path`.
 3. Create or update the media asset manifest under the project folder when source videos, reference videos, generated clips, rendered clips, subtitles, review frames, or other media assets are in scope; store its path in `media_asset_manifest_path`.
-4. Create or resolve the Remotion app contract matching `codex/contracts/remotion-project.schema.json`; default to the shared `remotion/` app and store the repo-relative contract path in `remotion_project_contract_path`.
+4. Create or resolve the Remotion app contract matching `codex/contracts/remotion-project.schema.json`; default to the shared `remotion/` app and store the repo-relative contract path in `remotion_project_contract_path`. When reusable Remotion components are in scope, also resolve the app template registry path and any project template contract paths matching `codex/contracts/remotion-template.schema.json`.
 5. Create or update a run ledger matching `codex/contracts/production-run.schema.json` inside the project folder.
 6. Create or update the producer criteria artifact matching `codex/contracts/producer-criteria.schema.json`; store its path in `producer_criteria_path`.
 7. Load `AGENTS.md`, the target agent `AGENT.md`, and only the skill files named in each handoff.
@@ -20,7 +20,7 @@ Use this after `decompose-video-request` when the user wants a full run, `/goal`
    - A production agent's `handoff_recommendations[]` are not executable work by themselves. Convert them into Director-owned handoffs before downstream agents run.
    - Only name skills that belong to the target agent's folder or explicitly approved built-in skills.
    - Include the project path in downstream handoff inputs once it exists.
-   - Include the media asset manifest path and Remotion project contract path in downstream handoff inputs once they exist.
+   - Include the media asset manifest path, Remotion project contract path, and relevant Remotion template registry/contract paths in downstream handoff inputs once they exist.
    - Include the channel profile path in downstream handoff inputs once it exists.
    - Include the producer criteria path in downstream handoff inputs once it exists.
 9. Execute phases in dependency order:
@@ -29,6 +29,7 @@ Use this after `decompose-video-request` when the user wants a full run, `/goal`
    - Channel Intelligence before scenario and visual planning when references, channel data, web sources, or redundancy concerns exist.
    - Creative Producer before Visual Producer; if voiceover is in scope, produce the voiceover package before final timeline assembly.
    - Visual Producer before InVideo AI Generator and Remotion Clip Builder.
+   - Existing Remotion template selection before bespoke Remotion clip implementation only when `template_hint`, reusable channel assets, overlays, lower thirds, caption styles, source cards, or repeated motion patterns are in scope and the template fits the producer criteria. Complex VFX may combine multiple templates or use bespoke Remotion code.
    - InVideo AI Generator and Remotion Clip Builder before Remotion Video Producer.
    - Timeline sync plan before full Remotion assembly and render QA when narration, captions, and visuals must align.
    - Render QA before Video Critic.
@@ -65,6 +66,7 @@ Every subagent prompt must include:
 - project path when available
 - media asset manifest path when available
 - Remotion project contract path when available
+- Remotion template registry and template contract paths when relevant
 - allowed paths
 - output contract
 - budget and approval policy
@@ -102,6 +104,7 @@ When the user changes or updates the request after a full run:
    - Visual route or candidate changes invalidate affected specialist clips, timeline, render, and critique.
    - AI generation output changes invalidate affected clip candidates, timeline, render, and critique.
    - Remotion clip/component changes invalidate timeline, render, and critique.
+   - Remotion template changes invalidate every clip package that references that template, then timeline, render, and critique.
    - Source media or Remotion public projection changes invalidate affected visual candidates, clips, timeline sync, render, and critique.
    - Timeline, subtitle, audio mix, transition, or export changes invalidate render and critique only.
 5. Update artifact versions and QA.

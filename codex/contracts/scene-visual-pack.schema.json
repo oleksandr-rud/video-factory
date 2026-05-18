@@ -68,6 +68,22 @@
           "remotion_clip_brief": { "type": "string" },
           "animation_style": { "type": "string" },
           "template_hint": { "type": "string" },
+          "template_id": { "type": "string" },
+          "template_ids": { "type": "array", "items": { "type": "string" } },
+          "template_contract_path": { "type": "string" },
+          "template_contract_paths": { "type": "array", "items": { "type": "string" } },
+          "reusable_template_requirements": {
+            "type": "object",
+            "properties": {
+              "preferred_categories": { "type": "array", "items": { "type": "string" } },
+              "required_safe_areas": { "type": "array", "items": { "type": "string" } },
+              "alpha_required": { "type": "boolean" },
+              "must_reuse_existing": { "type": "boolean" },
+              "allow_bespoke_vfx": { "type": "boolean" },
+              "allow_multiple_templates": { "type": "boolean" },
+              "notes": { "type": "string" }
+            }
+          },
           "vfx_requirements": { "type": "array", "items": { "type": "string" } },
           "handoff_recommendations": {
             "type": "array",

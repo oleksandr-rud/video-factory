@@ -5,7 +5,7 @@ description: Create, update, select, or promote reusable Remotion templates for 
 
 # Remotion Template Library
 
-Use this before creating bespoke Remotion code when a reusable pattern might fit. A template is a parameterized Remotion component with a stable composition id, documented props, preview evidence, and a contract matching `codex/contracts/remotion-template.schema.json`.
+Use this before creating bespoke Remotion code when a reusable pattern might fit. Do not use it to force a template onto a one-off or complex VFX scene. A template is a parameterized Remotion component with a stable composition id, documented props, preview evidence, and a contract matching `codex/contracts/remotion-template.schema.json`.
 
 ## Inputs
 
@@ -17,7 +17,7 @@ Use this before creating bespoke Remotion code when a reusable pattern might fit
 
 ## Workflow
 
-1. Inspect the shared Remotion app registry, usually `remotion/src/templateRegistry.tsx`, and any project template contracts under `channels/<channel-slug>/projects/<project-slug>/remotion/templates/`.
+1. Inspect the shared Remotion app registry, usually `remotion/src/templateRegistry.tsx`, shared contracts under `remotion/templates/`, and any project template contracts under `channels/<channel-slug>/projects/<project-slug>/remotion/templates/`.
 2. Select an existing template when it satisfies the scene purpose, aspect ratio, safe-area requirements, alpha needs, dependency policy, and producer criteria.
 3. If no existing template fits, design a new template with:
    - stable `template_id` and preview `composition_id`
@@ -30,7 +30,7 @@ Use this before creating bespoke Remotion code when a reusable pattern might fit
 5. Implement the reusable component in the shared `remotion/` app unless the Director provided an approved project-specific app.
 6. Register template preview compositions in `remotion/src/templateRegistry.tsx` and the Remotion project contract `composition_registry` as `composition_type: "template"`.
 7. Write or update a template contract matching `codex/contracts/remotion-template.schema.json`.
-8. For a scene-specific use, write a Remotion clip package that references the template via `template_id`, `template_contract_path`, props, render commands, previews, and QA.
+8. For a scene-specific use, write a Remotion clip package that references the template via `template_id`, `template_contract_path`, props, render commands, previews, and QA. For layered uses, populate `template_instances[]`.
 9. Promote a finished clip into a template only when it is parameterized, reusable beyond one scene, validated, and does not encode one-off project copy as fixed code.
 
 ## Reusable Template Categories
@@ -48,6 +48,7 @@ Use this before creating bespoke Remotion code when a reusable pattern might fit
 ## Rules
 
 - Prefer reusing an approved template over generating a new bespoke component.
+- Prefer bespoke Remotion code when the visual request is a complex VFX sequence, shader-like effect, custom 3D shot, or unique art direction that does not map cleanly to a reusable template.
 - Do not mutate a reusable template in a way that breaks existing clip packages; create a new version or scene-specific instance instead.
 - Keep reusable copy and media as props, not hardcoded component internals.
 - Record template ids in the clip package, project index, and run ledger when used.
@@ -63,6 +64,13 @@ Return either a selected-template decision or a new/updated template contract:
   "status": "selected | implemented | needs_approval | blocked",
   "template_id": "string",
   "template_contract_path": "string",
+  "template_instances": [
+    {
+      "template_id": "string",
+      "template_contract_path": "string",
+      "layer_name": "string"
+    }
+  ],
   "composition_id": "string",
   "component_paths": ["string"],
   "registry_paths": ["string"],

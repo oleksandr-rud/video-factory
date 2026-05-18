@@ -7,11 +7,14 @@ description: Design prompts and guardrails for generating Remotion-only motion g
 
 Use this for text-to-motion-graphics work. It borrows workflow ideas from Remotion's Prompt to Motion Graphics SaaS template, but this repo uses Codex with filesystem access, so generated components should be written into the project and validated with local preview/render checks.
 
+Before generating a new component, use `../remotion-template-library/SKILL.md` when an existing reusable template might satisfy the brief. Generated code that is meant to be reused must also produce a template contract matching `codex/contracts/remotion-template.schema.json`.
+
 ## Prompt Contract
 
 Ask for a Remotion component package, not a website component:
 
 - A single named React/TypeScript export for the component.
+- A `template_id` and template contract path if the component should be reusable beyond one scene.
 - A clear composition id suggestion.
 - Props shape for scene copy, colors, assets, duration, seed, and feature flags.
 - Props and notes should reference media asset ids plus Remotion `staticFile()` paths, not only loose local filenames.
@@ -36,6 +39,7 @@ Ask for a Remotion component package, not a website component:
    - explicit forbidden dependencies
 3. Request structured output when possible:
    - `component_name`
+   - `template_id` and `template_contract` when reusable
    - `composition_id`
    - `dependencies`
    - `code`
@@ -72,5 +76,5 @@ Duration: <seconds> seconds at <fps> fps, <width>x<height>.
 Allowed packages: <core remotion and approved @remotion/* packages>.
 Assets: <media asset ids and local public/staticFile paths>.
 Rules: named export <ComponentName>; deterministic frame math; no generic web component libraries; no Math.random; no remote runtime fetches; code only.
-Return structured fields: component_name, composition_id, dependencies, code, props_schema, preview_frames, notes.
+Return structured fields: component_name, template_id, composition_id, dependencies, code, props_schema, preview_frames, remotion_template_contract, notes.
 ```

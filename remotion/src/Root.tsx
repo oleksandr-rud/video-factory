@@ -5,6 +5,7 @@ import {
   defaultVideoFactoryProps,
   type VideoFactoryProps,
 } from "./Composition";
+import { TemplateCompositions } from "./templateRegistry";
 
 const getDuration = (props: VideoFactoryProps): number => {
   const sceneDuration = props.scenes.reduce(
@@ -33,6 +34,7 @@ export const RemotionRoot: React.FC = () => {
           height: props.height,
         })}
       />
+      <TemplateCompositions />
     </>
   );
 };

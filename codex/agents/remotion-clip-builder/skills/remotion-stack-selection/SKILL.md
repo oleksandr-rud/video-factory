@@ -14,16 +14,17 @@ Treat dependency choice like production change control. Prefer small, reversible
 - Scene visual brief, target route, duration, fps, width, height, aspect ratio, alpha needs, and VFX requirements
 - Existing Remotion project contract, app root, version, dependency list, and public asset policy
 - Approved asset paths, template hints, package policy, and budget/license policy
-- Required output contract: usually `codex/contracts/remotion-clip-package.schema.json`
+- Required output contract: usually `codex/contracts/remotion-clip-package.schema.json`, or `codex/contracts/remotion-template.schema.json` when selecting or creating reusable templates
 
 ## Workflow
 
-1. Start with core Remotion primitives. Add packages only when they reduce real complexity or unlock required video functionality.
-2. Check the current `remotion` package version before recommending `@remotion/*` dependencies. Keep Remotion packages on the same exact version.
-3. Prefer local assets and deterministic rendering. Avoid runtime network dependencies.
-4. Record rejected alternatives so future agents do not repeat the same dependency debate.
-5. Mark paid/pro templates, unclear licenses, unsupported package versions, or risky shared dependencies as approval/blockers.
-6. Define a fallback that works with core Remotion, CSS, SVG, Canvas, or simpler motion if the selected package fails.
+1. Check the reusable template registry only when a reusable pattern might fit. Bespoke Remotion code is acceptable for complex VFX, one-off scene language, or effects that would become worse if forced into a template.
+2. Start with core Remotion primitives. Add packages only when they reduce real complexity or unlock required video functionality.
+3. Check the current `remotion` package version before recommending `@remotion/*` dependencies. Keep Remotion packages on the same exact version.
+4. Prefer local assets and deterministic rendering. Avoid runtime network dependencies.
+5. Record rejected alternatives so future agents do not repeat the same dependency debate.
+6. Mark paid/pro templates, unclear licenses, unsupported package versions, or risky shared dependencies as approval/blockers.
+7. Define a fallback that works with core Remotion, CSS, SVG, Canvas, or simpler motion if the selected package fails.
 
 Default choices:
 
@@ -79,6 +80,11 @@ Return a stack decision before implementation:
     "license_summary": "string",
     "approval_required": false
   },
+  "template_contract": {
+    "template_id": "string",
+    "path": "string",
+    "reuse_mode": "selected_existing | create_new | promote_from_clip | not_applicable"
+  },
   "rejected_options": [
     {
       "name": "string",
@@ -101,7 +107,7 @@ Return a stack decision before implementation:
 }
 ```
 
-When implementation proceeds, copy the selected dependency and template data into `remotion-clip-package.dependencies` and `remotion-clip-package.template_source`.
+When implementation proceeds, copy the selected dependency and template data into `remotion-clip-package.dependencies`, `remotion-clip-package.template_source`, `remotion-clip-package.template_id`, `remotion-clip-package.template_contract_path`, or `remotion-clip-package.template_instances[]` for multi-template clips. If a reusable template is created or changed, write `codex/contracts/remotion-template.schema.json` too.
 
 ## Definition Of Done
 

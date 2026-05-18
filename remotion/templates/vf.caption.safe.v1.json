@@ -1,0 +1,87 @@
+{
+  "$schema": "../../codex/contracts/remotion-template.schema.json",
+  "template_id": "vf.caption.safe.v1",
+  "name": "Safe Caption Block",
+  "version": "1.0.0",
+  "status": "previewed",
+  "category": "caption",
+  "owner_agent": "remotion-clip-builder",
+  "remotion_project_contract_path": "remotion/remotion-project.json",
+  "remotion_app_root_path": "remotion",
+  "template_registry_path": "remotion/src/templateRegistry.tsx",
+  "composition_id": "TemplateSafeCaption",
+  "composition_type": "template",
+  "component_paths": [
+    "remotion/src/templates/captions/SafeCaption.tsx"
+  ],
+  "registry_paths": [
+    "remotion/src/templateRegistry.tsx"
+  ],
+  "props_contract": {
+    "required": ["text"],
+    "optional": ["highlight", "accentColor", "backgroundColor", "textColor", "bottom"],
+    "notes": "Use short caption chunks. Long captions should be split before reaching this component."
+  },
+  "supported_aspect_ratios": ["9:16", "16:9", "1:1"],
+  "supported_dimensions": [
+    { "width": 1080, "height": 1920 },
+    { "width": 1920, "height": 1080 }
+  ],
+  "duration": {
+    "default_seconds": 4,
+    "min_seconds": 1,
+    "max_seconds": 8,
+    "fps": 30
+  },
+  "alpha": {
+    "supports_transparency": true,
+    "preferred_export": "transparent_overlay",
+    "notes": "Component itself has no full-frame opaque background."
+  },
+  "safe_areas": {
+    "caption_safe": true,
+    "cta_safe": false,
+    "reserved_zones": ["bottom caption band"],
+    "notes": "Avoid lower thirds or CTA bars in the same bottom zone."
+  },
+  "usage": {
+    "when_to_use": ["Burned-in captions", "Short emphasis captions", "Accessible text overlays"],
+    "when_not_to_use": ["Long transcript paragraphs", "Source cards", "Title cards"],
+    "instance_output_contract": "codex/contracts/remotion-clip-package.schema.json",
+    "handoff_notes": ["Caption timing still belongs in the timeline sync plan."]
+  },
+  "dependencies": [
+    {
+      "name": "remotion",
+      "version": "4.0.462",
+      "purpose": "Frame-aware animation primitives",
+      "license_summary": "Remotion package license applies",
+      "approval_required": false
+    }
+  ],
+  "source": {
+    "created_from": "core_remotion",
+    "license_summary": "Repo-local component",
+    "approval_required": false
+  },
+  "render_commands": [
+    {
+      "purpose": "preview still",
+      "command": "npx remotion still TemplateSafeCaption out/template-safe-caption.png --frame=30 --scale=0.25",
+      "completed": true,
+      "notes": "Rendered preview still for template validation."
+    }
+  ],
+  "preview_frames": [
+    {
+      "frame": 30,
+      "path": "remotion/out/template-safe-caption.png",
+      "notes": "Preview still rendered at 0.25 scale."
+    }
+  ],
+  "qa": {
+    "status": "pass",
+    "summary": "Template preview still rendered successfully.",
+    "checks": ["npx remotion still TemplateSafeCaption out/template-safe-caption.png --frame=30 --scale=0.25"]
+  }
+}

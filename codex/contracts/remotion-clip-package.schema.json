@@ -15,6 +15,11 @@
     "remotion_project_contract_path": { "type": "string" },
     "remotion_app_root_path": { "type": "string" },
     "candidate_id": { "type": "string" },
+    "template_id": { "type": "string" },
+    "template_ids": { "type": "array", "items": { "type": "string" } },
+    "template_version": { "type": "string" },
+    "template_contract_path": { "type": "string" },
+    "template_contract_paths": { "type": "array", "items": { "type": "string" } },
     "composition_id": { "type": "string" },
     "route": {
       "type": "string",
@@ -48,6 +53,34 @@
     },
     "props_schema_path": { "type": "string" },
     "props_path": { "type": "string" },
+    "template_instance": {
+      "type": "object",
+      "properties": {
+        "template_id": { "type": "string" },
+        "template_contract_path": { "type": "string" },
+        "props_path": { "type": "string" },
+        "override_notes": { "type": "string" },
+        "reusable_candidate": { "type": "boolean" }
+      }
+    },
+    "template_instances": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["template_id", "template_contract_path"],
+        "properties": {
+          "template_id": { "type": "string" },
+          "template_contract_path": { "type": "string" },
+          "layer_name": { "type": "string" },
+          "layer_order": { "type": "integer" },
+          "props_path": { "type": "string" },
+          "props_inline_summary": { "type": "string" },
+          "override_notes": { "type": "string" },
+          "reusable_candidate": { "type": "boolean" }
+        }
+      }
+    },
+    "bespoke_vfx_notes": { "type": "string" },
     "dependencies": {
       "type": "array",
       "items": { "type": "string" }

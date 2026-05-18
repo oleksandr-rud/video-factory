@@ -47,7 +47,7 @@
         "properties": {
           "kind": {
             "type": "string",
-            "enum": ["full_video", "short_clip", "thumbnail", "subtitle", "caption_json", "source_package", "media_manifest", "remotion_project_contract", "review_assets", "project_archive", "other"]
+            "enum": ["full_video", "short_clip", "thumbnail", "subtitle", "caption_json", "source_package", "media_manifest", "remotion_project_contract", "remotion_template", "review_assets", "project_archive", "other"]
           },
           "path_or_expected_path": { "type": "string" },
           "status": {
@@ -65,6 +65,7 @@
         "producer_criteria_path": { "type": "string" },
         "media_asset_manifest_paths": { "type": "array", "items": { "type": "string" } },
         "remotion_project_contract_path": { "type": "string" },
+        "remotion_template_contract_paths": { "type": "array", "items": { "type": "string" } },
         "remotion_app_root_path": { "type": "string" },
         "reference_analysis_path": { "type": "string" },
         "channel_format_path": { "type": "string" },

@@ -9,13 +9,14 @@ Load `subtitle-caption-pipeline` and the built-in `remotion:remotion-best-practi
 
 ## Workflow
 
-1. Read the scenario, voiceover package, caption artifacts, visual pack, approved clip candidates, Remotion clip packages, media asset manifest, Remotion project contract, channel format, and export settings.
+1. Read the scenario, voiceover package, caption artifacts, visual pack, approved clip candidates, Remotion clip packages, referenced Remotion template contracts, media asset manifest, Remotion project contract, channel format, and export settings.
 2. Build one authoritative scene timeline:
    - scene id
    - narration text
    - audio path and duration
    - caption JSON/SRT path and caption time range
    - selected visual candidate, media asset id, `staticFile()` path, or Remotion clip package
+   - template id/contract path or template layer list when the selected clip package is template-backed
    - frame start/end at the target fps
    - overlay, lower-third, CTA, and transition notes
 3. Use `../../scripts/build_timeline_sync_plan.py` to create the first JSON plan when the inputs are already structured.
@@ -28,4 +29,5 @@ Load `subtitle-caption-pipeline` and the built-in `remotion:remotion-best-practi
 - Use voiceover duration and caption timestamps as stronger timing evidence than estimated script duration.
 - Keep captions, lower thirds, product/UI details, logos, and CTA text from occupying the same safe area.
 - Mark a plan partial if any scene has no approved visual candidate, no audio path after approved TTS generation, or no caption timing source.
+- Mark a plan partial if a template-backed clip references a missing template contract or a template with failed QA.
 - Do not use remote media paths for final render unless the Director explicitly accepts that risk.

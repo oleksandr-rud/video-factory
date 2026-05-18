@@ -45,6 +45,24 @@
               "source_asset_ids": { "type": "array", "items": { "type": "string" } },
               "remotion_static_file_path": { "type": "string" },
               "remotion_clip_package_path": { "type": "string" },
+              "template_id": { "type": "string" },
+              "template_ids": { "type": "array", "items": { "type": "string" } },
+              "template_contract_path": { "type": "string" },
+              "template_contract_paths": { "type": "array", "items": { "type": "string" } },
+              "template_layers": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "template_id": { "type": "string" },
+                    "template_contract_path": { "type": "string" },
+                    "layer_name": { "type": "string" },
+                    "layer_order": { "type": "integer" },
+                    "props_path": { "type": "string" },
+                    "notes": { "type": "string" }
+                  }
+                }
+              },
               "ai_video_generation_package_path": { "type": "string" },
               "notes": { "type": "string" }
             }

@@ -10,6 +10,8 @@ The repo has a shared Remotion app at `remotion/`. It is the default execution t
 
 Track the app with `codex/contracts/remotion-project.schema.json`. The contract must record the app root, package manager, Remotion version, composition registry, dependency policy, commands, public asset policy, and QA status.
 
+Reusable Remotion components are tracked separately with `codex/contracts/remotion-template.schema.json`. The shared app keeps a code registry at `remotion/src/templateRegistry.tsx` and shared template contracts under `remotion/templates/`; project-specific template contracts should live under `channels/<channel-slug>/projects/<project-slug>/remotion/templates/`.
+
 Use this public asset rule:
 
 - Canonical source media stays in `channels/<channel-slug>/projects/<project-slug>/source-media/` and generated/rendered media stays in the project artifact folders.
@@ -29,7 +31,7 @@ Use for standalone 5-20 second artifacts:
 - AI-assisted component drafts
 - Preview stills, low-resolution review clips, and clip metadata
 
-The Clip Builder returns `codex/contracts/remotion-clip-package.schema.json`. Its output can also be wrapped as a `clip-candidate` when Visual Producer needs to compare it against stock, AI video, or user media.
+The Clip Builder returns `codex/contracts/remotion-clip-package.schema.json` for scene instances and `codex/contracts/remotion-template.schema.json` when it selects, creates, revises, or promotes reusable templates. Its output can also be wrapped as a `clip-candidate` when Visual Producer needs to compare it against stock, AI video, or user media.
 
 ### Remotion Video Producer
 
@@ -43,6 +45,8 @@ Use for full 1-10 minute videos:
 - Render release candidates and technical render QA
 
 The Video Producer returns `codex/contracts/timeline-sync-plan.schema.json` before assembly and `codex/contracts/render-package.schema.json` for delivery. It consumes Remotion clip packages instead of treating every scene as custom timeline code.
+
+If the Video Producer discovers that a missing lower third, source card, caption style, transition, overlay, or other reusable template is needed, it returns a handoff recommendation. The Director turns that into a Remotion Clip Builder handoff; the Video Producer does not read Clip Builder-only template skills.
 
 ## Animation Baseline
 
@@ -62,11 +66,31 @@ Use Remotion templates, examples, and packages before generic UI/component libra
 
 Paid Remotion Pro templates, paid providers, licensed stock, or external generation calls require Director approval before spend or download.
 
+## Reusable Template Requirements
+
+A Remotion template is reusable only when it has:
+
+- stable `template_id`, `composition_id`, component path, and version
+- documented props contract and default props
+- category, aspect ratio support, safe-area behavior, alpha/export behavior, and usage rules
+- dependencies and license notes
+- preview/render commands or a documented blocker
+- QA status and findings
+- one or more scene-specific clip packages when instantiated in a project
+
+Local reusable template categories include lower thirds, source cards, caption blocks, transitions, overlays, data callouts, device/UI mockups, audio visualizers, openers, title cards, thumbnails, scene shells, and VFX.
+
+Templates are optional primitives, not a required implementation path. A Remotion clip may use no templates, one template, multiple template layers, or a hybrid of template layers and bespoke code. Use bespoke Remotion when the scene needs complex procedural VFX, custom 3D, custom Canvas/WebGL, unique art direction, or a one-off visual that would become harder to maintain as a template.
+
+Do not hardcode one-off scene copy, claims, or media inside reusable templates. Put those values in props and record each use in a Remotion clip package.
+
 ## Clip Package Requirements
 
 A clip package must identify:
 
 - `clip_id`, `scene_id`, project/channel ids, `composition_id`, duration, fps, dimensions, and aspect ratio
+- `template_id`, `template_contract_path`, instance props, or `template_instances[]` when the clip is template-backed
+- `bespoke_vfx_notes` when templates were considered but skipped for a complex custom effect
 - Component/source paths and asset paths
 - Media asset manifest path, source asset ids, output asset ids, and Remotion app/contract path
 - Template or package dependencies
@@ -93,6 +117,7 @@ A timeline sync plan must identify:
 
 - scene ids, narration text, start/end seconds, and start/end frames
 - selected visual candidate, source media asset, `staticFile()` path, or Remotion clip package per scene
+- template id and template contract path, or template layer list, for template-backed scene visuals
 - voiceover package scene entries, audio paths, and generated duration when available
 - caption JSON/SRT paths and timing ranges
 - overlay, lower-third, CTA, and transition notes
@@ -105,6 +130,19 @@ Clip QA passes only when the component renders or has a clearly documented block
 Full-video QA passes only when the timeline sync plan exists, the timeline is assembled in order, captions and audio sync are checked, outputs match platform requirements, and rights/blockers are recorded in the render package.
 
 Remotion setup QA passes only when dependencies install, `npm run lint` passes or has a documented blocker, at least one still or preview render is attempted for changed compositions, and required media assets resolve through the manifest.
+
+## Director Run Implementation
+
+When the Director prompt runs, reusable templates enter the pipeline this way:
+
+1. Director decomposes the request, resolves `remotion/remotion-project.json`, and notes `remotion/src/templateRegistry.tsx` plus any project template contract paths.
+2. Channel Intelligence may put reusable template ids or desired reusable assets into the channel format.
+3. Visual Producer expresses scene-level `template_hint`, `template_id`, `template_ids`, or reusable template requirements in the scene visual pack only when templates fit the scene. Complex VFX requests can explicitly allow bespoke VFX.
+4. Director converts those hints into a Remotion Clip Builder handoff that includes `remotion-template-library`, the Remotion project contract, the template registry path, producer criteria, channel format, and the requested output contracts.
+5. Remotion Clip Builder either selects one or more existing templates, implements a new reusable template, combines template layers with bespoke VFX, or writes a fully bespoke Remotion clip. Reusable templates are registered under `remotion/src/templateRegistry.tsx`; every scene-specific result still gets a `remotion-clip-package`.
+6. Director validates the returned template and clip packages, updates the project index and production run ledger, then passes only the clip package paths and template contract paths downstream.
+7. Remotion Video Producer consumes the clip packages and timeline sync plan; if a needed template is missing or invalid, it recommends a new Clip Builder handoff instead of editing template internals.
+8. Render QA and Video Critic evaluate the final render with template provenance visible through clip packages and render package source references.
 
 ## Uncovered Skill Gaps
 
