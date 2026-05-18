@@ -7,6 +7,8 @@ description: Inspect a video preview, VFX clip, subtitle track, render release c
 
 This is a technical QA gate only. It does not approve final viewer-facing release quality. Video Critic and Director own release approval or waiver decisions.
 
+Run `../remotion-visual-debugging/SKILL.md` first when timeline code changed, the render includes dense overlays/captions/source cards, a preview looks visually wrong, or a user/critic report names alignment, overlap, readability, or motion defects.
+
 ## Inputs
 
 - Render package matching `codex/contracts/render-package.schema.json`
@@ -24,11 +26,12 @@ This is a technical QA gate only. It does not approve final viewer-facing releas
 4. Check selected visual candidate usage by scene. Flag any unapproved helper-selected or untraceable visual source.
 5. Check audio sync, voiceover presence, silence, clipping, loudness notes, pronunciation blockers, and audio mix paths.
 6. Check caption sync, caption artifact presence, safe area, burned-in/separate subtitle requirements, and text legibility.
-7. Check VFX, transitions, alpha/export behavior, template contracts, template props, safe areas, deterministic motion, and VFX hardening evidence.
-8. Check export settings: platform, aspect ratio, width, height, fps, codec, alpha codec when relevant, delivery variants, and metadata.
-9. Check rights and approvals for stock media, approved web images/screenshots, source-card recreated page material, generated clips, music, voices, logos, likeness, paid templates, and external provider use.
-10. Check media manifest coverage for every source, web snapshot/source report/web image/screenshot, local Remotion projection, render output, subtitle/caption output, thumbnail, metadata file, and review-prep artifact.
-11. Update render package `qa` and `known_blockers`; do not set release approval.
+7. Check visual debugging coverage: per-scene 2-3 fps sampled frames, browser DOM/CSS analysis where available, representative stills/screenshots, short renders, agent preview analysis, layout alignment, dense-region collisions, text fit, safe areas, crop risk, motion quality, deterministic animation, asset/font loading, and render performance risks. A preview artifact without agent analysis is `partial` at best. Missing per-scene sampling is `fail` unless there is an approved Director waiver or a blocker.
+8. Check VFX, transitions, alpha/export behavior, template contracts, template props, safe areas, deterministic motion, and VFX hardening evidence.
+9. Check export settings: platform, aspect ratio, width, height, fps, codec, alpha codec when relevant, delivery variants, and metadata.
+10. Check rights and approvals for stock media, approved web images/screenshots, source-card recreated page material, generated clips, music, voices, logos, likeness, paid templates, and external provider use.
+11. Check media manifest coverage for every source, web snapshot/source report/web image/screenshot, local Remotion projection, render output, subtitle/caption output, thumbnail, metadata file, preview still/screenshot, debug report, and review-prep artifact.
+12. Update render package `qa` and `known_blockers`; do not set release approval.
 
 ## Required Output
 
@@ -64,6 +67,14 @@ Return this QA summary:
     "audio_sync": { "status": "pass | fail | partial | unknown", "evidence": "string" },
     "caption_sync": { "status": "pass | fail | partial | unknown", "evidence": "string" },
     "caption_safe_area": { "status": "pass | fail | partial | unknown", "evidence": "string" },
+    "agent_preview_analysis": { "status": "pass | fail | partial | unknown", "evidence": "string" },
+    "per_scene_sampling_coverage": { "status": "pass | fail | partial | unknown", "evidence": "string" },
+    "browser_dom_css_analysis": { "status": "pass | fail | partial | unknown", "evidence": "string" },
+    "layout_alignment": { "status": "pass | fail | partial | unknown", "evidence": "string" },
+    "dense_region_overlap": { "status": "pass | fail | partial | unknown", "evidence": "string" },
+    "text_fit": { "status": "pass | fail | partial | unknown", "evidence": "string" },
+    "motion_quality": { "status": "pass | fail | partial | unknown", "evidence": "string" },
+    "browser_preview_evidence": { "status": "pass | fail | partial | unknown", "evidence": "string" },
     "visual_candidate_usage": { "status": "pass | fail | partial | unknown", "evidence": "string" },
     "export_settings": { "status": "pass | fail | partial | unknown", "evidence": "string" },
     "metadata_validation": { "status": "pass | fail | partial | unknown", "evidence": "string" },
@@ -107,6 +118,9 @@ Each QA result must cite at least one of:
 - render command/log
 - ffprobe or metadata path
 - screenshot/frame timestamp
+- visual debugging report, preview still, browser screenshot, or bounding-box inspection output
+- preview analysis report written after the agent inspected stills, screenshots, sampled frames, or short preview video
+- browser DOM/CSS analysis report, including bounding boxes and computed styles for inspectable layers
 - timeline sync scene/frame range
 - caption JSON/SRT path
 - voiceover/audio path
@@ -123,6 +137,9 @@ Unknowns must be recorded as `unknown` or `partial`, not pass.
 For every real media artifact touched by render QA, verify or update `media-asset-manifest.schema.json`:
 
 - rendered video or preview
+- preview still, browser screenshot, short visual debug render, or debug report
+- preview analysis report
+- browser DOM/CSS analysis report
 - subtitle SRT
 - caption JSON
 - audio output

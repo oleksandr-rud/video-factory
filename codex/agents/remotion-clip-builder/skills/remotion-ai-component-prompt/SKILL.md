@@ -9,6 +9,7 @@ Use this for text-to-motion-graphics work. It borrows workflow ideas from Remoti
 
 Before generating a new component, use `../remotion-template-library/SKILL.md` when an existing reusable template might satisfy the brief. Generated code that is meant to be reused must also produce a template contract matching `codex/contracts/remotion-template.schema.json`.
 For generated components with complex VFX, media layers, transparency, WebGL/Three/Skia/Canvas, large text effects, particles, blur, shadows, or repeated use, run `../vfx-quality-performance-hardening/SKILL.md` before accepting the code.
+For generated components that look visually broken, crowded, misaligned, or ugly in preview, attempt bounded targeted repairs first. Replace the animation route when the code remains nondeterministic, unreadable, or brittle after those repairs.
 
 ## Prompt Contract
 
@@ -22,6 +23,7 @@ Ask for a Remotion component package, not a website component:
 - Uses Remotion APIs: `useCurrentFrame()`, `useVideoConfig()`, `AbsoluteFill`, `Sequence`, `Series`, `interpolate()`, `spring()`, `random(seed)`, `staticFile()`, and approved `@remotion/*` packages.
 - Uses Remotion-native templates/packages only. Do not import generic web component libraries.
 - Uses deterministic frame math. Do not use `Math.random()`, wall-clock time, browser storage, fetch-at-render-time remote data, or live network assets.
+- Includes layout debug affordances on major layers when practical: stable `data-vf-role`, `data-scene-id`, or `data-layer` attributes for later browser/bounding-box inspection.
 - Outputs code without markdown fences when the code is being consumed programmatically.
 
 ## Generation Workflow
@@ -56,13 +58,17 @@ Ask for a Remotion component package, not a website component:
    - reject missing named export
 5. Validate:
    - TypeScript/build check when available
-   - Remotion still frame at representative frames
+   - Remotion still frames at entry, settled, peak-density, peak-motion, and exit frames when applicable
    - Studio/browser preview for motion
+   - 2-3 fps sampled-frame coverage for the generated clip or scene
+   - browser DOM/CSS/SVG inspection for inspectable layers, with screenshot/pixel analysis for video/canvas/WebGL/raster layers
+   - dense-region, overlap, text-fit, and safe-area inspection for generated visual blocks
+   - agent-written preview analysis from stills, screenshots, sampled frames, or preview video
    - full render when feasible
 6. Self-correct:
    - feed compile/runtime errors back into a targeted repair prompt
    - keep the same component API unless the error requires changing it
-   - stop after repeated failures and fall back to a simpler Remotion-native route
+   - stop after repeated failures and fall back to a simpler deterministic Remotion-native route or replacement animation
 
 ## Image Handling
 

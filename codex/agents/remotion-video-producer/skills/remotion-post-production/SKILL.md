@@ -43,7 +43,8 @@ Workflow:
    - approved local Remotion templates first, then Remotion-native component templates or packages for 3D, audiogram, TikTok captions, overlay, Skia, Code Hike, Lottie, Rive, shapes, paths, and transitions
    - safe-area CTA and platform-specific framing
    - color/contrast consistency
-6. Prepare render commands for preview, release candidate, and optional transparent/VFX overlay exports.
+6. Run `../remotion-visual-debugging/SKILL.md` before render QA when the assembled timeline has changed, contains dense text/overlay regions, combines captions with lower thirds/source cards, or includes motion/VFX that could obscure key visuals. Preview files, stills, and browser screenshots must be inspected by the agent and summarized as findings, not merely attached. Each scene needs 2-3 fps sampled-frame analysis, and browser automation should inspect DOM/CSS/SVG layers when the Remotion preview exposes them.
+7. Prepare render commands for preview, release candidate, and optional transparent/VFX overlay exports.
 
 Definition of done:
 
@@ -54,6 +55,8 @@ Definition of done:
 - Any template or package used is Remotion-native or explicitly approved as an exception.
 - Template-backed clips reference `codex/contracts/remotion-template.schema.json` artifacts and are consumed through their public props/contracts.
 - Complex VFX package risks and channel-format VFX extensions are surfaced into timeline/render QA, especially GPU-heavy effects, transparent overlays, media-heavy layers, and bespoke procedural effects.
+- Every scene has sampled-frame visual analysis at 2-3 fps plus DOM/CSS browser analysis for inspectable layers, or an explicit Director waiver/blocker explains why evidence could not be generated.
+- Dense frames have visual debug evidence and agent preview analysis for layout alignment, overlap, text fit, safe areas, and motion readability.
 - Render command and output path are written into the render package.
 - Rendered outputs and sidecar artifacts are written back into the media asset manifest.
 

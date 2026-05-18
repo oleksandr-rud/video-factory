@@ -13,6 +13,7 @@ Own self-contained Remotion clips, component templates, motion graphics, and VFX
 - `skills/remotion-vfx-clip/SKILL.md`
 - `skills/vfx-quality-performance-hardening/SKILL.md`
 - Built-in `remotion:remotion-best-practices` when writing or validating Remotion code
+- Built-in `browser:browser` when a local Remotion Studio or preview page is available for fast clip layout and motion debugging
 
 ## Inputs
 
@@ -32,6 +33,7 @@ Own self-contained Remotion clips, component templates, motion graphics, and VFX
 - Source/output media asset ids and Remotion `staticFile()` paths when assets are consumed or emitted
 - Preview stills or low-resolution review clips when available
 - QA notes for timing, framing, alpha, text fit, determinism, and missing assets
+- Layout and motion debug notes for alignment, dense-region overlap, safe-area conflicts, unreadable text, and broken or ugly animation routes
 - VFX quality/performance notes for complex, media-heavy, GPU-heavy, transparent, or bespoke effects
 - Clip candidates that can be ranked with `codex/contracts/clip-candidate.schema.json`
 
@@ -48,3 +50,5 @@ Own self-contained Remotion clips, component templates, motion graphics, and VFX
 - Mark paid templates, paid generation, or licensed asset needs as approval blockers.
 - Return exact commands attempted and whether previews/renders completed.
 - Run VFX quality/performance hardening for complex VFX, WebGL/Three/Skia/Canvas, media-heavy clips, transparent overlays, or clips that show render speed, memory, or flicker risk.
+- For dense clips, source cards, captions, lower thirds, UI/product shots, and generated animation repairs, check representative stills or browser/Studio previews for alignment, overlaps, safe areas, and motion readability before handoff.
+- Prefer targeted fixes for isolated timing/layout defects, but replace an animation route when it remains nondeterministic, ugly, unreadable, or brittle after bounded repair attempts.

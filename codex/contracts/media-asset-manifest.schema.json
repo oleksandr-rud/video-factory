@@ -45,6 +45,8 @@
               "caption_json",
               "subtitle_srt",
               "metadata",
+              "preview_analysis",
+              "dom_css_analysis",
               "review_frame",
               "other"
             ]

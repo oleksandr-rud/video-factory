@@ -61,7 +61,7 @@ Also add an `invalidation_graph.events[]` entry when any of these are true:
 - Visual route, candidate, rights, or continuity findings: rerun Visual Producer for affected scenes, then the required InVideo AI Generator or Remotion Clip Builder handoffs, then Remotion Video Producer, render, and Critic work.
 - AI generation prompt/output findings: rerun InVideo AI Generator for affected scenes, then Remotion Video Producer, render, and Critic work.
 - Remotion component, overlay, or short-clip findings: rerun Remotion Clip Builder for affected scenes, then Remotion Video Producer, render, and Critic work.
-- Timeline, subtitles, audio mix, transition, export, or technical render findings: rerun Remotion Video Producer, render, and Critic work only.
+- Timeline, subtitles, audio mix, transition, layout alignment, dense-region overlap, motion readability, export, or technical render findings: rerun Remotion Video Producer visual debugging/render work, then Critic work only unless the defect belongs inside a Remotion Clip Builder-owned clip/template.
 - Critic evidence gaps: rerun `prepare-multimodal-review-package` or request missing inputs before changing production artifacts.
 
 Graph event fields should include `trigger`, source critique finding or change id when available, affected artifacts, preserved artifacts, rerun scope, owner agents, created timestamp, and notes. Mark any affected node status as `stale` or `invalidated` before dispatching the owner handoff.

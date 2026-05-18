@@ -42,6 +42,7 @@ Use for full 1-10 minute videos:
 - Voiceover, music, and SFX timing
 - Timeline sync plans that align scenario text, narration, captions, and selected visuals
 - Transitions between approved scene assets
+- Visual debugging for alignment, dense-region overlap, text fit, safe areas, motion readability, and broken animation repair
 - Render release candidates and technical render QA
 
 The Video Producer returns `codex/contracts/timeline-sync-plan.schema.json` before assembly and `codex/contracts/render-package.schema.json` for delivery. It consumes Remotion clip packages instead of treating every scene as custom timeline code.
@@ -59,6 +60,40 @@ Every generated Remotion clip should follow these primitives unless the project 
 - Use `Sequence`, `Series`, and `TransitionSeries` for timeline structure rather than ad hoc frame offsets.
 - Use deterministic `random(seed)` or fixed data; never use `Math.random()` for rendered output.
 - Use local assets through repo paths or `staticFile()`; do not depend on remote assets at render time.
+
+## Visual Debugging Baseline
+
+Remotion work must include a visual debugging pass whenever code, props, templates, captions, source cards, lower thirds, VFX, transitions, or dense visual layouts change.
+
+Use a staged evidence loop:
+
+- Start with static checks: lint/typecheck/build where available.
+- Render stills for representative frames: scene entry, settled/midpoint, scene exit, transition boundaries, caption-heavy frames, peak-density frames, peak-motion frames, and any reported failure timestamp.
+- Use Remotion Studio or a local preview page through Browser when available for fast scrubbing, screenshots, console/runtime errors, visible loading states, and bounding-box inspection.
+- Run per-scene sampled-frame analysis: 2 frames per second by default and 3 frames per second for dense, text-heavy, fast-motion, transition-heavy, source-card, caption-heavy, UI/product, or previously failed scenes.
+- Treat Remotion previews as HTML/CSS/SVG/React when layers are DOM-backed: inspect bounding boxes, computed styles, transforms, opacity, z-index, overflow, fonts, and safe-area intersections with Browser automation.
+- Treat video, images, canvas, WebGL, and OffthreadVideo internals as pixel evidence: inspect screenshots, stills, and sampled frames because their internal content is not exposed as useful DOM structure.
+- Use short low-scale renders for motion problems before spending time on a full render.
+- Analyze preview artifacts directly. An agent must inspect stills, screenshots, sampled frames, or short preview videos and write visual/motion observations before the preview can count as QA evidence.
+- Keep final render evidence reproducible with exact commands, output paths, frame numbers, and manifest entries.
+
+Visual debugging must check:
+
+- alignment against the project grid, safe areas, source-card regions, captions, lower thirds, CTAs, logos, products, UI details, and foreground subjects
+- dense-region readability when multiple text/visual targets compete in the same third of the frame
+- unintended overlap between blocks, captions, overlays, source evidence, and key visuals
+- text fit for long words, source titles, translations, numbers, and dynamic captions
+- motion quality: no CSS animations, timers, wall-clock behavior, unseeded randomness, unbounded interpolation drift, accidental spring overshoot, text jitter, or occluding transitions
+- render production risks: font loading, asset loading, local `staticFile()` projection, media decode route, alpha edges, compression artifacts, GPU-heavy effects, cache/concurrency/SIGKILL risk, and browser/render differences
+
+Classify overlaps as `intended_layering`, `acceptable_tightness`, `minor_collision`, `major_collision`, or `blocker_collision`. A blocker collision hides captions, source evidence, product/UI details, faces, legal/rights disclosures, or the scene's primary reading target.
+
+Repair policy:
+
+- Use targeted edits for isolated z-index, position, crop, scale, timing, easing, font-size, line-break, or delay problems.
+- Replace the animation route when the current route is nondeterministic, visually ugly after bounded repair, too dense to read, dependent on unsupported CSS/browser behavior, or too brittle for full-render production.
+- Preserve public props, composition ids, template contracts, and clip package APIs unless the repair cannot be made safely.
+- If Remotion Video Producer finds a defect inside a Clip Builder-owned reusable clip or template, it must return a Director handoff recommendation rather than editing that template directly.
 
 ## Remotion-Only Stack Rule
 
@@ -97,7 +132,7 @@ A clip package must identify:
 - Props schema or props path
 - Preview stills or review outputs when available
 - Render commands attempted and whether they completed
-- QA status and findings for timing, framing, alpha, text fit, determinism, and asset availability
+- QA status and findings for timing, framing, alignment, dense-region overlap, alpha, text fit, safe areas, motion quality, determinism, and asset availability
 
 ## Full Render Package Requirements
 
@@ -109,7 +144,10 @@ A render package must identify:
 - Captions/subtitle artifacts and burned-in versus sidecar subtitle policy
 - Audio mix source paths and QA notes
 - Render commands, preview commands, output files, and delivery variants
-- QA status and findings for timeline continuity, audio sync, subtitle fit, render health, rights, and blockers
+- Visual debugging evidence for representative stills/screenshots, dense frames, overlap classification, text fit, safe areas, and motion readability when risk is present
+- Agent preview analysis for stills, screenshots, sampled frames, or short preview videos; preview generation alone is not validation
+- Per-scene 2-3 fps sampled-frame coverage, plus DOM/CSS analysis reports for inspectable Remotion layers when Browser preview is available
+- QA status and findings for timeline continuity, audio sync, subtitle fit, layout alignment, dense-region overlap, motion quality, render health, rights, and blockers
 
 ## Timeline Sync Requirements
 
@@ -127,6 +165,8 @@ A timeline sync plan must identify:
 
 Clip QA passes only when the component renders or has a clearly documented blocker, timing is deterministic, text fits, assets resolve locally, and alpha/output expectations are verified.
 
+Clip visual QA also requires representative frame evidence for dense, text-heavy, source-card, lower-third, UI/product, caption, or VFX-heavy clips. Any major or blocker overlap must be fixed, replaced, or returned as a blocked handoff with evidence.
+
 Complex VFX QA additionally requires a quality/performance hardening pass. The clip package should record `vfx_profile` when the clip uses WebGL, Three, Skia, Canvas, media-heavy layers, large CSS filters/shadows/gradients, transparent export, many DOM nodes, particles, or bespoke procedural animation.
 
 VFX hardening checks:
@@ -137,6 +177,8 @@ VFX hardening checks:
 - render strategy: low-scale preview first, stills for changed frames, verbose logs or `npx remotion benchmark` when speed matters, and explicit alpha codec choices
 
 Full-video QA passes only when the timeline sync plan exists, the timeline is assembled in order, captions and audio sync are checked, outputs match platform requirements, and rights/blockers are recorded in the render package.
+
+Full-video visual debugging passes only when every scene has 2-3 fps sampled-frame analysis, Browser has inspected DOM/CSS/SVG layers when available, pixel-only layers have screenshot/still/frame evidence, the agent has analyzed those preview artifacts, layout alignment is checked, dense-region overlaps are classified, text fit and safe areas are checked, broken or ugly motion is fixed or routed, and render-production risks are recorded.
 
 Remotion setup QA passes only when dependencies install, `npm run lint` passes or has a documented blocker, at least one still or preview render is attempted for changed compositions, and required media assets resolve through the manifest.
 
@@ -151,7 +193,8 @@ When the Director prompt runs, reusable templates enter the pipeline this way:
 5. Remotion Clip Builder either selects one or more existing templates, implements a new reusable template, combines template layers with bespoke VFX, or writes a fully bespoke Remotion clip. Reusable templates are registered under `remotion/src/templateRegistry.tsx`; every scene-specific result still gets a `remotion-clip-package`.
 6. Director validates the returned template and clip packages, updates the project index and production run ledger, then passes only the clip package paths and template contract paths downstream.
 7. Remotion Video Producer consumes the clip packages and timeline sync plan; if a needed template is missing or invalid, it recommends a new Clip Builder handoff instead of editing template internals.
-8. Render QA and Video Critic evaluate the final render with template provenance visible through clip packages and render package source references.
+8. Remotion Video Producer runs visual debugging before render QA whenever the timeline changed, frames are dense, multiple overlay systems share the screen, or prior feedback names alignment, overlap, readability, or animation defects.
+9. Render QA and Video Critic evaluate the final render with template provenance visible through clip packages and render package source references.
 
 ## Uncovered Skill Gaps
 
@@ -164,8 +207,9 @@ The scan found four gaps in the previous agent skills:
 - There was no explicit Remotion app/setup contract, so commands, dependencies, public asset rules, and composition registry were implicit.
 - There was no project media manifest, so loaded reference videos, source clips, generated clips, rendered clips, and review evidence could not be traced consistently.
 - One agent owned both low-level component/VFX generation and full timeline render QA, which encouraged oversized prompts and mixed definitions of done.
+- There was no explicit visual debugging gate for alignment, dense-region overlaps, browser/Studio preview evidence, and broken animation replacement before render QA.
 
-Those gaps are now covered by `remotion-project.schema.json`, `media-asset-manifest.schema.json`, `remotion-clip-package.schema.json`, `voiceover-package.schema.json`, `timeline-sync-plan.schema.json`, the `source_clip_packages` and source asset fields in the render package, and the split between Remotion Clip Builder and Remotion Video Producer.
+Those gaps are now covered by `remotion-project.schema.json`, `media-asset-manifest.schema.json`, `remotion-clip-package.schema.json`, `voiceover-package.schema.json`, `timeline-sync-plan.schema.json`, the `source_clip_packages` and source asset fields in the render package, the split between Remotion Clip Builder and Remotion Video Producer, and `codex/agents/remotion-video-producer/skills/remotion-visual-debugging/SKILL.md`.
 
 ## Evidence From Current Research
 
@@ -174,6 +218,8 @@ The RemotionTemplates animation intro reinforced that basic Remotion animation i
 The official Remotion AI SaaS template and system-prompt docs support the same validation posture: generated Remotion code needs structured prompts, sanitation, compile/runtime correction, and local preview or render checks. Sources: https://www.remotion.dev/docs/ai/ai-saas-template and https://www.remotion.dev/docs/ai/system-prompt
 
 The current Remotion setup and asset docs support the shared-app/public-projection design: projects can be created with `npx create-video@latest`, videos can render through Studio or CLI, local assets should be loaded from the app `public/` folder with `staticFile()`, and render-time sidecars can be emitted with `<Artifact>`. Sources: https://www.remotion.dev/docs, https://www.remotion.dev/docs/render, https://www.remotion.dev/docs/staticfile, and https://www.remotion.dev/docs/artifact
+
+The current Remotion debugging docs support a formal visual debug lane: Studio previews run in the browser, CLI still renders can capture exact frames, `@remotion/renderer` can render stills or frame sequences, layout-utils can measure and fit text, frame-driven animation avoids flicker, and troubleshooting docs identify nondeterminism, asset loading, font loading, concurrency, and memory/SIGKILL as production failure modes. Sources: https://www.remotion.dev/docs/studio, https://www.remotion.dev/docs/cli/still, https://www.remotion.dev/docs/renderer, https://www.remotion.dev/docs/layout-utils, https://www.remotion.dev/docs/animating-properties, and https://www.remotion.dev/docs/flickering
 
 Remotion's current performance docs also define the VFX hardening surface. Concurrency should be benchmarked because too much or too little concurrency can slow rendering; GPU-heavy content includes WebGL, Canvas, gradients, blur, shadows, and similar effects; slow JavaScript should be measured and memoized; transparent videos need PNG image format, which is slower than JPEG; and lower-resolution preview renders can be used through `--scale`. Remotion also recommends verbose render logs and `npx remotion benchmark` for measuring speed. Sources: https://www.remotion.dev/docs/performance and https://www.remotion.dev/docs/cli/benchmark
 

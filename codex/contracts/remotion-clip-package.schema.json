@@ -94,6 +94,16 @@
         "quality_risks": { "type": "array", "items": { "type": "string" } },
         "performance_risks": { "type": "array", "items": { "type": "string" } },
         "determinism_checks": { "type": "array", "items": { "type": "string" } },
+        "layout_debug_checks": { "type": "array", "items": { "type": "string" } },
+        "agent_preview_analysis": {
+          "type": "object",
+          "properties": {
+            "artifacts_analyzed": { "type": "array", "items": { "type": "string" } },
+            "visual_observations": { "type": "array", "items": { "type": "string" } },
+            "motion_observations": { "type": "array", "items": { "type": "string" } },
+            "pass_decision": { "type": "string", "enum": ["pass", "fail", "partial", "unknown"] }
+          }
+        },
         "vfx_rule_refs": { "type": "array", "items": { "type": "string" } },
         "render_checks": {
           "type": "array",
@@ -109,6 +119,7 @@
           }
         },
         "optimization_notes": { "type": "array", "items": { "type": "string" } },
+        "animation_repair_or_replacement": { "type": "string" },
         "fallback_plan": { "type": "string" },
         "benchmark_commands": {
           "type": "array",
@@ -147,7 +158,7 @@
         "properties": {
           "kind": {
             "type": "string",
-            "enum": ["component", "rendered_clip", "preview_video", "transparent_video", "still", "image_sequence", "metadata", "qa_report"]
+            "enum": ["component", "rendered_clip", "preview_video", "transparent_video", "still", "debug_screenshot", "image_sequence", "metadata", "preview_analysis", "dom_css_analysis", "debug_report", "qa_report"]
           },
           "path": { "type": "string" },
           "media_asset_id": { "type": "string" },
@@ -206,8 +217,12 @@
             "required": ["severity", "description"],
             "properties": {
               "severity": { "type": "string", "enum": ["blocker", "major", "minor", "note"] },
+              "frame": { "type": "integer" },
               "timestamp_seconds": { "type": "number" },
+              "category": { "type": "string" },
               "description": { "type": "string" },
+              "evidence_path": { "type": "string" },
+              "recommendation": { "type": "string" },
               "fix_status": { "type": "string" }
             }
           }

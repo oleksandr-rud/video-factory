@@ -35,13 +35,16 @@ Use this after the Remotion composition is assembled and before Video Critic rev
 3. Run the lightest meaningful validation first:
    - representative still frame checks
    - Studio/browser preview when available
+   - `../remotion-visual-debugging/SKILL.md` for changed, dense, visually fragile, or previously failed scenes
+   - agent analysis of generated preview artifacts; do not treat preview generation alone as validation
+   - per-scene 2-3 fps sampled-frame analysis plus browser DOM/CSS inspection for inspectable layers
    - metadata/probe checks for source assets when relevant
    - full render only when dependencies, approvals, and time allow
 4. Render the RC with an explicit output path, exact command, and captured log path.
 5. Emit required sidecars: separate `.srt`, caption JSON, thumbnails, metadata probe, render log, QA report, and fallback exports when requested.
 6. Verify output metadata with Remotion, FFprobe, Mediabunny, or available repo tooling.
 7. Calculate or record output hashes for the video and sidecars whenever files exist.
-8. For VFX-heavy renders, record render time, slowest frames, benchmark commands, VFX rule refs, alpha/export behavior, decode risk, and optimization notes in `performance_summary`.
+8. For visually dense or motion-heavy renders, record agent preview analysis, layout/overlap debug evidence, browser screenshots when used, render time, slowest frames, benchmark commands, VFX rule refs, alpha/export behavior, decode risk, and optimization notes in `performance_summary` or QA findings.
 9. Run `../render-qa/SKILL.md`; attach the technical QA report path and status.
 10. Write a render package matching `codex/contracts/render-package.schema.json`, including the RC attestation fields even when they are stored as additional JSON properties.
 11. Update or request updates to the media asset manifest for rendered video, subtitle sidecars, thumbnails, metadata, render logs, QA reports, review-prep outputs, and any consumed web snapshots/source reports/approved web images/screenshots.
@@ -115,7 +118,7 @@ Write a render package with:
 ## Status Policy
 
 - Return `rendered` only when the full RC video exists, output metadata was probed, required sidecars are present or explicitly waived, output hashes are recorded, and technical render QA was run.
-- Return `previewed` when still/preview validation exists but full render has not completed.
+- Return `previewed` when still/preview validation exists, the agent has analyzed the preview artifacts, every scene has 2-3 fps sampling coverage or a recorded waiver/blocker, and full render has not completed.
 - Return `planned` when commands and paths are prepared but no render or preview exists.
 - Return `blocked` when render execution, required assets, required approvals, caption/audio readiness, rights, or reproducibility evidence are missing.
 - Do not set `approved` for final release. Video Critic plus Director own final release approval or waiver.

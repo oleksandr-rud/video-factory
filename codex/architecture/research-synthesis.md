@@ -90,6 +90,16 @@ Remotion-native component/package choices should be preferred over generic HTML 
 - `@remotion/paths` provides dependency-free SVG path utilities and is MIT licensed. Source: https://www.remotion.dev/docs/paths
 - `@remotion/starburst` provides a WebGL retro starburst ray component. Source: https://www.remotion.dev/docs/starburst
 
+## Remotion Visual Debugging Findings
+
+The repo needs a visual debugging lane in addition to render health checks. Remotion Studio explicitly supports browser preview, and the CLI/renderer paths support still frames, frame sequences, and low-cost validation before a full render. Sources: https://www.remotion.dev/docs/studio, https://www.remotion.dev/docs/cli/still, and https://www.remotion.dev/docs/renderer
+
+Visual QA should not rely only on final-video critique. Remotion's animation docs require frame-driven animation with `useCurrentFrame()`, and its flickering troubleshooting explains that render concurrency and asset loading expose nondeterministic animation, missing waits, font loading issues, and media tag problems. Sources: https://www.remotion.dev/docs/animating-properties and https://www.remotion.dev/docs/flickering
+
+Text and dense-layout issues need deterministic inspection. Remotion layout-utils exposes text measurement/fitting helpers, and Playwright supports page screenshots, visual comparisons, and in-page JavaScript evaluation. That supports a local skill that combines Remotion stills with browser screenshots and bounding-box inspection for alignment, overlap, text fit, safe areas, dense regions, and motion readability. Sources: https://www.remotion.dev/docs/layout-utils, https://playwright.dev/docs/screenshots, https://playwright.dev/docs/test-snapshots, and https://playwright.dev/docs/evaluating
+
+Local decision: add `remotion-visual-debugging` under Remotion Video Producer, wire it before render QA for changed or risky scenes, and update Clip Builder VFX/generation skills so short clips and templates record alignment, overlap, dense-region, and animation replacement checks before handoff. Preview artifacts must be analyzed by the agent; generating a preview, still, screenshot, or short render only establishes evidence, not a pass. Each scene should get sampled-frame analysis at 2 fps by default or 3 fps for dense/high-motion/problem scenes. Browser automation should inspect DOM/CSS/SVG layers where Remotion exposes them, while video/canvas/WebGL/raster content remains pixel evidence from screenshots and sampled frames.
+
 ## InVideo AI Generation Findings
 
 InVideo Agent One is a conversational AI filmmaker that builds a video scene by scene and edits through a back-and-forth creative process. That makes it useful for InVideo-managed generation, but it still needs explicit local contracts so Codex can preserve prompts, approvals, outputs, and QA. Source: https://help.invideo.io/en/articles/14717491-getting-started-with-agent-one

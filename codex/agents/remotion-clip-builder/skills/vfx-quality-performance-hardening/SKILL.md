@@ -7,6 +7,10 @@ description: Harden Remotion VFX clips for visual quality, deterministic renderi
 
 Use this before finalizing complex VFX or after a preview/render exposes quality, timing, memory, flicker, or speed problems. This skill does not replace creative judgment; it records the technical tradeoffs needed for a VFX clip to render reliably.
 
+When Studio or a preview page is available, use the built-in `browser:browser` skill for fast frame scrubbing, screenshots, console inspection, and visual confirmation. Browser preview supplements still renders; it does not replace renderable evidence for final handoff. The agent must analyze captured preview artifacts; screenshot or preview generation alone is not a pass.
+
+For short clips and template previews, sample the full clip at 2 frames per second by default and 3 frames per second for dense, caption/source-card-heavy, fast-motion, transition-heavy, or previously failed clips. Browser automation should inspect DOM/CSS/SVG layers where available; video, image, canvas, WebGL, and OffthreadVideo internals are treated as pixel evidence from screenshots or sampled frames.
+
 ## Inputs
 
 - Scene visual pack entry, producer criteria, and channel format
@@ -33,6 +37,9 @@ Use this before finalizing complex VFX or after a preview/render exposes quality
    - seeded randomness only, with seed recorded in props
 4. Check visual quality:
    - text fit and safe areas at representative frames
+   - alignment of repeated blocks, source cards, lower thirds, captions, CTAs, logos, product/UI details, and foreground elements
+   - dense-region readability: flag frames where multiple important reading targets compete in the same third of the frame
+   - unintended overlap between blocks, captions, visual subjects, source evidence, and VFX overlays; classify intended layering separately from collisions
    - alpha edges, blend modes, masks, and transparent export path
    - color/contrast and artifact risk after compression
    - subpixel jitter on text or thin lines
@@ -50,7 +57,10 @@ Use this before finalizing complex VFX or after a preview/render exposes quality
    - benchmark or lower scale before full-res renders for risky VFX
 7. Check render stability:
    - attempt stills at representative frames including entry, peak motion, exit, and any alpha edge
+   - use browser/Studio screenshots for quick alignment and motion debugging when available, especially for dense scenes, then analyze those screenshots directly
    - attempt a low-scale motion preview for complex VFX
+   - for short preview videos, inspect the video directly when possible or sample frames across the segment at 2-3 fps and analyze the frame sequence
+   - collect DOM bounding boxes, computed styles, transforms, opacity, z-index, overflow, and safe-area intersections for inspectable layers
    - use verbose render logs or `npx remotion benchmark` when render speed matters
    - lower concurrency or cache size if memory/SIGKILL risk appears
 8. Record a fallback:
@@ -59,6 +69,7 @@ Use this before finalizing complex VFX or after a preview/render exposes quality
    - lower particle/geometry count
    - opaque export instead of alpha
    - static still or reduced-motion variant
+   - replacement animation route when the current motion is nondeterministic, ugly, unreadable, or remains broken after targeted timing/layout repairs
 
 ## Required Output
 
@@ -70,6 +81,16 @@ Return a hardening summary that can be copied into `remotion-clip-package.vfx_pr
   "quality_risks": ["string"],
   "performance_risks": ["string"],
   "determinism_checks": ["string"],
+  "layout_debug_checks": ["string"],
+  "agent_preview_analysis": {
+    "artifacts_analyzed": ["string"],
+    "sampling_fps": 2,
+    "sampled_frames": [0],
+    "dom_css_analysis_paths": ["string"],
+    "visual_observations": ["string"],
+    "motion_observations": ["string"],
+    "pass_decision": "pass | fail | partial | unknown"
+  },
   "vfx_rule_refs": ["string"],
   "render_checks": [
     {
@@ -80,6 +101,7 @@ Return a hardening summary that can be copied into `remotion-clip-package.vfx_pr
     }
   ],
   "optimization_notes": ["string"],
+  "animation_repair_or_replacement": "string",
   "fallback_plan": "string",
   "status": "pass | partial | fail | not_run"
 }
@@ -89,6 +111,10 @@ Return a hardening summary that can be copied into `remotion-clip-package.vfx_pr
 
 - Complex VFX has explicit quality and performance risk notes.
 - Representative stills or preview renders are attempted, or a blocker explains why not.
+- Alignment, overlap, dense-region readability, text fit, safe areas, and motion readability are checked for representative frames.
+- Full clip preview coverage uses 2-3 fps sampling unless an explicit blocker or Director waiver is recorded.
+- DOM/CSS/SVG layers are inspected as browser elements when available; pixel-only layers are checked with screenshots or sampled frames.
+- Preview artifacts are inspected and summarized by the agent; preview existence alone is not accepted as QA.
 - GPU/media/alpha choices are recorded.
 - A fallback exists when the chosen effect is render-heavy or fragile.
 - Findings are copied into the Remotion clip package and made available to Remotion Video Producer render QA.

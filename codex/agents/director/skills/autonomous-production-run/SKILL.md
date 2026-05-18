@@ -39,6 +39,7 @@ Use this after `decompose-video-request` when the user wants a full run, `/goal`
    - Existing Remotion template selection before bespoke Remotion clip implementation only when `template_hint`, reusable channel assets, overlays, lower thirds, caption styles, source cards, or repeated motion patterns are in scope and the template fits the producer criteria. Complex VFX may combine multiple templates or use bespoke Remotion code.
    - InVideo AI Generator and Remotion Clip Builder before Remotion Video Producer.
    - Timeline sync plan before full Remotion assembly and render QA when narration, captions, and visuals must align.
+   - Remotion visual debugging before render QA when timeline code changed, frames are dense, source cards/lower thirds/captions share screen space, motion/VFX changed, or a user/critic report names alignment, overlap, readability, or animation defects. Require per-scene sampled-frame analysis at 2 fps by default, 3 fps for dense/high-motion/problem scenes, plus browser DOM/CSS/SVG inspection for inspectable Remotion layers when available.
    - Render QA before Video Critic.
    - Video Critic after a render candidate exists and before final delivery when the run targets a deliverable video.
    - Quality gated review loop after the first critique if findings do not pass release-candidate gates.
@@ -130,7 +131,7 @@ When the user changes or updates the request after a full run:
    - Remotion clip/component changes invalidate timeline, render, and critique.
    - Remotion template changes invalidate every clip package that references that template, then timeline, render, and critique.
    - Source media or Remotion public projection changes invalidate affected visual candidates, clips, timeline sync, render, and critique.
-   - Timeline, subtitle, audio mix, transition, or export changes invalidate render and critique only.
+   - Timeline, subtitle, audio mix, transition, layout, animation, or export changes invalidate visual debugging, render, and critique.
 5. Update artifact versions and QA.
 6. Return a concise diff: what changed, what was regenerated, what stayed valid, and any residual blocker.
 

@@ -59,7 +59,7 @@
         "properties": {
           "kind": {
             "type": "string",
-            "enum": ["video", "preview_video", "audio", "subtitle_srt", "caption_json", "thumbnail", "transparent_overlay", "image_sequence", "metadata", "qa_report", "critique_report"]
+            "enum": ["video", "preview_video", "short_preview", "audio", "subtitle_srt", "caption_json", "thumbnail", "still", "debug_screenshot", "transparent_overlay", "image_sequence", "metadata", "preview_analysis", "dom_css_analysis", "debug_report", "qa_report", "critique_report"]
           },
           "path": { "type": "string" },
           "media_asset_id": { "type": "string" },
@@ -178,8 +178,12 @@
             "properties": {
               "severity": { "type": "string", "enum": ["blocker", "major", "minor", "note"] },
               "scene_id": { "type": "string" },
+              "frame": { "type": "integer" },
               "timestamp_seconds": { "type": "number" },
+              "category": { "type": "string" },
               "description": { "type": "string" },
+              "evidence_path": { "type": "string" },
+              "recommendation": { "type": "string" },
               "fix_status": { "type": "string" }
             }
           }

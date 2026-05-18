@@ -25,13 +25,14 @@ Produce a deterministic implementation plan before coding. Treat this as a low-f
 5. Define a serializable props schema for copy, colors, source ids, claim ids, evidence refs, media asset ids, `staticFile()` paths, safe-area settings, timing, and scene duration.
 6. For `source_card_recreation`, include claim ids, source title/URL/date, evidence refs, and approved image/screenshot asset ids as props or clip package metadata. Redraw source cards unless direct reuse is approved.
 7. Define layout and responsive rules: text fitting, long-word behavior, caption-safe area, lower-third conflicts, platform UI safe areas, and mobile/desktop preview constraints.
-8. Define VFX, transitions, audio-reactive hooks, subtitle-safe areas, alpha/export expectations, and fallback behavior. Apply `channel_format.visual_system.vfx_rules`.
-9. Choose only necessary libraries; if dependency choice is uncertain, read `../remotion-stack-selection/SKILL.md`.
-10. Trigger `../vfx-quality-performance-hardening/SKILL.md` when the scene is media-heavy, GPU-heavy, transparent, reusable, complex VFX, WebGL/Three/Skia, or channel-format rules require it.
-11. Check assets before coding: every source media dependency needs a manifest id, canonical path, rights state, and Remotion public/staticFile projection or an explicit deferred action.
-12. Define preview and validation commands: Studio route, still render, short render, typecheck/build command, screenshot review, and any performance check.
-13. Define the expected `remotion-clip-package.schema.json` fields, including template ids/contracts, template instances for layered use, output asset ids, `vfx_rule_refs`, `vfx_profile`, QA, and manifest actions.
-14. If the planned component should be reusable beyond the current scene, define the expected `remotion-template.schema.json` fields and return a Director-facing recommendation to run template-library work.
+8. Define dense-region and overlap rules: intended layer overlaps, forbidden collisions, maximum simultaneous reading targets, subject-preservation zones, source-card/caption/lower-third priority, and the frames most likely to become crowded.
+9. Define VFX, transitions, audio-reactive hooks, subtitle-safe areas, alpha/export expectations, motion readability criteria, and fallback behavior. Apply `channel_format.visual_system.vfx_rules`.
+10. Choose only necessary libraries; if dependency choice is uncertain, read `../remotion-stack-selection/SKILL.md`.
+11. Trigger `../vfx-quality-performance-hardening/SKILL.md` when the scene is media-heavy, GPU-heavy, transparent, reusable, complex VFX, WebGL/Three/Skia, dense, overlap-prone, or channel-format rules require it.
+12. Check assets before coding: every source media dependency needs a manifest id, canonical path, rights state, and Remotion public/staticFile projection or an explicit deferred action.
+13. Define preview and validation commands: Studio/browser route, still render, short render, typecheck/build command, screenshot review, 2-3 fps sampled-frame inspection, browser DOM/CSS/SVG inspection for inspectable layers, pixel analysis for video/canvas/WebGL/raster layers, dense-frame inspection, and any performance check.
+14. Define the expected `remotion-clip-package.schema.json` fields, including template ids/contracts, template instances for layered use, output asset ids, `vfx_rule_refs`, `vfx_profile`, QA, and manifest actions.
+15. If the planned component should be reusable beyond the current scene, define the expected `remotion-template.schema.json` fields and return a Director-facing recommendation to run template-library work.
 
 ## Required Output
 
@@ -89,12 +90,16 @@ Return:
       }
     ],
     "safe_area_rules": ["string"],
+    "dense_region_rules": ["string"],
+    "overlap_policy": ["string"],
     "vfx_rule_refs": ["string"],
     "vfx_hardening_required": false,
     "preview_plan": {
       "studio_url_or_command": "string",
       "still_command": "string",
       "short_render_command": "string",
+      "sampling_fps": 2,
+      "browser_dom_css_analysis": "string",
       "validation_steps": ["string"]
     }
   },
@@ -103,6 +108,7 @@ Return:
     "props_complete": "pass | fail | unknown",
     "assets_ready": "pass | partial | fail | unknown",
     "template_fit": "pass | partial | fail | unknown",
+    "layout_overlap_risk": "pass | partial | fail | unknown",
     "vfx_complexity": "simple | moderate | high | unknown"
   },
   "next_recommended_step": "string"
@@ -148,6 +154,7 @@ Stop before coding when required assets are missing, unapproved, outside allowed
 - Asset needs are manifest-backed or deferred with blockers.
 - Template/VFX decisions are routed to the right local skills.
 - Preview and validation plan is executable by Remotion Clip Builder.
+- Dense-frame and overlap risks are known before implementation starts.
 
 ## Handoff Summary Shape
 
@@ -171,7 +178,7 @@ Return:
       "reason": "string"
     }
   ],
-  "validation_performed": ["template fit", "frame math", "props schema", "asset readiness", "safe-area check", "VFX hardening trigger check", "preview plan"],
+  "validation_performed": ["template fit", "frame math", "props schema", "asset readiness", "safe-area check", "dense-region/overlap risk", "VFX hardening trigger check", "preview plan"],
   "assumptions": ["string"],
   "blockers": ["string"],
   "risks": ["string"],
