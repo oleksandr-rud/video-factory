@@ -5,22 +5,128 @@ description: Plan deterministic Remotion-generated visuals for 5-20 second scene
 
 # Remotion Scene Plan
 
-1. Consider `../remotion-template-library/SKILL.md` and the Remotion app template registry before planning a bespoke component when the scene has a reusable pattern, channel reusable asset, or `template_hint`.
-2. Read `channel_format_path` when available. Apply `visual_system.vfx_rules` as per-channel extensions to VFX choices, hardening triggers, alpha/export behavior, safe areas, benchmark requirements, and fallback expectations.
-3. Decide whether the scene should use no template, one template, multiple template layers, bespoke VFX, or a hybrid.
-4. Map scene visual goal to a standalone Remotion component, template-backed instance, hybrid VFX component, composition id, and clip duration.
-5. Define props for copy, colors, assets, source media asset ids, `staticFile()` paths, and scene duration.
-6. For `source_card_recreation`, include claim ids, source ids, evidence refs, source title/URL/date, and approved image/screenshot asset ids as props or clip package metadata.
-7. Define frame ranges for animation beats.
-8. Specify text safe areas and responsive layout rules.
-9. Identify needed VFX, subtitle-safe areas, audio-reactive hooks, and transition handles.
-10. Choose only necessary libraries; if uncertain, read `../remotion-stack-selection/SKILL.md`.
-11. Identify whether `../vfx-quality-performance-hardening/SKILL.md` is required because the scene is complex, media-heavy, GPU-heavy, transparent, likely to be reused, or required by channel-format VFX rules.
-12. Add render validation command or preview check.
-13. Define the fields needed for `codex/contracts/remotion-clip-package.schema.json`, including `template_id`/`template_contract_path` for one-template cases or `template_instances[]` for layered template usage, plus project/channel fields, channel format path, media asset manifest path, Remotion project contract path, output asset ids, `vfx_rule_refs`, and `vfx_profile` when applicable.
-14. If the planned component should be reusable beyond the current scene, also define the fields needed for `codex/contracts/remotion-template.schema.json`.
+Produce a deterministic implementation plan before coding. Treat this as a low-freedom skill: vague composition ids, frame math, props, or assets should block implementation rather than drift into guesswork.
 
-Return implementation-ready clip notes or code changes when assigned, plus the expected Remotion clip package fields.
+## Inputs
+
+- Visual Producer scene pack, selected route, visual goal, candidate requirements, source ids, evidence refs, and `remotion_scene_brief`
+- Scenario scene with start/end seconds, narration, on-screen text, source alignment, and visual intent
+- Producer criteria, channel profile, channel format, `visual_system.vfx_rules`, and reusable template hints
+- Remotion project contract, template registry, existing template contracts, and shared `remotion/` app constraints
+- Media asset manifest with approved source/user/web assets and Remotion public projection paths
+- Target platform, aspect ratio, resolution, fps, duration, and safe-area rules
+
+## Workflow
+
+1. Consider `../remotion-template-library/SKILL.md` and the Remotion app template registry before planning a bespoke component when the scene has a reusable pattern, channel reusable asset, or `template_hint`.
+2. Decide the implementation mode: `no_template`, `single_template`, `layered_templates`, `bespoke_component`, `bespoke_vfx`, or `hybrid`.
+3. Define the composition id, component path, duration in frames, width, height, fps, and expected output kind.
+4. Build a frame timing map. Frame ranges must cover the planned duration without gaps or accidental overlaps unless an overlap is intentional and named.
+5. Define a serializable props schema for copy, colors, source ids, claim ids, evidence refs, media asset ids, `staticFile()` paths, safe-area settings, timing, and scene duration.
+6. For `source_card_recreation`, include claim ids, source title/URL/date, evidence refs, and approved image/screenshot asset ids as props or clip package metadata. Redraw source cards unless direct reuse is approved.
+7. Define layout and responsive rules: text fitting, long-word behavior, caption-safe area, lower-third conflicts, platform UI safe areas, and mobile/desktop preview constraints.
+8. Define VFX, transitions, audio-reactive hooks, subtitle-safe areas, alpha/export expectations, and fallback behavior. Apply `channel_format.visual_system.vfx_rules`.
+9. Choose only necessary libraries; if dependency choice is uncertain, read `../remotion-stack-selection/SKILL.md`.
+10. Trigger `../vfx-quality-performance-hardening/SKILL.md` when the scene is media-heavy, GPU-heavy, transparent, reusable, complex VFX, WebGL/Three/Skia, or channel-format rules require it.
+11. Check assets before coding: every source media dependency needs a manifest id, canonical path, rights state, and Remotion public/staticFile projection or an explicit deferred action.
+12. Define preview and validation commands: Studio route, still render, short render, typecheck/build command, screenshot review, and any performance check.
+13. Define the expected `remotion-clip-package.schema.json` fields, including template ids/contracts, template instances for layered use, output asset ids, `vfx_rule_refs`, `vfx_profile`, QA, and manifest actions.
+14. If the planned component should be reusable beyond the current scene, define the expected `remotion-template.schema.json` fields and return a Director-facing recommendation to run template-library work.
+
+## Required Output
+
+Return:
+
+```json
+{
+  "status": "complete | needs_approval | blocked | needs_revision",
+  "scene_id": "string",
+  "remotion_scene_plan": {
+    "plan_id": "string",
+    "implementation_mode": "no_template | single_template | layered_templates | bespoke_component | bespoke_vfx | hybrid",
+    "composition_id": "string",
+    "component_path": "string",
+    "duration_frames": 0,
+    "fps": 30,
+    "width": 1080,
+    "height": 1920,
+    "template_id": "string",
+    "template_contract_path": "string",
+    "template_instances": [
+      {
+        "template_id": "string",
+        "template_contract_path": "string",
+        "layer_role": "background | source_card | overlay | transition | caption_support | foreground"
+      }
+    ],
+    "props_schema": [
+      {
+        "prop": "string",
+        "type": "string",
+        "required": true,
+        "source": "scenario | visual_pack | channel_format | media_manifest | producer_criteria | generated",
+        "validation": "string"
+      }
+    ],
+    "frame_timing_map": [
+      {
+        "beat_id": "string",
+        "start_frame": 0,
+        "end_frame": 0,
+        "purpose": "string",
+        "component_or_layer": "string",
+        "transition_in": "string",
+        "transition_out": "string"
+      }
+    ],
+    "asset_requirements": [
+      {
+        "asset_id": "string",
+        "canonical_path": "string",
+        "static_file_path": "string",
+        "rights_state": "approved | needs_approval | blocked | unknown",
+        "required_for": "string"
+      }
+    ],
+    "safe_area_rules": ["string"],
+    "vfx_rule_refs": ["string"],
+    "vfx_hardening_required": false,
+    "preview_plan": {
+      "studio_url_or_command": "string",
+      "still_command": "string",
+      "short_render_command": "string",
+      "validation_steps": ["string"]
+    }
+  },
+  "validation_summary": {
+    "frame_math": "pass | fail | unknown",
+    "props_complete": "pass | fail | unknown",
+    "assets_ready": "pass | partial | fail | unknown",
+    "template_fit": "pass | partial | fail | unknown",
+    "vfx_complexity": "simple | moderate | high | unknown"
+  },
+  "next_recommended_step": "string"
+}
+```
+
+## Contract Fields Populated
+
+- `remotion-clip-package.schema.json`: project/channel fields, scene id, composition id, component path, template ids/contracts, props, outputs, dependencies, `vfx_rule_refs`, `vfx_profile`, and QA expectations
+- `remotion-template.schema.json`: only when recommending or defining a reusable template contract
+- `remotion-project.schema.json`: consumes project commands, composition registry, public asset policy, and dependency constraints
+- `scene-visual-pack.schema.json`: consumes Remotion route brief and template hints
+- `media-asset-manifest.schema.json`: manifest entries or deferred actions for planned/consumed/rendered media
+
+## Status Policy
+
+- Return `complete` when the plan is implementation-ready and all required props, frame ranges, assets, templates, and validation commands are explicit.
+- Return `needs_approval` when implementation depends on unapproved source images, licensed assets, paid tools, new dependencies, provider downloads, or rights-sensitive reference use.
+- Return `blocked` when frame math cannot fit the scene, required assets are unavailable, the requested effect is not feasible in Remotion, or rights make the route unusable.
+- Return `needs_revision` when visual goals, props, template hints, source data, safe areas, or channel-format rules are contradictory or underspecified.
+
+## Evidence Required
+
+Every prop, asset, template, VFX rule, source-card detail, and timing decision must cite an input source: scenario scene, visual pack, channel format, producer criteria, reference analysis, media manifest, Remotion project contract, or explicit Director instruction.
 
 ## Media Manifest Policy
 
@@ -29,3 +135,46 @@ If this skill consumes, creates, validates, renders, previews, mirrors, or defer
 Each manifest action must include `action`, `asset_id`, `canonical_path`, `remotion_public_path` and `static_file_path` when relevant, `rights_state`, `technical_metadata_state`, and `reason`.
 
 Use `deferred` for planned assets, missing `staticFile()` projections, preview renders that are not created yet, or clip outputs that will be written by `remotion-vfx-clip`. Remotion Video Producer should receive manifest-backed asset ids or explicit deferred actions.
+
+## Approval And Stop Conditions
+
+Stop before coding when required assets are missing, unapproved, outside allowed paths, or not projectable into Remotion `public/`. Stop before adding new dependencies, paid assets, licensed media, direct screenshot reuse, or complex VFX escalation without Director approval.
+
+## Definition Of Done
+
+- Composition id, dimensions, fps, duration frames, component path, and output kind are explicit.
+- Frame timing map covers the full duration.
+- Props schema is serializable and complete.
+- Asset needs are manifest-backed or deferred with blockers.
+- Template/VFX decisions are routed to the right local skills.
+- Preview and validation plan is executable by Remotion Clip Builder.
+
+## Handoff Summary Shape
+
+Return:
+
+```json
+{
+  "status": "complete | needs_approval | blocked | needs_revision",
+  "artifact_paths": ["string"],
+  "changed_files": ["string"],
+  "populated_contracts": ["codex/contracts/remotion-clip-package.schema.json", "codex/contracts/remotion-template.schema.json"],
+  "manifest_actions": [
+    {
+      "action": "created | updated | consumed | validated | mirrored_to_remotion_public | deferred | not_applicable",
+      "asset_id": "string",
+      "canonical_path": "string",
+      "remotion_public_path": "string",
+      "static_file_path": "string",
+      "rights_state": "approved | needs_approval | blocked | unknown",
+      "technical_metadata_state": "present | missing | partial | not_applicable",
+      "reason": "string"
+    }
+  ],
+  "validation_performed": ["template fit", "frame math", "props schema", "asset readiness", "safe-area check", "VFX hardening trigger check", "preview plan"],
+  "assumptions": ["string"],
+  "blockers": ["string"],
+  "risks": ["string"],
+  "next_recommended_step": "string"
+}
+```

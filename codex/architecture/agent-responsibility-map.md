@@ -271,7 +271,7 @@ Own upstream channel, source, reference, and reusable format intelligence. It ma
 
 ### Analysis Notes
 
-Channel Intelligence is correctly upstream because its outputs affect script, voice, visual routes, AI prompts, Remotion styling, final timeline, and critique. `source-corpus-ingestion`, `reference-video-breakdown`, and `web-content-synthesis` now have structured evidence graphs, path patterns, approval gates, and manifest-action rules. Several skills remain checklist-level and should be hardened next, especially channel profile deltas, style tokens, channel format freshness, scenario alignment findings, and redundancy scoring.
+Channel Intelligence is correctly upstream because its outputs affect script, voice, visual routes, AI prompts, Remotion styling, final timeline, and critique. `source-corpus-ingestion`, `reference-video-breakdown`, `web-content-synthesis`, `style-system-extraction`, `channel-format-synthesis`, `scenario-alignment-brief`, and `redundancy-risk-audit` now have structured evidence, approval gates, manifest-action rules, and routable findings or summaries. The remaining Channel Intelligence hardening need is mainly `channel-profile-management` output deltas and invalidation detail.
 
 ## Creative Producer
 
@@ -346,7 +346,7 @@ Own pre-production creative output: scenario, scene breakdown, narration, voice 
 
 ### Analysis Notes
 
-Creative Producer's strong point is scene-id preservation and voice/TTS approval gating. `scene-breakdown` and `tts-production-plan` are contract-ready. `write-scenario` and `voice-casting` are still thinner than the downstream workflow and should eventually emit structured summaries for source validation, novelty angle, inherited voice traits, rejected voice styles, and downstream invalidation.
+Creative Producer's strong point is scene-id preservation and voice/TTS approval gating. `write-scenario`, `scene-breakdown`, `voice-casting`, and `tts-production-plan` are now contract-ready for autonomous handoff. The remaining Creative Producer hardening need is `elevenlabs-voice-selection`, which should emit a compact provider inventory and selection summary.
 
 ## Visual Producer
 
@@ -584,7 +584,7 @@ Own deterministic 5-20 second Remotion clips, reusable component templates, moti
 
 ### Analysis Notes
 
-Remotion Clip Builder is a justified split from full video assembly because reusable clips/templates and VFX need different validation than a 1-10 minute timeline. `remotion-stack-selection` and `remotion-template-library` are strong. `remotion-scene-plan` should be hardened into a stricter component-plan artifact with props, frame map, asset needs, preview frames, and contract fields.
+Remotion Clip Builder is a justified split from full video assembly because reusable clips/templates and VFX need different validation than a 1-10 minute timeline. `remotion-scene-plan`, `remotion-stack-selection`, and `remotion-template-library` are strong. Remaining hardening should focus on making AI component prompts and VFX clip outputs more contract-shaped.
 
 ## Remotion Video Producer
 
@@ -676,7 +676,7 @@ Own full Remotion video assembly: timeline sync, scene sequencing, captions/subt
 
 ### Analysis Notes
 
-Remotion Video Producer's boundary is clean: it assembles and validates the full timeline but does not judge final viewer-facing quality. `timeline-sync-plan` now preserves Visual Producer selection authority, and `render-release-candidate` now requires immutable RC versioning and reproducibility evidence. The remaining hardening needs are caption/subtitle output shape, post-production deliverable shape, and fuller handoff-summary shapes for thin skills.
+Remotion Video Producer's boundary is clean: it assembles and validates the full timeline but does not judge final viewer-facing quality. `subtitle-caption-pipeline`, `timeline-sync-plan`, `render-release-candidate`, and `render-qa` are now strong. The remaining hardening need is mainly `remotion-post-production` deliverable shape and manifest-backed timeline source evidence.
 
 ## Video Critic
 
@@ -812,9 +812,9 @@ Every artifact that affects delivery should preserve at least one trace:
 
 ## Current Gaps And Recommended Hardening
 
-1. Manual inventory counts are now supported by `codex/scripts/audit_agent_system.py`; current scan is 48 local skills, 43 non-Director skills, 43 Director handoff refs, 21 strong skills, and 19 contracts.
+1. Manual inventory counts are now supported by `codex/scripts/audit_agent_system.py`; current scan is 48 local skills, 43 non-Director skills, 43 Director handoff refs, 36 strong matrix skills, and 19 contracts.
 2. The first four critical judgment/QA skills are now hardened: `clip-candidate-ranking`, `generated-clip-qa`, `render-qa`, and `artifact-consistency-audit`.
-3. Next thin skills before reliable autonomous runs: `subtitle-caption-pipeline`, `remotion-post-production`, Remotion Clip Builder planning/VFX skills, Creative `write-scenario`/`voice-casting`, and the thinner Channel Intelligence skills.
+3. No matrix skills remain classified as Thin. Next hardening should focus on Medium skills: `channel-profile-management`, `elevenlabs-voice-selection`, Director criteria/review-loop skills, Remotion post-production, Remotion AI/VFX outputs, and Video Critic review package/revision skills.
 4. Deterministic handoff validation should stay optional until real runs show repeated drift; the current audit script covers static handoff map drift and script-reference drift.
 5. Every media-producing skill should either update the media asset manifest or explicitly state why no media manifest update was possible.
 6. Timeline helpers now default to consuming Visual Producer selections and can only choose repair fallback visuals through explicit Director-reviewed repair mode.

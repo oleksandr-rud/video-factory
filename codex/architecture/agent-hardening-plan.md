@@ -84,7 +84,7 @@ The integrated architecture already has the right direction:
 - Remotion Video Producer owns technical render QA only.
 - Visual Producer owns primary/fallback candidate selection.
 
-The remaining work is to make thin skills emit structured evidence, status, stop conditions, and handoff summaries.
+The former thin-skill backlog is now hardened. The remaining work is to upgrade Medium skills that still need stricter return shapes, evidence, status, stop conditions, and handoff summaries.
 
 ## P0: Required Before Reliable Autonomous Runs
 
@@ -167,7 +167,7 @@ Acceptance criteria:
 - Handoff summaries include `manifest_actions[]`.
 - Render QA and artifact consistency audit can fail missing manifest coverage explicitly.
 
-Current status: every listed media-producing skill now has local manifest policy or existing `manifest_actions[]` guidance. Some thin skills still need fuller handoff summary shapes as part of later skill hardening.
+Current status: every listed media-producing skill now has local manifest policy or existing `manifest_actions[]` guidance. Remaining Medium skills still need fuller handoff summary shapes as part of later skill hardening.
 
 ### 4. Clarify Timeline Helper Authority
 
@@ -213,10 +213,10 @@ Acceptance criteria:
 | `channel-profile-management` | Output summary and invalidation policy are weak. | Add channel profile delta, project scaffold result, changed fields, downstream invalidation, manifest status, and QA summary. |
 | `reference-video-breakdown` | Strong after evidence-graph hardening. | Keep `reference_beats[]`, transcript/shot/audio/caption evidence, reusable patterns, do-not-copy risks, media asset ids, model limitations, confidence, invalidation impact, and manifest actions explicit. |
 | `web-content-synthesis` | Strong after one-page web capture hardening. | Keep direct URL parsing bounded, preserve `web_pages[]`, `claim_ledger[]`, annotations, image candidates, rights/robots gates, and manifest actions. |
-| `style-system-extraction` | Style tokens are not shaped enough. | Add visual/audio/motion/thumbnail/template token objects, evidence refs, mandatory/preferred/flexible/avoid status, reusable template candidates, and inheritance impact. |
-| `channel-format-synthesis` | Version/freshness policy is weak. | Add version policy, source analysis ids, `must_vary` rules, anti-redundancy thresholds, template governance, evidence refs, and stale-input detection. |
-| `scenario-alignment-brief` | Returns notes rather than routable findings. | Return findings with `severity`, `scene_id`, `source_gap`, `format_gap`, `owner_agent`, `recommended_action`, and `blocks_downstream`. |
-| `redundancy-risk-audit` | No scoring or pass/fail threshold. | Add redundancy score, repeated-element evidence, risk categories, novelty requirements, pass/fail/needs_revision status, and platform-policy risk notes. |
+| `style-system-extraction` | Strong after tokenized style-system hardening. | Keep style token taxonomy, policy levels, inheritance priority, do-not-copy rules, evidence/confidence, template candidates, invalidation impact, and manifest policy explicit. |
+| `channel-format-synthesis` | Strong after version/freshness hardening. | Keep versioned format package, freshness/staleness policy, `must_reuse`/`must_vary`/experimental rules, anti-redundancy thresholds, evidence/confidence, and downstream invalidation explicit. |
+| `scenario-alignment-brief` | Strong after scene-finding hardening. | Keep scene-level findings, claim/source coverage, channel-fit state, visual-proof state, owner routing, disposition, and required-change summary explicit. |
+| `redundancy-risk-audit` | Strong after scoring/waiver hardening. | Keep redundancy score, factor-level evidence, minimum novelty checks, waiver policy, owner recommendations, and pass/block states explicit. |
 
 ### Visual Producer
 
@@ -244,7 +244,7 @@ Acceptance criteria:
 
 | Skill | Current problem | Required hardening |
 |---|---|---|
-| `remotion-scene-plan` | Implementation details are still thin. | Add component plan object: composition id, component path, props schema, frame map, asset needs, template id/path, stack decision, preview frames, and manifest actions. |
+| `remotion-scene-plan` | Strong after deterministic scene-plan hardening. | Keep implementation mode, composition id, props schema, frame timing map, asset requirements, safe areas, VFX triggers, preview commands, and validation gates explicit. |
 | `remotion-template-library` | Strong but needs examples later. | Add override-example references once examples exist. |
 | `remotion-stack-selection` | Strong. | Consider an optional stack-decision artifact only if dependency choices become large. |
 | `remotion-ai-component-prompt` | Good guidance but not a contract. | Add generated prompt packet shape, targeted edit plan, forbidden imports checklist, compile-error repair loop, and validation summary. |
@@ -254,7 +254,7 @@ Acceptance criteria:
 
 | Skill | Current problem | Required hardening |
 |---|---|---|
-| `subtitle-caption-pipeline` | Caption outputs are not contract-shaped. | Add Caption JSON/SRT output summary, source alignment, safe-area QA, burned-in/separate subtitle decision, caption asset ids, and blockers. |
+| `subtitle-caption-pipeline` | Strong after caption-pipeline hardening. | Keep source route, normalized Caption JSON, SRT/VTT export policy, burned-in/sidecar decision, caption style, scene ranges, QA checks, and timeline-sync handoff explicit. |
 | `timeline-sync-plan` | Strong after hardening. | Keep authority lock aligned: Visual Producer selections only by default; repair fallback requires explicit flag and Director review. |
 | `remotion-post-production` | Deliverables are loose. | Add expected timeline source files, composition ids, media normalization report, audio mix report, transition map, render-readiness checklist, and manifest actions. |
 | `render-release-candidate` | Strong after hardening. | Keep RC packages immutable and reproducible with version, attempt id, inputs, hashes, commands, logs, metadata, manifest actions, QA, and blockers. |
@@ -270,13 +270,13 @@ Acceptance criteria:
 
 ### Creative Producer
 
-These are not P0 blockers, but they should be tightened after delivery-critical skills:
+These are no longer thin after the latest skill hardening; keep the structured outputs stable:
 
 | Skill | Required hardening |
 |---|---|
-| `write-scenario` | Add scenario summary, source validation, novelty angle, unsupported claims, changed scene ids, and blocked state. |
+| `write-scenario` | Strong after dual-layer scenario hardening; keep scene production logic, claim/source coverage, novelty policy, and downstream producibility validation explicit. |
 | `scene-breakdown` | Strong; keep as pattern. |
-| `voice-casting` | Add voice direction object, inherited source notes, suitability scores, rejected voice styles, rights constraints, and provider constraints. |
+| `voice-casting` | Strong after voice-direction hardening; keep inheritance chain, weighted rubric, rejected styles, pronunciation risks, accessibility notes, rights/consent gates, and provider handoff readiness explicit. |
 | `elevenlabs-voice-selection` | Add compact output schema with inventory snapshot path, ranked candidates, selected voice, approval state, continuity risks, and dry-run evidence. |
 | `tts-production-plan` | Strong; ensure human narration route still uses the voiceover package. |
 
