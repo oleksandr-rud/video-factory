@@ -1,0 +1,94 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "TimelineSyncPlan",
+  "type": "object",
+  "required": ["timeline_sync_id", "scenario_id", "fps", "scenes", "qa"],
+  "properties": {
+    "timeline_sync_id": { "type": "string" },
+    "scenario_id": { "type": "string" },
+    "voiceover_id": { "type": "string" },
+    "scene_visual_pack_id": { "type": "string" },
+    "fps": { "type": "number" },
+    "width": { "type": "integer" },
+    "height": { "type": "integer" },
+    "duration_seconds": { "type": "number" },
+    "scenes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["scene_id", "start_seconds", "end_seconds", "start_frame", "end_frame", "narration_text", "visual_source", "audio", "captions"],
+        "properties": {
+          "scene_id": { "type": "string" },
+          "start_seconds": { "type": "number" },
+          "end_seconds": { "type": "number" },
+          "start_frame": { "type": "integer" },
+          "end_frame": { "type": "integer" },
+          "narration_text": { "type": "string" },
+          "onscreen_text": { "type": "string" },
+          "visual_source": {
+            "type": "object",
+            "properties": {
+              "candidate_id": { "type": "string" },
+              "route": {
+                "type": "string",
+                "enum": ["remotion_generated", "ai_video_generation", "stock_clip", "user_supplied_media", "unassigned"]
+              },
+              "local_path": { "type": "string" },
+              "remotion_clip_package_path": { "type": "string" },
+              "ai_video_generation_package_path": { "type": "string" },
+              "notes": { "type": "string" }
+            }
+          },
+          "audio": {
+            "type": "object",
+            "properties": {
+              "voiceover_path": { "type": "string" },
+              "start_seconds": { "type": "number" },
+              "end_seconds": { "type": "number" },
+              "duration_seconds": { "type": "number" },
+              "duck_music": { "type": "boolean" },
+              "qa_notes": { "type": "string" }
+            }
+          },
+          "captions": {
+            "type": "object",
+            "properties": {
+              "caption_json_path": { "type": "string" },
+              "srt_path": { "type": "string" },
+              "start_ms": { "type": "number" },
+              "end_ms": { "type": "number" },
+              "safe_area_notes": { "type": "string" },
+              "qa_notes": { "type": "string" }
+            }
+          },
+          "overlay_notes": { "type": "string" },
+          "transition_in": { "type": "string" },
+          "transition_out": { "type": "string" },
+          "sync_notes": { "type": "string" }
+        }
+      }
+    },
+    "qa": {
+      "type": "object",
+      "required": ["status", "summary"],
+      "properties": {
+        "status": { "type": "string", "enum": ["pass", "fail", "partial", "not_run"] },
+        "summary": { "type": "string" },
+        "findings": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["severity", "description"],
+            "properties": {
+              "severity": { "type": "string", "enum": ["blocker", "major", "minor", "note"] },
+              "scene_id": { "type": "string" },
+              "timestamp_seconds": { "type": "number" },
+              "description": { "type": "string" },
+              "fix_status": { "type": "string" }
+            }
+          }
+        }
+      }
+    }
+  }
+}

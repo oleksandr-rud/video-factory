@@ -1,0 +1,91 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ChannelFormat",
+  "type": "object",
+  "required": ["channel_format_id", "version", "status", "channel_promise", "content_pillars", "narrative_system", "visual_system", "anti_redundancy"],
+  "properties": {
+    "channel_format_id": { "type": "string" },
+    "channel_id": { "type": "string" },
+    "version": { "type": "string" },
+    "status": {
+      "type": "string",
+      "enum": ["draft", "active", "needs_review", "deprecated"]
+    },
+    "source_analysis_ids": { "type": "array", "items": { "type": "string" } },
+    "audience": { "type": "string" },
+    "platforms": { "type": "array", "items": { "type": "string" } },
+    "channel_promise": { "type": "string" },
+    "content_pillars": { "type": "array", "items": { "type": "string" } },
+    "video_themes": { "type": "array", "items": { "type": "string" } },
+    "content_mix": {
+      "type": "object",
+      "properties": {
+        "hero": { "type": "array", "items": { "type": "string" } },
+        "hub": { "type": "array", "items": { "type": "string" } },
+        "hygiene": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "narrative_system": {
+      "type": "object",
+      "properties": {
+        "hook_patterns": { "type": "array", "items": { "type": "string" } },
+        "episode_structure": { "type": "array", "items": { "type": "string" } },
+        "pacing_rules": { "type": "array", "items": { "type": "string" } },
+        "voice_and_tone": { "type": "string" },
+        "cta_rules": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "visual_system": {
+      "type": "object",
+      "properties": {
+        "colors": { "type": "array", "items": { "type": "string" } },
+        "typography": { "type": "array", "items": { "type": "string" } },
+        "caption_rules": { "type": "array", "items": { "type": "string" } },
+        "layout_rules": { "type": "array", "items": { "type": "string" } },
+        "motion_rules": { "type": "array", "items": { "type": "string" } },
+        "thumbnail_rules": { "type": "array", "items": { "type": "string" } },
+        "source_card_rules": { "type": "array", "items": { "type": "string" } },
+        "reusable_assets": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "audio_system": {
+      "type": "object",
+      "properties": {
+        "voice_direction": { "type": "string" },
+        "music_rules": { "type": "array", "items": { "type": "string" } },
+        "sfx_rules": { "type": "array", "items": { "type": "string" } },
+        "mix_notes": { "type": "string" }
+      }
+    },
+    "technical_defaults": {
+      "type": "object",
+      "properties": {
+        "aspect_ratios": { "type": "array", "items": { "type": "string" } },
+        "resolution": { "type": "string" },
+        "fps": { "type": "number" },
+        "duration_range_seconds": { "type": "string" },
+        "export_notes": { "type": "string" }
+      }
+    },
+    "anti_redundancy": {
+      "type": "object",
+      "properties": {
+        "avoid_patterns": { "type": "array", "items": { "type": "string" } },
+        "required_novelty": { "type": "array", "items": { "type": "string" } },
+        "flex_zones": { "type": "array", "items": { "type": "string" } },
+        "review_questions": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "rule": { "type": "string" },
+          "source_ids": { "type": "array", "items": { "type": "string" } },
+          "confidence": { "type": "string", "enum": ["high", "medium", "low", "unknown"] }
+        }
+      }
+    }
+  }
+}

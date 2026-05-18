@@ -1,0 +1,89 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SceneVisualPack",
+  "type": "object",
+  "required": ["scenario_id", "scene_packs"],
+  "properties": {
+    "scenario_id": { "type": "string" },
+    "scene_visual_pack_id": { "type": "string" },
+    "reference_analysis_id": { "type": "string" },
+    "channel_format_id": { "type": "string" },
+    "scene_packs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["scene_id", "visual_goal", "routes", "candidate_requirements"],
+        "properties": {
+          "scene_id": { "type": "string" },
+          "visual_goal": { "type": "string" },
+          "source_ids": { "type": "array", "items": { "type": "string" } },
+          "mood": { "type": "string" },
+          "camera_or_motion": { "type": "string" },
+          "format_rules_applied": { "type": "array", "items": { "type": "string" } },
+          "anti_redundancy_notes": { "type": "string" },
+          "routes": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": ["remotion_generated", "ai_video_generation", "stock_clip", "user_supplied_media"]
+            }
+          },
+          "candidate_requirements": {
+            "type": "object",
+            "properties": {
+              "min_resolution": { "type": "string" },
+              "aspect_ratio": { "type": "string" },
+              "min_duration_seconds": { "type": "number" },
+              "needs_people": { "type": "boolean" },
+              "needs_product_or_ui": { "type": "boolean" },
+              "brand_safety_notes": { "type": "string" }
+            }
+          },
+          "search_queries": { "type": "array", "items": { "type": "string" } },
+          "ai_generation_prompts": { "type": "array", "items": { "type": "string" } },
+          "ai_video_generation_brief": { "type": "string" },
+          "invideo_model_hint": { "type": "string" },
+          "reference_asset_paths": { "type": "array", "items": { "type": "string" } },
+          "negative_constraints": { "type": "array", "items": { "type": "string" } },
+          "remotion_scene_brief": { "type": "string" },
+          "remotion_clip_brief": { "type": "string" },
+          "animation_style": { "type": "string" },
+          "template_hint": { "type": "string" },
+          "vfx_requirements": { "type": "array", "items": { "type": "string" } },
+          "handoff_recommendations": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["to_agent", "handoff_type", "route", "reason", "required_inputs", "output_contract", "definition_of_done"],
+              "properties": {
+                "recommendation_id": { "type": "string" },
+                "to_agent": {
+                  "type": "string",
+                  "enum": ["invideo-ai-generator", "remotion-clip-builder"]
+                },
+                "handoff_type": {
+                  "type": "string",
+                  "enum": ["feasibility_check", "production_request", "candidate_generation", "revision_request"]
+                },
+                "route": {
+                  "type": "string",
+                  "enum": ["remotion_generated", "ai_video_generation"]
+                },
+                "priority": {
+                  "type": "string",
+                  "enum": ["primary", "fallback", "optional"]
+                },
+                "reason": { "type": "string" },
+                "required_inputs": { "type": "array", "items": { "type": "string" } },
+                "output_contract": { "type": "string" },
+                "definition_of_done": { "type": "array", "items": { "type": "string" } },
+                "approval_notes": { "type": "string" },
+                "blocked_until": { "type": "string" }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

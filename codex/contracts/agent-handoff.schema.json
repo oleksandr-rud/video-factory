@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AgentHandoff",
+  "type": "object",
+  "required": ["request_id", "from_agent", "to_agent", "objective", "inputs", "allowed_paths", "output_contract", "definition_of_done"],
+  "properties": {
+    "handoff_id": { "type": "string" },
+    "run_id": { "type": "string" },
+    "request_id": { "type": "string" },
+    "from_agent": { "type": "string" },
+    "to_agent": { "type": "string" },
+    "phase": { "type": "string" },
+    "depends_on": { "type": "array", "items": { "type": "string" } },
+    "status": {
+      "type": "string",
+      "enum": ["planned", "in_progress", "complete", "needs_approval", "blocked", "revising"]
+    },
+    "autonomy_mode": {
+      "type": "string",
+      "enum": ["autonomous", "approval_gated", "analysis_only"]
+    },
+    "objective": { "type": "string" },
+    "inputs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["kind", "path_or_value"],
+        "properties": {
+          "kind": { "type": "string" },
+          "path_or_value": { "type": "string" },
+          "notes": { "type": "string" }
+        }
+      }
+    },
+    "allowed_paths": { "type": "array", "items": { "type": "string" } },
+    "skills_to_read": { "type": "array", "items": { "type": "string" } },
+    "output_contract": { "type": "string" },
+    "expected_artifacts": { "type": "array", "items": { "type": "string" } },
+    "definition_of_done": { "type": "array", "items": { "type": "string" } },
+    "stop_conditions": { "type": "array", "items": { "type": "string" } },
+    "revision_policy": { "type": "string" },
+    "budget_policy": { "type": "string" },
+    "deadline": { "type": "string" }
+  }
+}

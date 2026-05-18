@@ -1,0 +1,201 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CritiqueReport",
+  "type": "object",
+  "required": ["critique_id", "render_id", "scenario_id", "status", "review_mode", "inputs", "scores", "findings", "revision_plan", "qa"],
+  "properties": {
+    "critique_id": { "type": "string" },
+    "render_id": { "type": "string" },
+    "scenario_id": { "type": "string" },
+    "review_loop_id": { "type": "string" },
+    "review_iteration": { "type": "integer" },
+    "previous_critique_id": { "type": "string" },
+    "status": {
+      "type": "string",
+      "enum": ["prepared", "needs_approval", "reviewed", "needs_revision", "blocked", "approved"]
+    },
+    "review_mode": {
+      "type": "string",
+      "enum": ["artifact_only", "multimodal_frames", "hybrid", "human", "unknown"]
+    },
+    "model": {
+      "type": "object",
+      "properties": {
+        "provider": { "type": "string" },
+        "model_id": { "type": "string" },
+        "prompt_path": { "type": "string" },
+        "raw_response_path": { "type": "string" },
+        "request_id": { "type": "string" },
+        "notes": { "type": "string" }
+      }
+    },
+    "producer_criteria": {
+      "type": "object",
+      "properties": {
+        "criteria_prompt_path": { "type": "string" },
+        "acceptance_criteria": { "type": "array", "items": { "type": "string" } },
+        "required_rules": { "type": "array", "items": { "type": "string" } },
+        "forbidden_rules": { "type": "array", "items": { "type": "string" } },
+        "style_rules": { "type": "array", "items": { "type": "string" } },
+        "quality_thresholds": {
+          "type": "object",
+          "properties": {
+            "overall_min": { "type": "number" },
+            "category_min": { "type": "number" },
+            "max_major_findings": { "type": "integer" },
+            "allow_minor_findings": { "type": "boolean" }
+          }
+        }
+      }
+    },
+    "inputs": {
+      "type": "object",
+      "properties": {
+        "video_path": { "type": "string" },
+        "review_assets_path": { "type": "string" },
+        "render_package_path": { "type": "string" },
+        "scenario_path": { "type": "string" },
+        "timeline_sync_plan_path": { "type": "string" },
+        "voiceover_package_path": { "type": "string" },
+        "caption_path": { "type": "string" },
+        "reference_analysis_path": { "type": "string" },
+        "channel_format_path": { "type": "string" },
+        "producer_criteria_path": { "type": "string" },
+        "previous_critique_path": { "type": "string" }
+      }
+    },
+    "video_observations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["timestamp_seconds", "observation"],
+        "properties": {
+          "timestamp_seconds": { "type": "number" },
+          "scene_id": { "type": "string" },
+          "frame_path": { "type": "string" },
+          "observation": { "type": "string" }
+        }
+      }
+    },
+    "scene_reviews": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["scene_id", "status", "summary"],
+        "properties": {
+          "scene_id": { "type": "string" },
+          "start_seconds": { "type": "number" },
+          "end_seconds": { "type": "number" },
+          "status": {
+            "type": "string",
+            "enum": ["pass", "fail", "partial", "unknown", "waived"]
+          },
+          "summary": { "type": "string" },
+          "criteria_results": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["criterion", "status"],
+              "properties": {
+                "criterion": { "type": "string" },
+                "status": {
+                  "type": "string",
+                  "enum": ["pass", "fail", "waived", "not_applicable", "unknown"]
+                },
+                "evidence": { "type": "string" },
+                "recommendation": { "type": "string" }
+              }
+            }
+          },
+          "blocking_findings": { "type": "array", "items": { "type": "string" } },
+          "frame_paths": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    },
+    "scores": {
+      "type": "object",
+      "required": ["overall"],
+      "properties": {
+        "story_clarity": { "type": "number" },
+        "hook_strength": { "type": "number" },
+        "pacing": { "type": "number" },
+        "visual_quality": { "type": "number" },
+        "visual_relevance": { "type": "number" },
+        "audio_quality": { "type": "number" },
+        "subtitle_sync": { "type": "number" },
+        "brand_fit": { "type": "number" },
+        "platform_fit": { "type": "number" },
+        "factual_alignment": { "type": "number" },
+        "originality": { "type": "number" },
+        "accessibility": { "type": "number" },
+        "overall": { "type": "number" }
+      }
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["severity", "category", "description", "recommendation"],
+        "properties": {
+          "severity": {
+            "type": "string",
+            "enum": ["blocker", "major", "minor", "note"]
+          },
+          "category": {
+            "type": "string",
+            "enum": ["story", "hook", "pacing", "visual", "audio", "subtitles", "sync", "brand", "platform", "factual", "rights", "technical", "accessibility", "engagement", "redundancy", "other"]
+          },
+          "scene_id": { "type": "string" },
+          "timestamp_seconds": { "type": "number" },
+          "evidence": { "type": "string" },
+          "description": { "type": "string" },
+          "recommendation": { "type": "string" },
+          "owner_agent": { "type": "string" },
+          "fix_status": { "type": "string" }
+        }
+      }
+    },
+    "revision_plan": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["priority", "owner_agent", "action"],
+        "properties": {
+          "priority": { "type": "integer" },
+          "owner_agent": { "type": "string" },
+          "affected_artifacts": { "type": "array", "items": { "type": "string" } },
+          "action": { "type": "string" },
+          "expected_impact": { "type": "string" },
+          "requires_user_approval": { "type": "boolean" }
+        }
+      }
+    },
+    "gate_decision": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": ["pass", "fail", "needs_approval", "blocked"]
+        },
+        "release_candidate": { "type": "boolean" },
+        "stop_reason": { "type": "string" },
+        "failed_gates": { "type": "array", "items": { "type": "string" } },
+        "waived_gates": { "type": "array", "items": { "type": "string" } },
+        "next_action": {
+          "type": "string",
+          "enum": ["approve_rc", "revise_and_rerender", "ask_user", "stop_blocked"]
+        }
+      }
+    },
+    "limitations": { "type": "array", "items": { "type": "string" } },
+    "qa": {
+      "type": "object",
+      "required": ["status", "summary"],
+      "properties": {
+        "status": { "type": "string", "enum": ["pass", "fail", "partial", "not_run"] },
+        "summary": { "type": "string" },
+        "residual_risks": { "type": "array", "items": { "type": "string" } }
+      }
+    }
+  }
+}

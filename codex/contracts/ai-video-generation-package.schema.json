@@ -1,0 +1,143 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AiVideoGenerationPackage",
+  "type": "object",
+  "required": ["generation_id", "scene_id", "provider", "status", "positive_prompt", "settings", "approval", "qa"],
+  "properties": {
+    "generation_id": { "type": "string" },
+    "scene_id": { "type": "string" },
+    "candidate_id": { "type": "string" },
+    "provider": {
+      "type": "string",
+      "enum": ["invideo_ai", "sora", "veo", "kling", "runway", "luma", "other"]
+    },
+    "platform_route": {
+      "type": "string",
+      "enum": ["invideo_agent_one", "invideo_generative_model", "manual_provider", "api_provider"]
+    },
+    "model": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "vendor": { "type": "string" },
+        "quality_mode": {
+          "type": "string",
+          "enum": ["basic", "pro", "ultra", "lite", "model_direct", "unknown"]
+        },
+        "notes": { "type": "string" }
+      }
+    },
+    "status": {
+      "type": "string",
+      "enum": ["planned", "needs_approval", "approved", "submitted", "generated", "downloaded", "blocked", "rejected"]
+    },
+    "positive_prompt": { "type": "string" },
+    "negative_prompt": { "type": "string" },
+    "negative_prompt_mode": {
+      "type": "string",
+      "enum": ["separate_field", "converted_to_positive_constraints", "prompt_guide", "unsupported", "not_used"]
+    },
+    "prompt_guides": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "settings": {
+      "type": "object",
+      "properties": {
+        "duration_seconds": { "type": "number" },
+        "aspect_ratio": { "type": "string" },
+        "resolution": { "type": "string" },
+        "width": { "type": "integer" },
+        "height": { "type": "integer" },
+        "fps": { "type": "number" },
+        "shot_type": { "type": "string" },
+        "native_audio": { "type": "boolean" },
+        "lip_sync": { "type": "boolean" },
+        "loop": { "type": "boolean" },
+        "seed": { "type": "string" },
+        "variant_count": { "type": "integer", "minimum": 1 },
+        "first_frame_path": { "type": "string" },
+        "last_frame_path": { "type": "string" }
+      }
+    },
+    "reference_assets": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["label", "path_or_url"],
+        "properties": {
+          "label": { "type": "string" },
+          "path_or_url": { "type": "string" },
+          "intended_use": { "type": "string" },
+          "rights_notes": { "type": "string" }
+        }
+      }
+    },
+    "approval": {
+      "type": "object",
+      "required": ["status"],
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": ["not_required", "pending", "approved", "rejected"]
+        },
+        "approved_by": { "type": "string" },
+        "approved_at": { "type": "string" },
+        "credit_estimate": { "type": "string" },
+        "cost_estimate": { "type": "string" },
+        "credit_actual": { "type": "string" },
+        "notes": { "type": "string" }
+      }
+    },
+    "outputs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["kind", "path_or_url"],
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": ["video", "preview", "thumbnail", "source_project", "audio", "subtitle", "metadata", "qa_report"]
+          },
+          "path_or_url": { "type": "string" },
+          "provider_asset_id": { "type": "string" },
+          "notes": { "type": "string" }
+        }
+      }
+    },
+    "iteration": {
+      "type": "object",
+      "properties": {
+        "version": { "type": "integer" },
+        "parent_generation_id": { "type": "string" },
+        "changed_variable": { "type": "string" },
+        "reroll_reason": { "type": "string" },
+        "next_action": {
+          "type": "string",
+          "enum": ["accept", "reroll", "switch_model", "fallback_stock", "fallback_remotion", "blocked"]
+        }
+      }
+    },
+    "qa": {
+      "type": "object",
+      "required": ["status", "summary"],
+      "properties": {
+        "status": { "type": "string", "enum": ["pass", "fail", "partial", "not_run"] },
+        "summary": { "type": "string" },
+        "findings": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["severity", "description"],
+            "properties": {
+              "severity": { "type": "string", "enum": ["blocker", "major", "minor", "note"] },
+              "timestamp_seconds": { "type": "number" },
+              "description": { "type": "string" },
+              "fix_status": { "type": "string" }
+            }
+          }
+        }
+      }
+    }
+  }
+}

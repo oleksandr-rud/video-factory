@@ -1,0 +1,121 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "RenderPackage",
+  "type": "object",
+  "required": ["render_id", "scenario_id", "composition_id", "status", "outputs", "render_commands", "qa"],
+  "properties": {
+    "render_id": { "type": "string" },
+    "scenario_id": { "type": "string" },
+    "composition_id": { "type": "string" },
+    "composition_type": {
+      "type": "string",
+      "enum": ["short_clip", "full_video", "transparent_overlay"]
+    },
+    "timeline_path": { "type": "string" },
+    "timeline_sync_plan_path": { "type": "string" },
+    "voiceover_package_path": { "type": "string" },
+    "critique_report_path": { "type": "string" },
+    "source_clip_packages": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "platform": { "type": "string" },
+    "aspect_ratio": { "type": "string" },
+    "duration_seconds": { "type": "number" },
+    "fps": { "type": "number" },
+    "width": { "type": "integer" },
+    "height": { "type": "integer" },
+    "status": {
+      "type": "string",
+      "enum": ["planned", "previewed", "rendered", "blocked", "approved", "rejected"]
+    },
+    "outputs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["kind", "path"],
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": ["video", "audio", "subtitle_srt", "thumbnail", "transparent_overlay", "image_sequence", "qa_report", "critique_report"]
+          },
+          "path": { "type": "string" },
+          "codec": { "type": "string" },
+          "notes": { "type": "string" }
+        }
+      }
+    },
+    "render_commands": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["purpose", "command"],
+        "properties": {
+          "purpose": { "type": "string" },
+          "command": { "type": "string" },
+          "completed": { "type": "boolean" },
+          "notes": { "type": "string" }
+        }
+      }
+    },
+    "subtitles": {
+      "type": "object",
+      "properties": {
+        "burned_in": { "type": "boolean" },
+        "separate_srt": { "type": "boolean" },
+        "caption_json_path": { "type": "string" },
+        "srt_path": { "type": "string" },
+        "alignment_source_path": { "type": "string" },
+        "timeline_sync_plan_path": { "type": "string" },
+        "qa_notes": { "type": "string" }
+      }
+    },
+    "audio_mix": {
+      "type": "object",
+      "properties": {
+        "voiceover_package_path": { "type": "string" },
+        "voiceover_path": { "type": "string" },
+        "music_path": { "type": "string" },
+        "sfx_paths": { "type": "array", "items": { "type": "string" } },
+        "qa_notes": { "type": "string" }
+      }
+    },
+    "delivery_variants": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "path"],
+        "properties": {
+          "name": { "type": "string" },
+          "path": { "type": "string" },
+          "aspect_ratio": { "type": "string" },
+          "notes": { "type": "string" }
+        }
+      }
+    },
+    "rights_notes": { "type": "array", "items": { "type": "string" } },
+    "known_blockers": { "type": "array", "items": { "type": "string" } },
+    "qa": {
+      "type": "object",
+      "required": ["status", "summary"],
+      "properties": {
+        "status": { "type": "string", "enum": ["pass", "fail", "partial", "not_run"] },
+        "summary": { "type": "string" },
+        "findings": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["severity", "description"],
+            "properties": {
+              "severity": { "type": "string", "enum": ["blocker", "major", "minor", "note"] },
+              "scene_id": { "type": "string" },
+              "timestamp_seconds": { "type": "number" },
+              "description": { "type": "string" },
+              "fix_status": { "type": "string" }
+            }
+          }
+        }
+      }
+    }
+  }
+}

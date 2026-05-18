@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Scenario",
+  "type": "object",
+  "required": ["scenario_id", "title", "audience", "platform", "duration_seconds", "scenes"],
+  "properties": {
+    "scenario_id": { "type": "string" },
+    "reference_analysis_id": { "type": "string" },
+    "channel_format_id": { "type": "string" },
+    "title": { "type": "string" },
+    "audience": { "type": "string" },
+    "platform": { "type": "string" },
+    "aspect_ratio": { "type": "string" },
+    "duration_seconds": { "type": "number" },
+    "tone": { "type": "string" },
+    "must_include": { "type": "array", "items": { "type": "string" } },
+    "must_avoid": { "type": "array", "items": { "type": "string" } },
+    "source_alignment_notes": { "type": "string" },
+    "novelty_angle": { "type": "string" },
+    "scenes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["scene_id", "start_seconds", "end_seconds", "purpose", "script"],
+        "properties": {
+          "scene_id": { "type": "string" },
+          "start_seconds": { "type": "number" },
+          "end_seconds": { "type": "number" },
+          "purpose": { "type": "string" },
+          "script": { "type": "string" },
+          "onscreen_text": { "type": "string" },
+          "visual_intent": { "type": "string" },
+          "voice_notes": { "type": "string" },
+          "source_ids": { "type": "array", "items": { "type": "string" } },
+          "format_notes": { "type": "string" },
+          "redundancy_notes": { "type": "string" }
+        }
+      }
+    }
+  }
+}

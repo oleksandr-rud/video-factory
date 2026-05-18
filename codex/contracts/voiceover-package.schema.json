@@ -1,0 +1,135 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "VoiceoverPackage",
+  "type": "object",
+  "required": ["voiceover_id", "scenario_id", "provider", "status", "voice_selection", "scenes", "qa"],
+  "properties": {
+    "voiceover_id": { "type": "string" },
+    "scenario_id": { "type": "string" },
+    "channel_format_id": { "type": "string" },
+    "reference_analysis_id": { "type": "string" },
+    "provider": {
+      "type": "string",
+      "enum": ["elevenlabs", "openai_audio", "human", "other"]
+    },
+    "status": {
+      "type": "string",
+      "enum": ["planned", "voice_selected", "ready_for_approval", "generated", "blocked", "approved", "rejected"]
+    },
+    "voice_selection": {
+      "type": "object",
+      "properties": {
+        "voice_id": { "type": "string" },
+        "voice_name": { "type": "string" },
+        "model_id": { "type": "string" },
+        "language_code": { "type": "string" },
+        "labels": { "type": "object", "additionalProperties": { "type": "string" } },
+        "settings": {
+          "type": "object",
+          "properties": {
+            "stability": { "type": "number" },
+            "similarity_boost": { "type": "number" },
+            "style": { "type": "number" },
+            "speed": { "type": "number" },
+            "use_speaker_boost": { "type": "boolean" }
+          }
+        },
+        "selection_reason": { "type": "string" },
+        "rights_notes": { "type": "array", "items": { "type": "string" } },
+        "candidates": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["voice_id", "name", "score"],
+            "properties": {
+              "voice_id": { "type": "string" },
+              "name": { "type": "string" },
+              "score": { "type": "number" },
+              "labels": { "type": "object", "additionalProperties": { "type": "string" } },
+              "preview_url": { "type": "string" },
+              "reasons": { "type": "array", "items": { "type": "string" } }
+            }
+          }
+        }
+      }
+    },
+    "generation_policy": {
+      "type": "object",
+      "properties": {
+        "requires_user_approval": { "type": "boolean" },
+        "approved": { "type": "boolean" },
+        "endpoint": { "type": "string" },
+        "estimated_credits": { "type": "string" },
+        "approval_id": { "type": "string" },
+        "notes": { "type": "string" }
+      }
+    },
+    "pronunciation_notes": { "type": "array", "items": { "type": "string" } },
+    "continuity_notes": { "type": "string" },
+    "scenes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["scene_id", "text"],
+        "properties": {
+          "scene_id": { "type": "string" },
+          "text": { "type": "string" },
+          "expected_duration_seconds": { "type": "number" },
+          "duration_seconds": { "type": "number" },
+          "audio_path": { "type": "string" },
+          "alignment_path": { "type": "string" },
+          "caption_json_path": { "type": "string" },
+          "srt_path": { "type": "string" },
+          "request_payload": { "type": "object" },
+          "request_id": { "type": "string" },
+          "qa_notes": { "type": "string" }
+        }
+      }
+    },
+    "captions": {
+      "type": "object",
+      "properties": {
+        "source": {
+          "type": "string",
+          "enum": ["elevenlabs_timestamps", "forced_alignment", "transcription", "manual", "unknown"]
+        },
+        "caption_json_path": { "type": "string" },
+        "srt_path": { "type": "string" },
+        "sync_notes": { "type": "string" }
+      }
+    },
+    "scripts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["purpose", "path"],
+        "properties": {
+          "purpose": { "type": "string" },
+          "path": { "type": "string" },
+          "notes": { "type": "string" }
+        }
+      }
+    },
+    "qa": {
+      "type": "object",
+      "required": ["status", "summary"],
+      "properties": {
+        "status": { "type": "string", "enum": ["pass", "fail", "partial", "not_run"] },
+        "summary": { "type": "string" },
+        "findings": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["severity", "description"],
+            "properties": {
+              "severity": { "type": "string", "enum": ["blocker", "major", "minor", "note"] },
+              "scene_id": { "type": "string" },
+              "description": { "type": "string" },
+              "fix_status": { "type": "string" }
+            }
+          }
+        }
+      }
+    }
+  }
+}

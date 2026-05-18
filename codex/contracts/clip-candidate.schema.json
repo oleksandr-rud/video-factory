@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ClipCandidate",
+  "type": "object",
+  "required": ["candidate_id", "scene_id", "route", "status", "scores"],
+  "properties": {
+    "candidate_id": { "type": "string" },
+    "scene_id": { "type": "string" },
+    "route": {
+      "type": "string",
+      "enum": ["remotion_generated", "ai_video_generation", "stock_clip", "user_supplied_media"]
+    },
+    "provider": { "type": "string" },
+    "source_url": { "type": "string" },
+    "preview_url": { "type": "string" },
+    "local_path": { "type": "string" },
+    "remotion_clip_package_path": { "type": "string" },
+    "ai_video_generation_package_path": { "type": "string" },
+    "generation_id": { "type": "string" },
+    "prompt_or_query": { "type": "string" },
+    "license_summary": { "type": "string" },
+    "cost_estimate": { "type": "string" },
+    "technical": {
+      "type": "object",
+      "properties": {
+        "duration_seconds": { "type": "number" },
+        "width": { "type": "integer" },
+        "height": { "type": "integer" },
+        "fps": { "type": "number" },
+        "has_audio": { "type": "boolean" }
+      }
+    },
+    "scores": {
+      "type": "object",
+      "required": ["semantic_fit", "continuity_fit", "technical_fit", "rights_fit", "editability", "total"],
+      "properties": {
+        "semantic_fit": { "type": "number" },
+        "continuity_fit": { "type": "number" },
+        "technical_fit": { "type": "number" },
+        "rights_fit": { "type": "number" },
+        "editability": { "type": "number" },
+        "total": { "type": "number" }
+      }
+    },
+    "status": {
+      "type": "string",
+      "enum": ["proposed", "needs_approval", "approved", "rejected", "downloaded", "generated"]
+    },
+    "rejection_reason": { "type": "string" }
+  }
+}

@@ -1,0 +1,102 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ReferenceAnalysis",
+  "type": "object",
+  "required": ["analysis_id", "status", "sources", "findings"],
+  "properties": {
+    "analysis_id": { "type": "string" },
+    "request_id": { "type": "string" },
+    "scenario_id": { "type": "string" },
+    "channel_id": { "type": "string" },
+    "status": {
+      "type": "string",
+      "enum": ["planned", "in_progress", "complete", "partial", "blocked"]
+    },
+    "sources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["source_id", "kind", "path_or_url"],
+        "properties": {
+          "source_id": { "type": "string" },
+          "kind": {
+            "type": "string",
+            "enum": ["reference_video", "local_video", "webpage", "blog", "channel_data", "best_practice", "brand_asset", "user_note", "other"]
+          },
+          "path_or_url": { "type": "string" },
+          "title": { "type": "string" },
+          "owner": { "type": "string" },
+          "date": { "type": "string" },
+          "rights_notes": { "type": "string" },
+          "summary": { "type": "string" },
+          "confidence": { "type": "string", "enum": ["high", "medium", "low", "unknown"] }
+        }
+      }
+    },
+    "reference_videos": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["video_id", "source_id"],
+        "properties": {
+          "video_id": { "type": "string" },
+          "source_id": { "type": "string" },
+          "duration_seconds": { "type": "number" },
+          "transcript_path": { "type": "string" },
+          "thumbnail_path": { "type": "string" },
+          "shot_breakdown_path": { "type": "string" },
+          "beats": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "start_seconds": { "type": "number" },
+                "end_seconds": { "type": "number" },
+                "purpose": { "type": "string" },
+                "shot_size": { "type": "string" },
+                "camera_motion": { "type": "string" },
+                "visual_notes": { "type": "string" },
+                "audio_notes": { "type": "string" },
+                "caption_or_graphics_notes": { "type": "string" },
+                "pattern_tags": { "type": "array", "items": { "type": "string" } }
+              }
+            }
+          }
+        }
+      }
+    },
+    "findings": {
+      "type": "object",
+      "properties": {
+        "narrative_patterns": { "type": "array", "items": { "type": "string" } },
+        "visual_patterns": { "type": "array", "items": { "type": "string" } },
+        "audio_patterns": { "type": "array", "items": { "type": "string" } },
+        "source_claims": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "claim": { "type": "string" },
+              "source_ids": { "type": "array", "items": { "type": "string" } },
+              "confidence": { "type": "string", "enum": ["high", "medium", "low", "unknown"] }
+            }
+          }
+        },
+        "visual_evidence_opportunities": { "type": "array", "items": { "type": "string" } },
+        "story_opportunities": { "type": "array", "items": { "type": "string" } },
+        "rights_or_policy_risks": { "type": "array", "items": { "type": "string" } },
+        "evidence_gaps": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "downstream_guidance": {
+      "type": "object",
+      "properties": {
+        "creative_producer": { "type": "array", "items": { "type": "string" } },
+        "visual_producer": { "type": "array", "items": { "type": "string" } },
+        "invideo_ai_generator": { "type": "array", "items": { "type": "string" } },
+        "remotion_clip_builder": { "type": "array", "items": { "type": "string" } },
+        "remotion_video_producer": { "type": "array", "items": { "type": "string" } }
+      }
+    }
+  }
+}
